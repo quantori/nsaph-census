@@ -1,4 +1,5 @@
 from .census_info import census_years
+from .query import get_census_data
 import pandas as pd
 import yaml
 
@@ -44,6 +45,7 @@ class DataPlan:
 
 
 
+
 class VariableDef:
     """
     Structured way of representing what we need to know for a variable.
@@ -61,6 +63,7 @@ class VariableDef:
         self.num = num
         if den is None:
             self.has_den = False
+            self.den = []
         else:
             self.has_den = True
             self.den = den
@@ -70,12 +73,66 @@ class VariableDef:
         self.name = name
         self.dataset = list(var_dict.keys())[0]
         self.num = var_dict[self.dataset]['num']
+        if type(self.num) is str:
+            self.num = [self.num]
 
         if 'den' in var_dict[self.dataset].keys():
             self.has_den = True
             self.den = var_dict[self.dataset]['den']
+            if type(self.den) is str:
+                self.den = [self.den]
         else:
             self.has_den = False
+            self.den = []
+
+    def get_vars(self):
+        """
+        Return a union of all census variables needed for this variable
+        """
+        return list(set().union(self.num, self.den))
+
+    def do_query(self, year, geometry):
+        """
+        query the US census
+        :param geometry: census geometry to query
+        :param year: year of data to query
+        :return: data frame of all census variables specified by the query
+        """
+
+        return get_census_data(year, self.get_vars(), geometry, self.dataset)
+
+    def calculate_var(self, year, geometry):
+        """
+        Query the required data from the census, then calculate the variable defined
+        :param year: year of data to query
+        :param geometry: census geometry to query
+        :return: a data frame with one column of the calcualted variable and the census geography columns
+        """
+
+        data = self.do_query(year, geometry)
+
+        ## calculate numerator
+        data['num'] = 0
+        for num_var in self.num:
+            data['num'] += data[num_var]
+
+        if self.has_den:
+            data['den'] = 0
+            for den_var in self.den:
+                data['den'] += data[den_var]
+
+        if self.has_den:
+            data[self.name] = data['num']/data['den']
+        else:
+            data[self.name] = data['num']
+
+        data.drop(columns=self.get_vars(), inplace=True)
+        data.drop(columns="num", inplace=True)
+        if self.has_den:
+            data.drop(columns="den", inplace=True)
+
+        return data
+
 
     def __str__(self):
         out = ""

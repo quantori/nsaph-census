@@ -47,6 +47,8 @@ def get_census_data(year, variables, geography, dataset, sum_file=None, key=None
 
     out = r.get(endpoint, params=options).json()
     out = pd.DataFrame(out[1:], columns=out[0])
+
+    out[variables] = out[variables].apply(pd.to_numeric)
     out['year'] = year
 
     return out
