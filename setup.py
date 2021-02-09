@@ -1,10 +1,10 @@
 from setuptools import setup
-from getCensus import __version__
+from get_census import __version__
 
 setup(
-    name='getCensus',
+    name='get_census',
     version=__version__,
-    packages=['getCensus'],
+    packages=['get_census'],
     url='',
     license='',
     author='Ben Sabath',
