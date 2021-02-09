@@ -1,3 +1,4 @@
+from .census_info import census_years
 import pandas as pd
 import yaml
 
@@ -5,12 +6,42 @@ class DataPlan:
     """
     a class de
     """
-    def __init__(self, yaml_path):
+    def __init__(self, yaml_path, geometry, years=census_years()):
         """
         initialize a DataPlan object from a get_census yaml document
         :param yaml_path: path to a yaml file
         """
-        pass
+        self.geometry = geometry
+        self.years = years
+        self.plan = dict()
+        self.yaml_to_dict(yaml_path, years)
+
+        self.data = None
+
+
+    def yaml_to_dict(self, yaml_path, years):
+        """
+        Convert a yaml file detailing how to get census variables in to a dictionary. Handles
+        the issue of forward counting years to make future code readable.
+
+        INSERT LINK TO CENSUS README TO GUIDE HOW TO WRITE THE YAML
+
+        :param yaml_path:
+        :return: dictionary
+        """
+
+        ## Read in Raw YAML
+
+        with open(yaml_path) as f:
+            yaml_dict = yaml.load(f, Loader=yaml.FullLoader)
+
+        for year in years:
+            self.plan[year] = list()
+            for varname in yaml_dict.keys():
+                plan_year = find_year(year, list(yaml_dict[varname].keys()))
+                self.plan[year].append(VariableDef(varname, yaml_dict[varname][plan_year]))
+
+
 
 
 class VariableDef:
@@ -66,23 +97,7 @@ class VariableDef:
 
 
 
-def yaml_to_dict(yaml_path, max_year=2019):
-    """
-    Convert a yaml file detailing how to get census variables in to a dictionary. Handles
-    the issue of forward counting years to make future code readable.
 
-    INSERT LINK TO CENSUS README TO GUIDE HOW TO WRITE THE YAML
-
-    :param yaml_path:
-    :return: dictionary
-    """
-
-    ## Read in Raw YAML
-
-    with open(yaml_path) as f:
-        yaml_dict = yaml.load(f, Loader=yaml.FullLoader)
-
-    return yaml_dict
 
 def find_year(year, year_list):
     """

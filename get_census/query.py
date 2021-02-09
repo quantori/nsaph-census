@@ -20,6 +20,12 @@ def get_census_data(year, variables, geography, dataset, sum_file=None, key=None
     :return: a pandas DataFrame
     """
 
+    if dataset == "acs": dataset = "acs5"
+    if dataset == "census": dataset = "dec"
+
+    if year == 2000 and dataset == "dec" and sum_file is None:
+        sum_file = choose_sum_file(variables)
+
     endpoint = get_endpoint(year, dataset, sum_file)
     geography = api_geography(geography)
 
@@ -92,3 +98,24 @@ def api_geography(geo):
         return "zip code tabulation area"
     else:
         return geo
+
+def choose_sum_file(variables):
+    """
+    Internal function, not exported
+    If we're querying the 2000 US census, and we're not sure which summary file to
+    use, we need to check to see if the variables listed are available in sf1. If they
+    are, we use sf1, if not we use sf3.
+    """
+
+    varlist = get_varlist(2000, "dec", "sf1")
+
+    sf1 = True
+    for var in variables:
+        sf1 = sf1 and (var in varlist)
+
+    if sf1:
+        return "sf1"
+    else:
+        return "sf3"
+
+

@@ -60,6 +60,22 @@ def set_api_key(key):
     """
     os.environ['GET_CENSUS_API_KEY'] = key
 
+def census_years(min_year = 2000, max_year = 2019):
+    """
+    Constructs a list of years for which census data is available in the range provided. At this point assumes
+    we want the decennial census and acs5. Future functionality might expand to allow this to vary.
+    :param min_year: minimum year we want data for
+    :param max_year: max year we want data for (inclusive)
+    :return: list of all years in specified range for which data is available
+    """
+
+    out = []
+    if min_year <= 2000: out.append(2000)
+
+    out = out + list(range(max(min_year, 2009), min(max_year, 2019) + 1))
+    return out
+
+
 
 
 
