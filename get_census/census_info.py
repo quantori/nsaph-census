@@ -1,8 +1,10 @@
 import requests as r
 import os
-## Code for handling census metadata
 
-def get_endpoint(year, dataset, sum_file=None):
+# Code for handling census metadata
+
+
+def get_endpoint(year: int, dataset: str, sum_file: str = None):
     """
     Returns a string containing the URL to the census API endpoint
     :param year: The year for which you want data
@@ -21,11 +23,11 @@ def get_endpoint(year, dataset, sum_file=None):
         assert year in [2000, 2010]
         out += "dec/"
         if year == 2000:
-            assert sum_file in ["sf1","sf3"]
+            assert sum_file in ["sf1", "sf3"]
             out += sum_file
         else:
             out += "sf1"
-    elif dataset in ['acs1','acs5']:
+    elif dataset in ['acs1', 'acs5']:
         assert year > 2008
         out += "acs/" + dataset
     elif dataset == 'pums':
@@ -35,7 +37,7 @@ def get_endpoint(year, dataset, sum_file=None):
     return out
 
 
-def get_varlist(year, dataset, sum_file=None):
+def get_varlist(year: int, dataset: str, sum_file: str = None):
     """
     :param year: Year of data
     :param dataset: The census data set you want (dec, acs1, acs5, pums)
@@ -51,7 +53,8 @@ def get_varlist(year, dataset, sum_file=None):
 
     return varnames
 
-def set_api_key(key):
+
+def set_api_key(key: str):
     """
     Sets an environment variable to contain your census API key. To avoid needing to run this
     every session you can also permanently set GET_CENSUS_API_KEY to your key in your environment.
@@ -60,7 +63,8 @@ def set_api_key(key):
     """
     os.environ['GET_CENSUS_API_KEY'] = key
 
-def census_years(min_year = 2000, max_year = 2019):
+
+def census_years(min_year: int = 2000, max_year: int = 2019):
     """
     Constructs a list of years for which census data is available in the range provided. At this point assumes
     we want the decennial census and acs5. Future functionality might expand to allow this to vary.
@@ -70,16 +74,8 @@ def census_years(min_year = 2000, max_year = 2019):
     """
 
     out = []
-    if min_year <= 2000: out.append(2000)
+    if min_year <= 2000:
+        out.append(2000)
 
     out = out + list(range(max(min_year, 2009), min(max_year, 2019) + 1))
     return out
-
-
-
-
-
-
-
-
-

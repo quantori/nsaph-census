@@ -7,7 +7,7 @@ import pandas as pd
 # Code for downloading the census data
 
 
-def get_census_data(year, variables, geography, dataset, sum_file=None, key=None):
+def get_census_data(year: int, variables: list, geography: str, dataset: str, sum_file: str = None, key: str = None):
     """
 
     :param year: Year of data that we are querying
@@ -20,8 +20,11 @@ def get_census_data(year, variables, geography, dataset, sum_file=None, key=None
     :return: a pandas DataFrame
     """
 
-    if dataset == "acs": dataset = "acs5"
-    if dataset == "census": dataset = "dec"
+    if dataset == "acs":
+        dataset = "acs5"
+
+    if dataset == "census":
+        dataset = "dec"
 
     if year == 2000 and dataset == "dec" and sum_file is None:
         sum_file = choose_sum_file(variables)
@@ -54,7 +57,7 @@ def get_census_data(year, variables, geography, dataset, sum_file=None, key=None
     return out
 
 
-def clean_acs_vars(variables):
+def clean_acs_vars(variables: list):
     """
     Ensure that the estimate value is specified for a list of ACS variables
     :param variables: list of strings ccontaining the variable names to request
@@ -68,7 +71,7 @@ def clean_acs_vars(variables):
             variables[i] += "E"
 
 
-def prep_vars(variables):
+def prep_vars(variables: list):
     """
     Convert from a list to a comma separated string
     :param variables: list of vars
@@ -86,7 +89,7 @@ def prep_vars(variables):
     return out
 
 
-def api_geography(geo):
+def api_geography(geo: str):
     """
     go from function shorthand to the input the census api needs
     :param geo: shorthand for a given geography type
@@ -101,7 +104,8 @@ def api_geography(geo):
     else:
         return geo
 
-def choose_sum_file(variables):
+
+def choose_sum_file(variables: list):
     """
     Internal function, not exported
     If we're querying the 2000 US census, and we're not sure which summary file to
@@ -119,5 +123,3 @@ def choose_sum_file(variables):
         return "sf1"
     else:
         return "sf3"
-
-

@@ -3,6 +3,7 @@ from .query import get_census_data, clean_acs_vars
 import pandas as pd
 import yaml
 
+
 class DataPlan:
     """
     a class containing information on how to create a desired set of census data.
@@ -14,6 +15,7 @@ class DataPlan:
         data: A pandas data frame created based on the defined data plan. only exists after the DataPlan.assemble_data()
         method is called.
     """
+
     def __init__(self, yaml_path, geometry, years=census_years()):
         """
         initialize a DataPlan object from a get_census yaml document
@@ -27,13 +29,13 @@ class DataPlan:
         """
         self.geometry = geometry
         self.years = years
-        if type(self.years) is int: self.years = [self.years]
+        if type(self.years) is int:
+            self.years = [self.years]
 
         self.plan = dict()
         self.yaml_to_dict(yaml_path)
 
         self.data = None
-
 
     def yaml_to_dict(self, yaml_path):
         """
@@ -43,11 +45,10 @@ class DataPlan:
         INSERT LINK TO CENSUS README TO GUIDE HOW TO WRITE THE YAML
 
         :param yaml_path:
-        :param years:
         :return: dictionary
         """
 
-        ## Read in Raw YAML
+        # Read in Raw YAML
 
         with open(yaml_path) as f:
             yaml_dict = yaml.load(f, Loader=yaml.FullLoader)
@@ -56,7 +57,8 @@ class DataPlan:
             self.plan[year] = list()
             for varname in yaml_dict.keys():
                 plan_year = find_year(year, list(yaml_dict[varname].keys()))
-                self.plan[year].append(VariableDef(varname, yaml_dict[varname][plan_year]))
+                if yaml_dict[varname][plan_year] != "skip":
+                    self.plan[year].append(VariableDef(varname, yaml_dict[varname][plan_year]))
 
     def assemble_data(self):
         """
@@ -64,10 +66,13 @@ class DataPlan:
         :return:
         """
 
-        self.data = None # Clear in case this has been run previously
+        self.data = None  # Clear in case this has been run previously
 
         for year in self.years:
             year_data = None
+            if len(self.plan[year]) == 0:
+                continue
+
             for var_def in self.plan[year]:
                 print(year, var_def.name)
                 var_data = var_def.calculate_var(year, self.geometry)
@@ -84,7 +89,6 @@ class DataPlan:
                 self.data = self.data.append(year_data, ignore_index=True)
 
 
-
 class VariableDef:
     """
     Structured way of representing what we need to know for a variable.
@@ -95,22 +99,7 @@ class VariableDef:
         has_den: a boolean, indicates whether or not there is a denominator.
     """
 
-    def __init__(self, name, dataset, num, den=None):
-
-        self.name = name
-        self.dataset = dataset
-        self.num = num
-        if den is None:
-            self.has_den = False
-            self.den = []
-        else:
-            self.has_den = True
-            self.den = den
-
-        if "acs" in self.dataset: self.make_acs_vars()
-
-
-    def __init__(self, name, var_dict):
+    def __init__(self, name: str, var_dict: dict):
 
         self.name = name
         self.dataset = list(var_dict.keys())[0]
@@ -127,11 +116,13 @@ class VariableDef:
             self.has_den = False
             self.den = []
 
-        if "acs" in self.dataset: self.make_acs_vars()
+        if "acs" in self.dataset:
+            self.make_acs_vars()
 
     def make_acs_vars(self):
         clean_acs_vars(self.num)
-        if self.has_den: clean_acs_vars(self.den)
+        if self.has_den:
+            clean_acs_vars(self.den)
 
     def get_vars(self):
         """
@@ -159,7 +150,7 @@ class VariableDef:
 
         data = self.do_query(year, geometry)
 
-        ## calculate numerator
+        # calculate numerator
         data['num'] = 0
         for num_var in self.num:
             data['num'] += data[num_var]
@@ -170,7 +161,7 @@ class VariableDef:
                 data['den'] += data[den_var]
 
         if self.has_den:
-            data[self.name] = data['num']/data['den']
+            data[self.name] = data['num'] / data['den']
         else:
             data[self.name] = data['num']
 
@@ -180,7 +171,6 @@ class VariableDef:
             data.drop(columns="den", inplace=True)
 
         return data
-
 
     def __str__(self):
         out = ""
@@ -199,9 +189,6 @@ class VariableDef:
         out += self.dataset + ">"
 
         return out
-
-
-
 
 
 def find_year(year, year_list):
