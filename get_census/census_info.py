@@ -7,6 +7,7 @@ import os
 def get_endpoint(year: int, dataset: str, sum_file: str = None):
     """
     Returns a string containing the URL to the census API endpoint
+
     :param year: The year for which you want data
     :param dataset: The census data set you want (dec, acs1, acs5, pums)
     :param sum_file: For the 2000 census, sf1 or sf3
@@ -58,6 +59,7 @@ def set_api_key(key: str):
     """
     Sets an environment variable to contain your census API key. To avoid needing to run this
     every session you can also permanently set GET_CENSUS_API_KEY to your key in your environment.
+
     :param key: Your Census API key as a string
     :return: nothing
     """
@@ -68,6 +70,7 @@ def census_years(min_year: int = 2000, max_year: int = 2019):
     """
     Constructs a list of years for which census data is available in the range provided. At this point assumes
     we want the decennial census and acs5. Future functionality might expand to allow this to vary.
+
     :param min_year: minimum year we want data for
     :param max_year: max year we want data for (inclusive)
     :return: list of all years in specified range for which data is available

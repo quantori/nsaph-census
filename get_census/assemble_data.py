@@ -7,13 +7,17 @@ import yaml
 class DataPlan:
     """
     a class containing information on how to create a desired set of census data.
+
     Members:
-        geometry: which census geography this plan is for
-        years: The list of years that the data should be queried for
-        plan: A dictionary with keys of years, storing lists of VariableDef objects defining the
-            variables to be calculated for that year. Created from a yaml file. LINK TO YAML INSTRUCTIONS HERE
-        data: A pandas data frame created based on the defined data plan. only exists after the DataPlan.assemble_data()
-        method is called.
+
+    * ``geometry``: which census geography this plan is for
+    * ``years``: The ``list`` of years that the data should be queried for
+    * ``plan``: A ``dict`` with keys of years, storing lists of ``VariableDef`` objects defining the variables to be
+      calculated for that year. Created from a yaml file. LINK TO YAML INSTRUCTIONS HERE
+    * ``data``: A pandas data frame created based on the defined data plan. only exists after the
+      ``DataPlan.assemble_data()`` method is called.
+
+
     """
 
     def __init__(self, yaml_path, geometry, years=census_years()):
@@ -26,6 +30,8 @@ class DataPlan:
             5 year acs data. Note that this may not apply for the ACS1 or other data. That function may be
             updated in the future, but for now creating lists of years besides the defaults is left as an exercise
             for the interested reader.
+
+
         """
         self.geometry = geometry
         self.years = years
@@ -46,6 +52,8 @@ class DataPlan:
 
         :param yaml_path:
         :return: dictionary
+
+
         """
 
         # Read in Raw YAML
@@ -62,8 +70,9 @@ class DataPlan:
 
     def assemble_data(self):
         """
-        Create a data frame for each geoid each year, for
-        :return:
+        Create a data frame for each geoid , for each year, with each variable as defined in the data plan
+
+        :return: Assembled data frame stored in self.data
         """
 
         self.data = None  # Clear in case this has been run previously
@@ -93,10 +102,12 @@ class VariableDef:
     """
     Structured way of representing what we need to know for a variable.
     Members:
-        dataset: a string. The data set used to calculate a variable, should be dec, acs1, acs5, or pums
-        num: a list, the names of variables that make up the numerator
-        den: a list, the names of the variables that make up the denominator. Can be missing
-        has_den: a boolean, indicates whether or not there is a denominator.
+    * ``dataset``: a string. The data set used to calculate a variable, should be dec, acs1, acs5, or pums
+    * ``num``: a list, the names of variables that make up the numerator
+    * ``den``: a list, the names of the variables that make up the denominator. Can be missing
+    * ``has_den``: a boolean, indicates whether or not there is a denominator.
+
+
     """
 
     def __init__(self, name: str, var_dict: dict):
@@ -126,16 +137,20 @@ class VariableDef:
 
     def get_vars(self):
         """
-        Return a union of all census variables needed for this variable
+        :return: a union of all census variables needed for this variable
+
+
         """
         return list(set().union(self.num, self.den))
 
     def do_query(self, year, geometry):
         """
-        query the US census
+        Run the query defined by the contained variables
         :param geometry: census geometry to query
         :param year: year of data to query
         :return: data frame of all census variables specified by the query
+
+
         """
 
         return get_census_data(year, self.get_vars(), geometry, self.dataset)
@@ -146,6 +161,8 @@ class VariableDef:
         :param year: year of data to query
         :param geometry: census geometry to query
         :return: a data frame with one column of the calcualted variable and the census geography columns
+
+
         """
 
         data = self.do_query(year, geometry)
@@ -198,6 +215,8 @@ def find_year(year, year_list):
     :param year: year of interest
     :param year_list:list: list of years, likely from a yaml census list
     :return: first year greater than or equal to "year" in "year_list"
+
+
     """
 
     year_list.sort()  # Should be sorted, but just in case

@@ -1,0 +1,328 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>get_census.assemble_data &#8212; get_census 0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for get_census.assemble_data</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">.census_info</span> <span class="kn">import</span> <span class="n">census_years</span>
+<span class="kn">from</span> <span class="nn">.query</span> <span class="kn">import</span> <span class="n">get_census_data</span><span class="p">,</span> <span class="n">clean_acs_vars</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">yaml</span>
+
+
+<div class="viewcode-block" id="DataPlan"><a class="viewcode-back" href="../../assemble_data.html#get_census.assemble_data.DataPlan">[docs]</a><span class="k">class</span> <span class="nc">DataPlan</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    a class containing information on how to create a desired set of census data.</span>
+
+<span class="sd">    Members:</span>
+
+<span class="sd">    * ``geometry``: which census geography this plan is for</span>
+<span class="sd">    * ``years``: The ``list`` of years that the data should be queried for</span>
+<span class="sd">    * ``plan``: A ``dict`` with keys of years, storing lists of ``VariableDef`` objects defining the variables to be</span>
+<span class="sd">      calculated for that year. Created from a yaml file. LINK TO YAML INSTRUCTIONS HERE</span>
+<span class="sd">    * ``data``: A pandas data frame created based on the defined data plan. only exists after the</span>
+<span class="sd">      ``DataPlan.assemble_data()`` method is called.</span>
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yaml_path</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">years</span><span class="o">=</span><span class="n">census_years</span><span class="p">()):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        initialize a DataPlan object from a get_census yaml document</span>
+<span class="sd">        :param yaml_path: path to a yaml file</span>
+<span class="sd">        :param geometry: which census geography this plan is for</span>
+<span class="sd">        :param years: The list of years to query data from. The census_years() function can</span>
+<span class="sd">            calculate which years in your timeframe of interest can be queried for the decennial and</span>
+<span class="sd">            5 year acs data. Note that this may not apply for the ACS1 or other data. That function may be</span>
+<span class="sd">            updated in the future, but for now creating lists of years besides the defaults is left as an exercise</span>
+<span class="sd">            for the interested reader.</span>
+
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="o">=</span> <span class="n">geometry</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">years</span> <span class="o">=</span> <span class="n">years</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">years</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">years</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">years</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">plan</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">yaml_to_dict</span><span class="p">(</span><span class="n">yaml_path</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="DataPlan.yaml_to_dict"><a class="viewcode-back" href="../../assemble_data.html#get_census.assemble_data.DataPlan.yaml_to_dict">[docs]</a>    <span class="k">def</span> <span class="nf">yaml_to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yaml_path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert a yaml file detailing how to get census variables in to a dictionary. Handles</span>
+<span class="sd">        the issue of forward counting years to make future code readable.</span>
+
+<span class="sd">        INSERT LINK TO CENSUS README TO GUIDE HOW TO WRITE THE YAML</span>
+
+<span class="sd">        :param yaml_path:</span>
+<span class="sd">        :return: dictionary</span>
+
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Read in Raw YAML</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">yaml_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">yaml_dict</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">Loader</span><span class="o">=</span><span class="n">yaml</span><span class="o">.</span><span class="n">FullLoader</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">year</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">years</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">plan</span><span class="p">[</span><span class="n">year</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">varname</span> <span class="ow">in</span> <span class="n">yaml_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">plan_year</span> <span class="o">=</span> <span class="n">find_year</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">yaml_dict</span><span class="p">[</span><span class="n">varname</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+                <span class="k">if</span> <span class="n">yaml_dict</span><span class="p">[</span><span class="n">varname</span><span class="p">][</span><span class="n">plan_year</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;skip&quot;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">plan</span><span class="p">[</span><span class="n">year</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">VariableDef</span><span class="p">(</span><span class="n">varname</span><span class="p">,</span> <span class="n">yaml_dict</span><span class="p">[</span><span class="n">varname</span><span class="p">][</span><span class="n">plan_year</span><span class="p">]))</span></div>
+
+<div class="viewcode-block" id="DataPlan.assemble_data"><a class="viewcode-back" href="../../assemble_data.html#get_census.assemble_data.DataPlan.assemble_data">[docs]</a>    <span class="k">def</span> <span class="nf">assemble_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a data frame for each geoid , for each year, with each variable as defined in the data plan</span>
+
+<span class="sd">        :return: Assembled data frame stored in self.data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Clear in case this has been run previously</span>
+
+        <span class="k">for</span> <span class="n">year</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">years</span><span class="p">:</span>
+            <span class="n">year_data</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plan</span><span class="p">[</span><span class="n">year</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="k">for</span> <span class="n">var_def</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">plan</span><span class="p">[</span><span class="n">year</span><span class="p">]:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">var_def</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                <span class="n">var_data</span> <span class="o">=</span> <span class="n">var_def</span><span class="o">.</span><span class="n">calculate_var</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">)</span>
+                <span class="n">join_vars</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">var_data</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">([</span><span class="n">var_def</span><span class="o">.</span><span class="n">name</span><span class="p">]))</span>
+
+                <span class="k">if</span> <span class="n">year_data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">year_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">join_vars</span><span class="p">)</span>
+
+                <span class="n">year_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">year_data</span><span class="p">,</span> <span class="n">var_data</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;outer&quot;</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="n">join_vars</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">year_data</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">year_data</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="VariableDef"><a class="viewcode-back" href="../../assemble_data.html#get_census.assemble_data.VariableDef">[docs]</a><span class="k">class</span> <span class="nc">VariableDef</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Structured way of representing what we need to know for a variable.</span>
+<span class="sd">    Members:</span>
+<span class="sd">    * ``dataset``: a string. The data set used to calculate a variable, should be dec, acs1, acs5, or pums</span>
+<span class="sd">    * ``num``: a list, the names of variables that make up the numerator</span>
+<span class="sd">    * ``den``: a list, the names of the variables that make up the denominator. Can be missing</span>
+<span class="sd">    * ``has_den``: a boolean, indicates whether or not there is a denominator.</span>
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">var_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">var_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num</span> <span class="o">=</span> <span class="n">var_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="p">][</span><span class="s1">&#39;num&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">num</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="s1">&#39;den&#39;</span> <span class="ow">in</span> <span class="n">var_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">has_den</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">den</span> <span class="o">=</span> <span class="n">var_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="p">][</span><span class="s1">&#39;den&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">den</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">den</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">den</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">has_den</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">den</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="s2">&quot;acs&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">make_acs_vars</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">make_acs_vars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">clean_acs_vars</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_den</span><span class="p">:</span>
+            <span class="n">clean_acs_vars</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">den</span><span class="p">)</span>
+
+<div class="viewcode-block" id="VariableDef.get_vars"><a class="viewcode-back" href="../../assemble_data.html#get_census.assemble_data.VariableDef.get_vars">[docs]</a>    <span class="k">def</span> <span class="nf">get_vars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: a union of all census variables needed for this variable</span>
+
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">()</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">den</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="VariableDef.do_query"><a class="viewcode-back" href="../../assemble_data.html#get_census.assemble_data.VariableDef.do_query">[docs]</a>    <span class="k">def</span> <span class="nf">do_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">year</span><span class="p">,</span> <span class="n">geometry</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Run the query defined by the contained variables</span>
+<span class="sd">        :param geometry: census geometry to query</span>
+<span class="sd">        :param year: year of data to query</span>
+<span class="sd">        :return: data frame of all census variables specified by the query</span>
+
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">get_census_data</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_vars</span><span class="p">(),</span> <span class="n">geometry</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VariableDef.calculate_var"><a class="viewcode-back" href="../../assemble_data.html#get_census.assemble_data.VariableDef.calculate_var">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">year</span><span class="p">,</span> <span class="n">geometry</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Query the required data from the census, then calculate the variable defined</span>
+<span class="sd">        :param year: year of data to query</span>
+<span class="sd">        :param geometry: census geometry to query</span>
+<span class="sd">        :return: a data frame with one column of the calcualted variable and the census geography columns</span>
+
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_query</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">geometry</span><span class="p">)</span>
+
+        <span class="c1"># calculate numerator</span>
+        <span class="n">data</span><span class="p">[</span><span class="s1">&#39;num&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">num_var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">num</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[</span><span class="s1">&#39;num&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">data</span><span class="p">[</span><span class="n">num_var</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_den</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[</span><span class="s1">&#39;den&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">den_var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">den</span><span class="p">:</span>
+                <span class="n">data</span><span class="p">[</span><span class="s1">&#39;den&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">data</span><span class="p">[</span><span class="n">den_var</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_den</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;num&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;den&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;num&#39;</span><span class="p">]</span>
+
+        <span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_vars</span><span class="p">(),</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="s2">&quot;num&quot;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_den</span><span class="p">:</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="s2">&quot;den&quot;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">data</span></div>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">out</span> <span class="o">+=</span> <span class="s2">&quot;Name: &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">out</span> <span class="o">+=</span> <span class="s2">&quot;Dataset: &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">out</span> <span class="o">+=</span> <span class="s2">&quot;Num: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_den</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">+=</span> <span class="s2">&quot;Den: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">den</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">out</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="s2">&quot;&lt;&quot;</span>
+        <span class="n">out</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span>
+        <span class="n">out</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span> <span class="o">+</span> <span class="s2">&quot;&gt;&quot;</span>
+
+        <span class="k">return</span> <span class="n">out</span></div>
+
+
+<div class="viewcode-block" id="find_year"><a class="viewcode-back" href="../../assemble_data.html#get_census.assemble_data.find_year">[docs]</a><span class="k">def</span> <span class="nf">find_year</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">year_list</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Internal helper function, not exported. Returns the first</span>
+<span class="sd">    year in the list greater or equal to the year</span>
+<span class="sd">    :param year: year of interest</span>
+<span class="sd">    :param year_list:list: list of years, likely from a yaml census list</span>
+<span class="sd">    :return: first year greater than or equal to &quot;year&quot; in &quot;year_list&quot;</span>
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">year_list</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>  <span class="c1"># Should be sorted, but just in case</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">year_list</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="n">year</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">i</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">get_census</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../assemble_data.html">DataPlan: Main Class For Assembling a Census Plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../census_info.html">Census Metadata Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../query.html">Functions for Requesting Data from the Census API</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Ben Sabath.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

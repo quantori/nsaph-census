@@ -60,6 +60,7 @@ def get_census_data(year: int, variables: list, geography: str, dataset: str, su
 def clean_acs_vars(variables: list):
     """
     Ensure that the estimate value is specified for a list of ACS variables
+
     :param variables: list of strings ccontaining the variable names to request
     :return: list of strings containing ACS vars, postpended with an "E"
          (where not previously postended)
@@ -74,6 +75,7 @@ def clean_acs_vars(variables: list):
 def prep_vars(variables: list):
     """
     Convert from a list to a comma separated string
+
     :param variables: list of vars
     :return: comma separated string
     """
@@ -92,6 +94,7 @@ def prep_vars(variables: list):
 def api_geography(geo: str):
     """
     go from function shorthand to the input the census api needs
+
     :param geo: shorthand for a given geography type
     :return: corrected geography name
     """
