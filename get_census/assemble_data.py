@@ -2,6 +2,7 @@ from .census_info import census_years
 from .query import get_census_data, clean_acs_vars
 import pandas as pd
 import yaml
+import nsaph_utils
 
 
 class DataPlan:
@@ -19,6 +20,8 @@ class DataPlan:
 
 
     """
+
+    _interpolation_methods = ["ma"]
 
     def __init__(self, yaml_path, geometry, years=census_years()):
         """
@@ -96,6 +99,32 @@ class DataPlan:
                 self.data = year_data
             else:
                 self.data = self.data.append(year_data, ignore_index=True)
+
+    def get_var_names(self):
+        """
+        Return a list containing all the variable names that are created in the data plan
+
+        :return: List of strings
+        """
+
+        out = []
+        for year in self.plan.keys():
+            for var_def in self.plan[year]:
+                out = list(set().union(out, [var_def.name]))
+
+        return out
+
+
+
+    def interpolate(self, method="ma"):
+        """
+        Fill in values
+        :param method:
+        :return:
+        """
+        assert method in DataPlan._interpolation_methods
+
+
 
 
 class VariableDef:
