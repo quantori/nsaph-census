@@ -21,7 +21,6 @@ class DataPlan:
 
     """
 
-    _interpolation_methods = ["ma"]
 
     def __init__(self, yaml_path, geometry, years=census_years()):
         """
@@ -43,8 +42,9 @@ class DataPlan:
 
         self.plan = dict()
         self.yaml_to_dict(yaml_path)
+        self.__has_missing = False
 
-        self.data = None
+        self.data = pd.DataFrame()
 
     def yaml_to_dict(self, yaml_path):
         """
@@ -114,7 +114,57 @@ class DataPlan:
 
         return out
 
+    def add_geoid(self):
+        """
+        add a single column named 'geoid' to self.data combining all portions of a data sets geographical identifiers
 
+        :return: None
+        """
+        # handle known cases, then try a naive method
+
+        if self.geometry == "county":
+            self.data['geoid'] = self.data['state'] + self.data['county']
+            return
+        else:
+            geo_vars = list(set(self.data.columns).difference(self.get_var_names() + ['year']))
+
+            # assume that all geo_vars are string columns (should be the case with census data)
+            self.data['geoid'] = ""
+            for geo_var in geo_vars:
+                self.data['geoid'] = self.data['geoid'] + self.data[geo_var]
+
+    def create_missingness(self):
+        """
+        Create a row for all combinations of geospatial ID and year
+        :return:
+        """
+        if self.__has_missing:
+            print("Missing values already created.")
+            return
+
+        if "geoid" not in self.data.columns:
+            self.add_geoid()
+
+        all_vals = pd.DataFrame([[x, y] for x in range(min(self.data.year), max(self.data.year) + 1)
+                                 for y in self.data.geoid.unique()])
+        self.data = pd.merge(all_vals, self.data, how="left", on=['year', 'geoid'])
+        self.__has_missing = True
+
+    def write_data(self, path, file_type = "csv"):
+        """
+        Write data  out to a file. Default method is to write out to csv. new methods can be implemented in the future.
+
+        :param path: Path to write the data to
+        :param file_type: Method to output data, currently only implemented for csv files
+        :return: None, writes data to disk.
+        """
+
+        if file_type == "csv":
+            self.data.to_csv(path)
+            return
+        else:
+            print("No Method currently implemented for that file type")
+            return
 
     def interpolate(self, method="ma"):
         """
@@ -122,7 +172,13 @@ class DataPlan:
         :param method:
         :return:
         """
-        assert method in DataPlan._interpolation_methods
+        assert method in nsaph_utils.interpolate.IMPLEMENTED_METHODS
+
+        if not self.__has_missing:
+            self.create_missingness()
+
+        nsaph_utils.interpolate(self.data, self.get_var_names(), method, "year", "geoid")
+
 
 
 
