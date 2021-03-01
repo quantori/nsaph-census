@@ -146,7 +146,7 @@ class DataPlan:
             self.add_geoid()
 
         all_vals = pd.DataFrame([[x, y] for x in range(min(self.data.year), max(self.data.year) + 1)
-                                 for y in self.data.geoid.unique()])
+                                 for y in self.data.geoid.unique()], columns=['year', 'geoid'])
         self.data = pd.merge(all_vals, self.data, how="left", on=['year', 'geoid'])
         self.__has_missing = True
 
