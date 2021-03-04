@@ -172,15 +172,12 @@ class DataPlan:
         :param method:
         :return:
         """
-        assert method in nsaph_utils.interpolate.IMPLEMENTED_METHODS
+        assert method in nsaph_utils.interpolation.IMPLEMENTED_METHODS
 
         if not self.__has_missing:
             self.create_missingness()
 
         nsaph_utils.interpolate(self.data, self.get_var_names(), method, "year", "geoid")
-
-
-
 
 
 class VariableDef:
