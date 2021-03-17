@@ -1,5 +1,6 @@
 from .census_info import census_years
 from .query import get_census_data, clean_acs_vars
+from .data import *
 import pandas as pd
 import yaml
 import nsaph_utils
@@ -22,7 +23,7 @@ class DataPlan:
     """
 
 
-    def __init__(self, yaml_path, geometry, years=census_years()):
+    def __init__(self, yaml_path, geometry, years=census_years(), state=None, county=None):
         """
         initialize a DataPlan object from a get_census yaml document
         :param yaml_path: path to a yaml file
@@ -39,6 +40,8 @@ class DataPlan:
         self.years = years
         if type(self.years) is int:
             self.years = [self.years]
+        self.state = state
+        self.county = county
 
         self.plan = dict()
         self.yaml_to_dict(yaml_path)
@@ -87,7 +90,7 @@ class DataPlan:
 
             for var_def in self.plan[year]:
                 print(year, var_def.name)
-                var_data = var_def.calculate_var(year, self.geometry)
+                var_data = var_def.calculate_var(year, self.geometry, self.state, self.county)
                 join_vars = list(set(var_data.columns).difference([var_def.name]))
 
                 if year_data is None:
@@ -125,6 +128,13 @@ class DataPlan:
         if self.geometry == "county":
             self.data['geoid'] = self.data['state'] + self.data['county']
             return
+        elif self.geometry == "tract":
+            self.data['geoid'] = self.data['state'] + self.data['county'] + self.data['tract']
+            return
+        elif self.geometry == "block group":
+            self.data['geoid'] = self.data['state'] + self.data['county'] + \
+                                 self.data['tract'] + self.data['block group']
+            return
         else:
             geo_vars = list(set(self.data.columns).difference(self.get_var_names() + ['year']))
 
@@ -160,7 +170,7 @@ class DataPlan:
         """
 
         if file_type == "csv":
-            self.data.to_csv(path)
+            self.data.to_csv(path, index=False)
             return
         else:
             print("No Method currently implemented for that file type")
@@ -225,7 +235,7 @@ class VariableDef:
         """
         return list(set().union(self.num, self.den))
 
-    def do_query(self, year, geometry):
+    def do_query(self, year, geometry, state=None, county=None):
         """
         Run the query defined by the contained variables
         :param geometry: census geometry to query
@@ -234,10 +244,62 @@ class VariableDef:
 
 
         """
+        if geometry == "tract":
+            return self._do_query_tract(year, geometry, state, county)
+        elif geometry == "block group":
+            return self._do_query_block_group(year, geometry, state, county)
 
-        return get_census_data(year, self.get_vars(), geometry, self.dataset)
+        return get_census_data(year, self.get_vars(), geometry, self.dataset, state=state, county=county)
 
-    def calculate_var(self, year, geometry):
+    def _do_query_tract(self, year, geometry, state=None, county=None):
+        # If state is specified, pull for just that state
+        if state is not None:
+            return get_census_data(year, self.get_vars(), geometry, self.dataset, state=state, county=county)
+
+        # Otherwise loop over all states
+        out = None
+        state_codes = load_state_codes()
+        num_queries = 0
+        for i, row in state_codes.iterrows():
+            num_queries += 1
+            print("Running query", num_queries, "of", len(state_codes.index), sep=" ", end="\r")
+            state_data = get_census_data(year, self.get_vars(), geometry, self.dataset, state=row['state'])
+            if out is None:
+                out = state_data
+            else:
+                out = out.append(state_data, ignore_index=True)
+        print()
+        return out
+
+
+    def _do_query_block_group(self, year, geometry, state=None, county=None):
+        # if state and county are specified
+        out = None
+        county_codes = load_county_codes()
+
+        if state is not None:
+            if county is not None:
+                return get_census_data(year, self.get_vars(), geometry, self.dataset, state=state, county=county)
+            else:
+                # iterate over all counties in the state
+                county_codes = county_codes[county_codes.state == state]
+
+        # iterate over all counties and states
+        num_queries = 0
+        for i, row in county_codes.iterrows():
+            num_queries += 1
+            print("Running query", num_queries, "of", len(county_codes.index), sep=" ", end="\r")
+            county_data = get_census_data(year, self.get_vars(), geometry,
+                                          self.dataset, state=row['state'], county=row['county'])
+            if out is None:
+                out = county_data
+            else:
+                out = out.append(county_data, ignore_index=True)
+        print()
+        return out
+
+
+    def calculate_var(self, year, geometry, state=None, county=None):
         """
         Query the required data from the census, then calculate the variable defined
         :param year: year of data to query
@@ -247,7 +309,7 @@ class VariableDef:
 
         """
 
-        data = self.do_query(year, geometry)
+        data = self.do_query(year, geometry, state, county)
 
         # calculate numerator
         data['num'] = 0
