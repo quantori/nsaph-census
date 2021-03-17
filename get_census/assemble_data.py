@@ -14,6 +14,8 @@ class DataPlan:
 
     * ``geometry``: which census geography this plan is for
     * ``years``: The ``list`` of years that the data should be queried for
+    * ``state``: 2 digit FIPS code of the state you want to limit the query to (i.e. "06" for CA)
+    * ``county``: 3 digit FIPS code of the county you want to include. Requires state to be specified
     * ``plan``: A ``dict`` with keys of years, storing lists of ``VariableDef`` objects defining the variables to be
       calculated for that year. Created from a yaml file. LINK TO YAML INSTRUCTIONS HERE
     * ``data``: A pandas data frame created based on the defined data plan. only exists after the
@@ -33,8 +35,8 @@ class DataPlan:
             5 year acs data. Note that this may not apply for the ACS1 or other data. That function may be
             updated in the future, but for now creating lists of years besides the defaults is left as an exercise
             for the interested reader.
-
-
+        :param state: 2 digit FIPS code of the state you want to limit the query to (i.e. "06" for CA)
+        :param county: 3 digit FIPS code of the county you want to include. Requires state to be specified
         """
         self.geometry = geometry
         self.years = years

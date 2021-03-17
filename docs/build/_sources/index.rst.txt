@@ -13,6 +13,7 @@ Welcome to get_census's documentation!
    assemble_data
    census_info
    query
+   cached_data
 
 
 

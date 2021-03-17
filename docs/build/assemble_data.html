@@ -36,17 +36,30 @@
 <span id="dataplan-main-class-for-assembling-a-census-plan"></span><h1>DataPlan: Main Class For Assembling a Census Plan<a class="headerlink" href="#module-get_census.assemble_data" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="get_census.assemble_data.DataPlan">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">get_census.assemble_data.</span></code><code class="sig-name descname"><span class="pre">DataPlan</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">yaml_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">years</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[2000,</span> <span class="pre">2009,</span> <span class="pre">2010,</span> <span class="pre">2011,</span> <span class="pre">2012,</span> <span class="pre">2013,</span> <span class="pre">2014,</span> <span class="pre">2015,</span> <span class="pre">2016,</span> <span class="pre">2017,</span> <span class="pre">2018,</span> <span class="pre">2019]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/assemble_data.html#DataPlan"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.assemble_data.DataPlan" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">get_census.assemble_data.</span></code><code class="sig-name descname"><span class="pre">DataPlan</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">yaml_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">years</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[2000,</span> <span class="pre">2009,</span> <span class="pre">2010,</span> <span class="pre">2011,</span> <span class="pre">2012,</span> <span class="pre">2013,</span> <span class="pre">2014,</span> <span class="pre">2015,</span> <span class="pre">2016,</span> <span class="pre">2017,</span> <span class="pre">2018,</span> <span class="pre">2019]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">county</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/assemble_data.html#DataPlan"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.assemble_data.DataPlan" title="Permalink to this definition">¶</a></dt>
 <dd><p>a class containing information on how to create a desired set of census data.</p>
 <p>Members:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">geometry</span></code>: which census geography this plan is for</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">years</span></code>: The <code class="docutils literal notranslate"><span class="pre">list</span></code> of years that the data should be queried for</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">state</span></code>: 2 digit FIPS code of the state you want to limit the query to (i.e. “06” for CA)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">county</span></code>: 3 digit FIPS code of the county you want to include. Requires state to be specified</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">plan</span></code>: A <code class="docutils literal notranslate"><span class="pre">dict</span></code> with keys of years, storing lists of <code class="docutils literal notranslate"><span class="pre">VariableDef</span></code> objects defining the variables to be
 calculated for that year. Created from a yaml file. LINK TO YAML INSTRUCTIONS HERE</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">data</span></code>: A pandas data frame created based on the defined data plan. only exists after the
 <code class="docutils literal notranslate"><span class="pre">DataPlan.assemble_data()</span></code> method is called.</p></li>
 </ul>
+<dl class="py method">
+<dt id="get_census.assemble_data.DataPlan.add_geoid">
+<code class="sig-name descname"><span class="pre">add_geoid</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/assemble_data.html#DataPlan.add_geoid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.assemble_data.DataPlan.add_geoid" title="Permalink to this definition">¶</a></dt>
+<dd><p>add a single column named ‘geoid’ to self.data combining all portions of a data sets geographical identifiers</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt id="get_census.assemble_data.DataPlan.assemble_data">
 <code class="sig-name descname"><span class="pre">assemble_data</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/assemble_data.html#DataPlan.assemble_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.assemble_data.DataPlan.assemble_data" title="Permalink to this definition">¶</a></dt>
@@ -59,10 +72,46 @@ calculated for that year. Created from a yaml file. LINK TO YAML INSTRUCTIONS HE
 </dd></dl>
 
 <dl class="py method">
+<dt id="get_census.assemble_data.DataPlan.create_missingness">
+<code class="sig-name descname"><span class="pre">create_missingness</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/assemble_data.html#DataPlan.create_missingness"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.assemble_data.DataPlan.create_missingness" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a row for all combinations of geospatial ID and year
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="get_census.assemble_data.DataPlan.get_var_names">
 <code class="sig-name descname"><span class="pre">get_var_names</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/assemble_data.html#DataPlan.get_var_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.assemble_data.DataPlan.get_var_names" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a list containing all the variable names that are created in the data plan
-:return: List of strings</p>
+<dd><p>Return a list containing all the variable names that are created in the data plan</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of strings</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="get_census.assemble_data.DataPlan.interpolate">
+<code class="sig-name descname"><span class="pre">interpolate</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ma'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/assemble_data.html#DataPlan.interpolate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.assemble_data.DataPlan.interpolate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fill in values
+:param method:
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="get_census.assemble_data.DataPlan.write_data">
+<code class="sig-name descname"><span class="pre">write_data</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'csv'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/assemble_data.html#DataPlan.write_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.assemble_data.DataPlan.write_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write data  out to a file. Default method is to write out to csv. new methods can be implemented in the future.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> – Path to write the data to</p></li>
+<li><p><strong>file_type</strong> – Method to output data, currently only implemented for csv files</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None, writes data to disk.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -94,7 +143,7 @@ Members:
 * <code class="docutils literal notranslate"><span class="pre">has_den</span></code>: a boolean, indicates whether or not there is a denominator.</p>
 <dl class="py method">
 <dt id="get_census.assemble_data.VariableDef.calculate_var">
-<code class="sig-name descname"><span class="pre">calculate_var</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">year</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/assemble_data.html#VariableDef.calculate_var"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.assemble_data.VariableDef.calculate_var" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">calculate_var</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">year</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">county</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/assemble_data.html#VariableDef.calculate_var"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.assemble_data.VariableDef.calculate_var" title="Permalink to this definition">¶</a></dt>
 <dd><p>Query the required data from the census, then calculate the variable defined
 :param year: year of data to query
 :param geometry: census geometry to query
@@ -103,7 +152,7 @@ Members:
 
 <dl class="py method">
 <dt id="get_census.assemble_data.VariableDef.do_query">
-<code class="sig-name descname"><span class="pre">do_query</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">year</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/assemble_data.html#VariableDef.do_query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.assemble_data.VariableDef.do_query" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">do_query</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">year</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">county</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/assemble_data.html#VariableDef.do_query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.assemble_data.VariableDef.do_query" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run the query defined by the contained variables
 :param geometry: census geometry to query
 :param year: year of data to query
