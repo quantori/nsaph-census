@@ -6,17 +6,19 @@ import pandas as pd
 
 # Code for downloading the census data
 
-
-def get_census_data(year: int, variables: list, geography: str, dataset: str, sum_file: str = None, key: str = None):
+def get_census_data(year: int, variables: list, geography: str, dataset: str, sum_file: str = None, key: str = None,
+                    state: str = None, county: str = None):
     """
 
     :param year: Year of data that we are querying
-    :param variables: list of strings containing the variable names to request
-    :param geography: Geographic resolution we're querying at
+    :param variables: list of strings containing the census variable names to request
+    :param geography: Geographic resolution we're querying at (zcta, county, state)
     :param dataset: The census data set you want (dec, acs1, acs5, pums)
     :param sum_file: For the 2000 census, sf1 or sf3
     :param key: Your census API key. We recommend not passing it here and instead either setting
            the "GET_CENSUS_API_KEY" environmental variable or using the `set_api_key` function.
+    :param state: 2 digit FIPS code of the state you want to limit the query to (i.e. "06" for CA)
+    :param county: 3 digit FIPS code of the county you want to include. Requires state to be specified
     :return: a pandas DataFrame
     """
 
@@ -45,13 +47,23 @@ def get_census_data(year: int, variables: list, geography: str, dataset: str, su
     options = dict()
     options['get'] = prep_vars(variables)
     options['for'] = geography
+    if state is not None:
+        options['in'] = 'state:' + state
+        if county is not None:
+            options['in'] += '+county:' + county
     if key is not None:
         options['key'] = os.environ['GET_CENSUS_API_KEY']
 
     out = r.get(endpoint, params=options).json()
     out = pd.DataFrame(out[1:], columns=out[0])
 
-    out[variables] = out[variables].apply(pd.to_numeric)
+    ## handle conversion of variables to numeric
+    for var in variables:
+        try:
+            out[var] = out[var].apply(pd.to_numeric)
+        except ValueError:
+            print("Unable to convert variable " + var + " to Numeric array")
+
     out['year'] = year
 
     return out
@@ -100,7 +112,7 @@ def api_geography(geo: str):
     """
     geo = geo.lower()
 
-    assert geo in ["county", "state", "zcta"]
+    assert geo in ["county", "state", "zcta", "block group", "tract"]
 
     if geo == "zcta":
         return "zip code tabulation area"

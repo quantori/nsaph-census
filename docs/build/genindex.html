@@ -39,20 +39,25 @@
  | <a href="#D"><strong>D</strong></a>
  | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
+ | <a href="#I"><strong>I</strong></a>
+ | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#P"><strong>P</strong></a>
  | <a href="#S"><strong>S</strong></a>
  | <a href="#V"><strong>V</strong></a>
+ | <a href="#W"><strong>W</strong></a>
  | <a href="#Y"><strong>Y</strong></a>
  
 </div>
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="query.html#get_census.query.api_geography">api_geography() (in module get_census.query)</a>
+      <li><a href="assemble_data.html#get_census.assemble_data.DataPlan.add_geoid">add_geoid() (get_census.assemble_data.DataPlan method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="query.html#get_census.query.api_geography">api_geography() (in module get_census.query)</a>
+</li>
       <li><a href="assemble_data.html#get_census.assemble_data.DataPlan.assemble_data">assemble_data() (get_census.assemble_data.DataPlan method)</a>
 </li>
   </ul></td>
@@ -70,6 +75,8 @@
       <li><a href="query.html#get_census.query.choose_sum_file">choose_sum_file() (in module get_census.query)</a>
 </li>
       <li><a href="query.html#get_census.query.clean_acs_vars">clean_acs_vars() (in module get_census.query)</a>
+</li>
+      <li><a href="assemble_data.html#get_census.assemble_data.DataPlan.create_missingness">create_missingness() (get_census.assemble_data.DataPlan method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -112,14 +119,21 @@
 </li>
       </ul></li>
       <li>
+    get_census.data.load_data
+
+      <ul>
+        <li><a href="cached_data.html#module-get_census.data.load_data">module</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
     get_census.query
 
       <ul>
         <li><a href="query.html#module-get_census.query">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="query.html#get_census.query.get_census_data">get_census_data() (in module get_census.query)</a>
 </li>
       <li><a href="census_info.html#get_census.census_info.get_endpoint">get_endpoint() (in module get_census.census_info)</a>
@@ -129,6 +143,26 @@
       <li><a href="census_info.html#get_census.census_info.get_varlist">get_varlist() (in module get_census.census_info)</a>
 </li>
       <li><a href="assemble_data.html#get_census.assemble_data.VariableDef.get_vars">get_vars() (get_census.assemble_data.VariableDef method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="I">I</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="assemble_data.html#get_census.assemble_data.DataPlan.interpolate">interpolate() (get_census.assemble_data.DataPlan method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="L">L</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="cached_data.html#get_census.data.load_data.load_county_codes">load_county_codes() (in module get_census.data.load_data)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="cached_data.html#get_census.data.load_data.load_state_codes">load_state_codes() (in module get_census.data.load_data)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -143,6 +177,8 @@
         <li><a href="assemble_data.html#module-get_census.assemble_data">get_census.assemble_data</a>
 </li>
         <li><a href="census_info.html#module-get_census.census_info">get_census.census_info</a>
+</li>
+        <li><a href="cached_data.html#module-get_census.data.load_data">get_census.data.load_data</a>
 </li>
         <li><a href="query.html#module-get_census.query">get_census.query</a>
 </li>
@@ -170,6 +206,14 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="assemble_data.html#get_census.assemble_data.VariableDef">VariableDef (class in get_census.assemble_data)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="W">W</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="assemble_data.html#get_census.assemble_data.DataPlan.write_data">write_data() (get_census.assemble_data.DataPlan method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -205,6 +249,7 @@
 <li class="toctree-l1"><a class="reference internal" href="assemble_data.html">DataPlan: Main Class For Assembling a Census Plan</a></li>
 <li class="toctree-l1"><a class="reference internal" href="census_info.html">Census Metadata Functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="query.html">Functions for Requesting Data from the Census API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cached_data.html">Stored Data Files</a></li>
 </ul>
 
 <div class="relations">

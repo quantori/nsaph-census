@@ -33,8 +33,10 @@
   <h1>Source code for get_census.assemble_data</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">.census_info</span> <span class="kn">import</span> <span class="n">census_years</span>
 <span class="kn">from</span> <span class="nn">.query</span> <span class="kn">import</span> <span class="n">get_census_data</span><span class="p">,</span> <span class="n">clean_acs_vars</span>
+<span class="kn">from</span> <span class="nn">.data</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">import</span> <span class="nn">nsaph_utils</span>
 
 
 <div class="viewcode-block" id="DataPlan"><a class="viewcode-back" href="../../assemble_data.html#get_census.assemble_data.DataPlan">[docs]</a><span class="k">class</span> <span class="nc">DataPlan</span><span class="p">:</span>
@@ -45,6 +47,8 @@
 
 <span class="sd">    * ``geometry``: which census geography this plan is for</span>
 <span class="sd">    * ``years``: The ``list`` of years that the data should be queried for</span>
+<span class="sd">    * ``state``: 2 digit FIPS code of the state you want to limit the query to (i.e. &quot;06&quot; for CA)</span>
+<span class="sd">    * ``county``: 3 digit FIPS code of the county you want to include. Requires state to be specified</span>
 <span class="sd">    * ``plan``: A ``dict`` with keys of years, storing lists of ``VariableDef`` objects defining the variables to be</span>
 <span class="sd">      calculated for that year. Created from a yaml file. LINK TO YAML INSTRUCTIONS HERE</span>
 <span class="sd">    * ``data``: A pandas data frame created based on the defined data plan. only exists after the</span>
@@ -53,7 +57,8 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yaml_path</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">years</span><span class="o">=</span><span class="n">census_years</span><span class="p">()):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yaml_path</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">years</span><span class="o">=</span><span class="n">census_years</span><span class="p">(),</span> <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">county</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        initialize a DataPlan object from a get_census yaml document</span>
 <span class="sd">        :param yaml_path: path to a yaml file</span>
@@ -63,18 +68,21 @@
 <span class="sd">            5 year acs data. Note that this may not apply for the ACS1 or other data. That function may be</span>
 <span class="sd">            updated in the future, but for now creating lists of years besides the defaults is left as an exercise</span>
 <span class="sd">            for the interested reader.</span>
-
-
+<span class="sd">        :param state: 2 digit FIPS code of the state you want to limit the query to (i.e. &quot;06&quot; for CA)</span>
+<span class="sd">        :param county: 3 digit FIPS code of the county you want to include. Requires state to be specified</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="o">=</span> <span class="n">geometry</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">years</span> <span class="o">=</span> <span class="n">years</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">years</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">years</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">years</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">county</span> <span class="o">=</span> <span class="n">county</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">plan</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">yaml_to_dict</span><span class="p">(</span><span class="n">yaml_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__has_missing</span> <span class="o">=</span> <span class="kc">False</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
 
 <div class="viewcode-block" id="DataPlan.yaml_to_dict"><a class="viewcode-back" href="../../assemble_data.html#get_census.assemble_data.DataPlan.yaml_to_dict">[docs]</a>    <span class="k">def</span> <span class="nf">yaml_to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yaml_path</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -117,7 +125,7 @@
 
             <span class="k">for</span> <span class="n">var_def</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">plan</span><span class="p">[</span><span class="n">year</span><span class="p">]:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">var_def</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-                <span class="n">var_data</span> <span class="o">=</span> <span class="n">var_def</span><span class="o">.</span><span class="n">calculate_var</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">)</span>
+                <span class="n">var_data</span> <span class="o">=</span> <span class="n">var_def</span><span class="o">.</span><span class="n">calculate_var</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">county</span><span class="p">)</span>
                 <span class="n">join_vars</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">var_data</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">([</span><span class="n">var_def</span><span class="o">.</span><span class="n">name</span><span class="p">]))</span>
 
                 <span class="k">if</span> <span class="n">year_data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -133,6 +141,7 @@
 <div class="viewcode-block" id="DataPlan.get_var_names"><a class="viewcode-back" href="../../assemble_data.html#get_census.assemble_data.DataPlan.get_var_names">[docs]</a>    <span class="k">def</span> <span class="nf">get_var_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a list containing all the variable names that are created in the data plan</span>
+
 <span class="sd">        :return: List of strings</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -141,10 +150,79 @@
             <span class="k">for</span> <span class="n">var_def</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">plan</span><span class="p">[</span><span class="n">year</span><span class="p">]:</span>
                 <span class="n">out</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">()</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="p">[</span><span class="n">var_def</span><span class="o">.</span><span class="n">name</span><span class="p">]))</span>
 
-        <span class="k">return</span> <span class="n">out</span></div></div>
+        <span class="k">return</span> <span class="n">out</span></div>
 
+<div class="viewcode-block" id="DataPlan.add_geoid"><a class="viewcode-back" href="../../assemble_data.html#get_census.assemble_data.DataPlan.add_geoid">[docs]</a>    <span class="k">def</span> <span class="nf">add_geoid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        add a single column named &#39;geoid&#39; to self.data combining all portions of a data sets geographical identifiers</span>
 
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># handle known cases, then try a naive method</span>
 
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="o">==</span> <span class="s2">&quot;county&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;geoid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;state&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;county&#39;</span><span class="p">]</span>
+            <span class="k">return</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="o">==</span> <span class="s2">&quot;tract&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;geoid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;state&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;county&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tract&#39;</span><span class="p">]</span>
+            <span class="k">return</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="o">==</span> <span class="s2">&quot;block group&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;geoid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;state&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;county&#39;</span><span class="p">]</span> <span class="o">+</span> \
+                                 <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tract&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;block group&#39;</span><span class="p">]</span>
+            <span class="k">return</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">geo_vars</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_var_names</span><span class="p">()</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]))</span>
+
+            <span class="c1"># assume that all geo_vars are string columns (should be the case with census data)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;geoid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="k">for</span> <span class="n">geo_var</span> <span class="ow">in</span> <span class="n">geo_vars</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;geoid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;geoid&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">geo_var</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="DataPlan.create_missingness"><a class="viewcode-back" href="../../assemble_data.html#get_census.assemble_data.DataPlan.create_missingness">[docs]</a>    <span class="k">def</span> <span class="nf">create_missingness</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a row for all combinations of geospatial ID and year</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__has_missing</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Missing values already created.&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="s2">&quot;geoid&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_geoid</span><span class="p">()</span>
+
+        <span class="n">all_vals</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">year</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">year</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                                 <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">geoid</span><span class="o">.</span><span class="n">unique</span><span class="p">()],</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;geoid&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">all_vals</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;geoid&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__has_missing</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="DataPlan.write_data"><a class="viewcode-back" href="../../assemble_data.html#get_census.assemble_data.DataPlan.write_data">[docs]</a>    <span class="k">def</span> <span class="nf">write_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">file_type</span> <span class="o">=</span> <span class="s2">&quot;csv&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write data  out to a file. Default method is to write out to csv. new methods can be implemented in the future.</span>
+
+<span class="sd">        :param path: Path to write the data to</span>
+<span class="sd">        :param file_type: Method to output data, currently only implemented for csv files</span>
+<span class="sd">        :return: None, writes data to disk.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">file_type</span> <span class="o">==</span> <span class="s2">&quot;csv&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No Method currently implemented for that file type&quot;</span><span class="p">)</span>
+            <span class="k">return</span></div>
+
+<div class="viewcode-block" id="DataPlan.interpolate"><a class="viewcode-back" href="../../assemble_data.html#get_census.assemble_data.DataPlan.interpolate">[docs]</a>    <span class="k">def</span> <span class="nf">interpolate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;ma&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Fill in values</span>
+<span class="sd">        :param method:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">nsaph_utils</span><span class="o">.</span><span class="n">interpolation</span><span class="o">.</span><span class="n">IMPLEMENTED_METHODS</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__has_missing</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">create_missingness</span><span class="p">()</span>
+
+        <span class="n">nsaph_utils</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_var_names</span><span class="p">(),</span> <span class="n">method</span><span class="p">,</span> <span class="s2">&quot;year&quot;</span><span class="p">,</span> <span class="s2">&quot;geoid&quot;</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="VariableDef"><a class="viewcode-back" href="../../assemble_data.html#get_census.assemble_data.VariableDef">[docs]</a><span class="k">class</span> <span class="nc">VariableDef</span><span class="p">:</span>
@@ -192,7 +270,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">()</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">den</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="VariableDef.do_query"><a class="viewcode-back" href="../../assemble_data.html#get_census.assemble_data.VariableDef.do_query">[docs]</a>    <span class="k">def</span> <span class="nf">do_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">year</span><span class="p">,</span> <span class="n">geometry</span><span class="p">):</span>
+<div class="viewcode-block" id="VariableDef.do_query"><a class="viewcode-back" href="../../assemble_data.html#get_census.assemble_data.VariableDef.do_query">[docs]</a>    <span class="k">def</span> <span class="nf">do_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">year</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">county</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Run the query defined by the contained variables</span>
 <span class="sd">        :param geometry: census geometry to query</span>
@@ -201,10 +279,62 @@
 
 
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">geometry</span> <span class="o">==</span> <span class="s2">&quot;tract&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_query_tract</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">county</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">geometry</span> <span class="o">==</span> <span class="s2">&quot;block group&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_query_block_group</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">county</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">get_census_data</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_vars</span><span class="p">(),</span> <span class="n">geometry</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">get_census_data</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_vars</span><span class="p">(),</span> <span class="n">geometry</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">,</span> <span class="n">county</span><span class="o">=</span><span class="n">county</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="VariableDef.calculate_var"><a class="viewcode-back" href="../../assemble_data.html#get_census.assemble_data.VariableDef.calculate_var">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">year</span><span class="p">,</span> <span class="n">geometry</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_do_query_tract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">year</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">county</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># If state is specified, pull for just that state</span>
+        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">get_census_data</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_vars</span><span class="p">(),</span> <span class="n">geometry</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">,</span> <span class="n">county</span><span class="o">=</span><span class="n">county</span><span class="p">)</span>
+
+        <span class="c1"># Otherwise loop over all states</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">state_codes</span> <span class="o">=</span> <span class="n">load_state_codes</span><span class="p">()</span>
+        <span class="n">num_queries</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">state_codes</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+            <span class="n">num_queries</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Running query&quot;</span><span class="p">,</span> <span class="n">num_queries</span><span class="p">,</span> <span class="s2">&quot;of&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">state_codes</span><span class="o">.</span><span class="n">index</span><span class="p">),</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\r</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">state_data</span> <span class="o">=</span> <span class="n">get_census_data</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_vars</span><span class="p">(),</span> <span class="n">geometry</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;state&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">out</span> <span class="o">=</span> <span class="n">state_data</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">state_data</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">out</span>
+
+
+    <span class="k">def</span> <span class="nf">_do_query_block_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">year</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">county</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># if state and county are specified</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">county_codes</span> <span class="o">=</span> <span class="n">load_county_codes</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">county</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">get_census_data</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_vars</span><span class="p">(),</span> <span class="n">geometry</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">,</span> <span class="n">county</span><span class="o">=</span><span class="n">county</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># iterate over all counties in the state</span>
+                <span class="n">county_codes</span> <span class="o">=</span> <span class="n">county_codes</span><span class="p">[</span><span class="n">county_codes</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">state</span><span class="p">]</span>
+
+        <span class="c1"># iterate over all counties and states</span>
+        <span class="n">num_queries</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">county_codes</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+            <span class="n">num_queries</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Running query&quot;</span><span class="p">,</span> <span class="n">num_queries</span><span class="p">,</span> <span class="s2">&quot;of&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">county_codes</span><span class="o">.</span><span class="n">index</span><span class="p">),</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\r</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">county_data</span> <span class="o">=</span> <span class="n">get_census_data</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_vars</span><span class="p">(),</span> <span class="n">geometry</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;state&#39;</span><span class="p">],</span> <span class="n">county</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;county&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">out</span> <span class="o">=</span> <span class="n">county_data</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">county_data</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">out</span>
+
+
+<div class="viewcode-block" id="VariableDef.calculate_var"><a class="viewcode-back" href="../../assemble_data.html#get_census.assemble_data.VariableDef.calculate_var">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">year</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">county</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Query the required data from the census, then calculate the variable defined</span>
 <span class="sd">        :param year: year of data to query</span>
@@ -214,7 +344,7 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_query</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">geometry</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_query</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">county</span><span class="p">)</span>
 
         <span class="c1"># calculate numerator</span>
         <span class="n">data</span><span class="p">[</span><span class="s1">&#39;num&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
