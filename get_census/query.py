@@ -6,6 +6,8 @@ import pandas as pd
 
 # Code for downloading the census data
 
+SUPPORTED_GEOMETRIES = ["county", "state", "zcta", "block group", "tract"]
+
 def get_census_data(year: int, variables: list, geography: str, dataset: str, sum_file: str = None, key: str = None,
                     state: str = None, county: str = None):
     """
@@ -112,7 +114,7 @@ def api_geography(geo: str):
     """
     geo = geo.lower()
 
-    assert geo in ["county", "state", "zcta", "block group", "tract"]
+    assert geo in SUPPORTED_GEOMETRIES
 
     if geo == "zcta":
         return "zip code tabulation area"
