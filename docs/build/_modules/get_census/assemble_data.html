@@ -178,11 +178,17 @@
             <span class="k">for</span> <span class="n">geo_var</span> <span class="ow">in</span> <span class="n">geo_vars</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;geoid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;geoid&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">geo_var</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="DataPlan.create_missingness"><a class="viewcode-back" href="../../assemble_data.html#get_census.assemble_data.DataPlan.create_missingness">[docs]</a>    <span class="k">def</span> <span class="nf">create_missingness</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="DataPlan.create_missingness"><a class="viewcode-back" href="../../assemble_data.html#get_census.assemble_data.DataPlan.create_missingness">[docs]</a>    <span class="k">def</span> <span class="nf">create_missingness</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_year</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a row for all combinations of geospatial ID and year</span>
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">min_year</span><span class="p">:</span>
+            <span class="n">min_year</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">years</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">max_year</span><span class="p">:</span>
+            <span class="n">max_year</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">years</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__has_missing</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Missing values already created.&quot;</span><span class="p">)</span>
             <span class="k">return</span>
@@ -190,7 +196,7 @@
         <span class="k">if</span> <span class="s2">&quot;geoid&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_geoid</span><span class="p">()</span>
 
-        <span class="n">all_vals</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">year</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">year</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">all_vals</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">min_year</span><span class="p">,</span> <span class="n">max_year</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
                                  <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">geoid</span><span class="o">.</span><span class="n">unique</span><span class="p">()],</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;geoid&#39;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">all_vals</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;geoid&#39;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__has_missing</span> <span class="o">=</span> <span class="kc">True</span></div>
@@ -211,16 +217,24 @@
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No Method currently implemented for that file type&quot;</span><span class="p">)</span>
             <span class="k">return</span></div>
 
-<div class="viewcode-block" id="DataPlan.interpolate"><a class="viewcode-back" href="../../assemble_data.html#get_census.assemble_data.DataPlan.interpolate">[docs]</a>    <span class="k">def</span> <span class="nf">interpolate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;ma&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="DataPlan.interpolate"><a class="viewcode-back" href="../../assemble_data.html#get_census.assemble_data.DataPlan.interpolate">[docs]</a>    <span class="k">def</span> <span class="nf">interpolate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;ma&quot;</span><span class="p">,</span> <span class="n">min_year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_year</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Fill in values</span>
-<span class="sd">        :param method:</span>
+<span class="sd">        :param method: Interpolation method to use</span>
+<span class="sd">        :param min_year: Minimum year to interpolate</span>
+<span class="sd">        :param max_year: Maximum year to interpolate</span>
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">nsaph_utils</span><span class="o">.</span><span class="n">interpolation</span><span class="o">.</span><span class="n">IMPLEMENTED_METHODS</span>
 
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">min_year</span><span class="p">:</span>
+            <span class="n">min_year</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">years</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">max_year</span><span class="p">:</span>
+            <span class="n">max_year</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">years</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__has_missing</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">create_missingness</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">create_missingness</span><span class="p">(</span><span class="n">min_year</span><span class="p">,</span> <span class="n">max_year</span><span class="p">)</span>
 
         <span class="n">nsaph_utils</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_var_names</span><span class="p">(),</span> <span class="n">method</span><span class="p">,</span> <span class="s2">&quot;year&quot;</span><span class="p">,</span> <span class="s2">&quot;geoid&quot;</span><span class="p">)</span></div></div>
 
@@ -425,6 +439,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../assemble_data.html">DataPlan: Main Class For Assembling a Census Plan</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../census_info.html">Census Metadata Functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../query.html">Functions for Requesting Data from the Census API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cached_data.html">Stored Data Files</a></li>
 </ul>
 
 <div class="relations">

@@ -145,11 +145,17 @@ class DataPlan:
             for geo_var in geo_vars:
                 self.data['geoid'] = self.data['geoid'] + self.data[geo_var]
 
-    def create_missingness(self):
+    def create_missingness(self, min_year=None, max_year=None):
         """
         Create a row for all combinations of geospatial ID and year
         :return:
         """
+        if not min_year:
+            min_year = min(self.years)
+
+        if not max_year:
+            max_year = max(self.years)
+
         if self.__has_missing:
             print("Missing values already created.")
             return
@@ -157,7 +163,7 @@ class DataPlan:
         if "geoid" not in self.data.columns:
             self.add_geoid()
 
-        all_vals = pd.DataFrame([[x, y] for x in range(min(self.data.year), max(self.data.year) + 1)
+        all_vals = pd.DataFrame([[x, y] for x in range(min_year, max_year + 1)
                                  for y in self.data.geoid.unique()], columns=['year', 'geoid'])
         self.data = pd.merge(all_vals, self.data, how="left", on=['year', 'geoid'])
         self.__has_missing = True
@@ -178,16 +184,24 @@ class DataPlan:
             print("No Method currently implemented for that file type")
             return
 
-    def interpolate(self, method="ma"):
+    def interpolate(self, method="ma", min_year=None, max_year=None):
         """
         Fill in values
-        :param method:
+        :param method: Interpolation method to use
+        :param min_year: Minimum year to interpolate
+        :param max_year: Maximum year to interpolate
         :return:
         """
         assert method in nsaph_utils.interpolation.IMPLEMENTED_METHODS
 
+        if not min_year:
+            min_year = min(self.years)
+
+        if not max_year:
+            max_year = max(self.years)
+
         if not self.__has_missing:
-            self.create_missingness()
+            self.create_missingness(min_year, max_year)
 
         nsaph_utils.interpolate(self.data, self.get_var_names(), method, "year", "geoid")
 
