@@ -73,7 +73,7 @@ calculated for that year. Created from a yaml file. LINK TO YAML INSTRUCTIONS HE
 
 <dl class="py method">
 <dt id="get_census.assemble_data.DataPlan.create_missingness">
-<code class="sig-name descname"><span class="pre">create_missingness</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/assemble_data.html#DataPlan.create_missingness"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.assemble_data.DataPlan.create_missingness" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">create_missingness</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_year</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_year</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/assemble_data.html#DataPlan.create_missingness"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.assemble_data.DataPlan.create_missingness" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a row for all combinations of geospatial ID and year
 :return:</p>
 </dd></dl>
@@ -91,9 +91,11 @@ calculated for that year. Created from a yaml file. LINK TO YAML INSTRUCTIONS HE
 
 <dl class="py method">
 <dt id="get_census.assemble_data.DataPlan.interpolate">
-<code class="sig-name descname"><span class="pre">interpolate</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ma'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/assemble_data.html#DataPlan.interpolate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.assemble_data.DataPlan.interpolate" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">interpolate</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ma'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_year</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_year</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/assemble_data.html#DataPlan.interpolate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.assemble_data.DataPlan.interpolate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fill in values
-:param method:
+:param method: Interpolation method to use
+:param min_year: Minimum year to interpolate
+:param max_year: Maximum year to interpolate
 :return:</p>
 </dd></dl>
 
@@ -205,6 +207,7 @@ year in the list greater or equal to the year
 <li class="toctree-l1 current"><a class="current reference internal" href="#">DataPlan: Main Class For Assembling a Census Plan</a></li>
 <li class="toctree-l1"><a class="reference internal" href="census_info.html">Census Metadata Functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="query.html">Functions for Requesting Data from the Census API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cached_data.html">Stored Data Files</a></li>
 </ul>
 
 <div class="relations">
