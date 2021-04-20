@@ -1,11 +1,11 @@
 """
 Command Line Interface for the get_census python package
 """
-import sys
 from .query import SUPPORTED_GEOMETRIES
 from .census_info import census_years
 from .assemble_data import DataPlan
 from nsaph_utils.utils.context import Context, Argument, Cardinality
+
 
 class CensusContext(Context):
     """
