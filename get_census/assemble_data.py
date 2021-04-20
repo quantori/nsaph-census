@@ -24,6 +24,8 @@ class DataPlan:
 
     """
 
+    supported_out_formats = ["csv"]
+
 
     def __init__(self, yaml_path, geometry, years=census_years(), state=None, county=None):
         """
