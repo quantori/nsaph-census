@@ -32,7 +32,8 @@ class CensusContext(Context):
                        help="3 digit FIPS code of the county you want to include. Requires state to be specified",
                        cardinality=Cardinality.single,
                        default=None,
-                       required=False)
+                       required=False
+                       )
     _interpolate = Argument("interpolate",
                             help="""Years to interpolate for. Takes min year + max year formatted 
                             as <min_year>:<max_year>. Enter 'x' to skip interpolation""",
@@ -50,6 +51,22 @@ class CensusContext(Context):
                            default="csv",
                            cardinality=Cardinality.single,
                            valid_values=DataPlan.supported_out_formats)
+    _years = Argument("years",
+                      aliases=["y"],
+                      help="""
+                      Year or list of years to download. For example, 
+                      the following argument: 
+                      `-y 1992:1995 1998 1999 2011 2015:2017` will produce 
+                      the following list: 
+                      [1992,1993,1994,1995,1998,1999,2011,2015,2016,2017]
+                      
+                      Note that in the get_census module CLI, only the minimum and maximum year passed are used
+                      and are passed to get_census.census_years() to ensure that only years that are available are used.
+                      Additional variable level year control is determined by the variable specification yaml file. 
+                      """,
+                      cardinality=Cardinality.multiple,
+                      default="2000:2019"
+                      )
 
     def __init__(self, doc=None):
         self.var_file = None
