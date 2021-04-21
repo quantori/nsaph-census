@@ -3,6 +3,8 @@ from .query import get_census_data, clean_acs_vars, prep_vars, api_geography
 from .assemble_data import VariableDef, DataPlan
 from .data import load_county_codes, load_state_codes
 from .cli import census_cli
+from .tigerweb import get_area
+
 
 __version__ = "0.1"
 
