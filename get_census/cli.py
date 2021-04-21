@@ -28,6 +28,15 @@ class CensusContext(Context):
                       default=None,
                       required=False
                       )
+    _densities = Argument("densities",
+                          aliases=['d'],
+                          help="""Names of variables to calculate denisity per square mile for. If ommitted, 
+                              density calculation will be skipped. To calculate population density, assuming
+                              population is stored in a variable named 'population', the option would be specified
+                              -d population""",
+                          cardinality=Cardinality.multiple,
+                          default=None,
+                          required=False)
     _county = Argument("county",
                        help="3 digit FIPS code of the county you want to include. Requires state to be specified",
                        cardinality=Cardinality.single,
@@ -73,6 +82,7 @@ class CensusContext(Context):
         self.geometry = None
         self.state = None
         self.county = None
+        self.densities = None
         self.interpolate = None
         self.out_file = None
         self.out_format = None
@@ -105,5 +115,8 @@ def census_cli():
 
     if context.interpolate:
         census.interpolate(min_year=context.interpolate["min"], max_year=context.interpolate["max"])
+
+    if context.densities:
+        census.calculate_densities(context.densities)
 
     census.write_data(context.out_file, file_type=context.out_format)

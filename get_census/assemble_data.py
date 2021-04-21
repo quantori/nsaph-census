@@ -1,6 +1,7 @@
 from .census_info import census_years
 from .query import get_census_data, clean_acs_vars
 from .data import *
+from .tigerweb import get_area
 import pandas as pd
 import yaml
 import nsaph_utils
@@ -186,6 +187,30 @@ class DataPlan:
             print("No Method currently implemented for that file type")
             return
 
+    def calculate_densities(self, variables=["population"], sq_mi = True):
+        """
+        Divide specified variables by area
+        :param variables: List of variables to calculate densities for
+        :param sq_mi: Should denisties be calculated per square mile? If false, calculated per square meter
+        :return: None
+        """
+        if self.geometry == "block group":
+            print("No support currently added for block group densities, skipping step")
+            return
+
+        if "geoid" not in self.data.columns:
+            self.add_geoid()
+
+        areas = get_area(self.geometry, sq_mi)
+        self.data = pd.merge(self.data, areas, how="left", on="geoid")
+
+        for variable in variables:
+            new_varname = variable + "_density"
+            self.data[new_varname] = self.data[variable]/self.data['arealand']
+
+        self.data.drop(columns='arealand', inplace=True)
+
+
     def interpolate(self, method="ma", min_year=None, max_year=None):
         """
         Fill in values
@@ -315,7 +340,6 @@ class VariableDef:
                 out = out.append(county_data, ignore_index=True)
         print()
         return out
-
 
     def calculate_var(self, year, geometry, state=None, county=None):
         """
