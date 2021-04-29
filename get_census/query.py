@@ -56,7 +56,9 @@ def get_census_data(year: int, variables: list, geography: str, dataset: str, su
     if key is not None:
         options['key'] = os.environ['GET_CENSUS_API_KEY']
 
-    out = r.get(endpoint, params=options).json()
+    out = r.get(endpoint, params=options)
+    out.raise_for_status()
+    out = out.json()
     out = pd.DataFrame(out[1:], columns=out[0])
 
     ## handle conversion of variables to numeric
