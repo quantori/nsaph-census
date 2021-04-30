@@ -72,6 +72,15 @@ calculated for that year. Created from a yaml file. LINK TO YAML INSTRUCTIONS HE
 </dd></dl>
 
 <dl class="py method">
+<dt id="get_census.assemble_data.DataPlan.calculate_densities">
+<code class="sig-name descname"><span class="pre">calculate_densities</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['p',</span> <span class="pre">'o',</span> <span class="pre">'p',</span> <span class="pre">'u',</span> <span class="pre">'l',</span> <span class="pre">'a',</span> <span class="pre">'t',</span> <span class="pre">'i',</span> <span class="pre">'o',</span> <span class="pre">'n']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sq_mi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/assemble_data.html#DataPlan.calculate_densities"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.assemble_data.DataPlan.calculate_densities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Divide specified variables by area
+:param variables: List of variables to calculate densities for
+:param sq_mi: Should denisties be calculated per square mile? If false, calculated per square meter
+:return: None</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="get_census.assemble_data.DataPlan.create_missingness">
 <code class="sig-name descname"><span class="pre">create_missingness</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_year</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_year</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/assemble_data.html#DataPlan.create_missingness"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.assemble_data.DataPlan.create_missingness" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a row for all combinations of geospatial ID and year
@@ -149,6 +158,8 @@ Members:
 <dd><p>Query the required data from the census, then calculate the variable defined
 :param year: year of data to query
 :param geometry: census geometry to query
+:param state: 2 Digit Fips code of state to limit the query to
+:param county: 3 Digit county code to limit the query to, must be used with state
 :return: a data frame with one column of the calcualted variable and the census geography columns</p>
 </dd></dl>
 
@@ -158,6 +169,8 @@ Members:
 <dd><p>Run the query defined by the contained variables
 :param geometry: census geometry to query
 :param year: year of data to query
+:param state: 2 Digit Fips code of state to limit the query to
+:param county: 3 Digit county code to limit the query to, must be used with state
 :return: data frame of all census variables specified by the query</p>
 </dd></dl>
 
@@ -208,6 +221,7 @@ year in the list greater or equal to the year
 <li class="toctree-l1"><a class="reference internal" href="census_info.html">Census Metadata Functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="query.html">Functions for Requesting Data from the Census API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cached_data.html">Stored Data Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tigerweb.html">Query Area and Download Shapefiles</a></li>
 </ul>
 
 <div class="relations">

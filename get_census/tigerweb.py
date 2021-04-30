@@ -14,7 +14,7 @@ GEOMETRY_CODES = {"zcta": 2,
                   "county": 86}
 
 TIGER_NAMES = {
-    "zcta" : "ZCTA5",
+    "zcta": "ZCTA5",
     "tract": "TRACT",
     "county": "COUNTY",
     "state": "STATE",
@@ -23,6 +23,9 @@ TIGER_NAMES = {
 
 
 class BBox:
+    """
+    Internal class defining a simple bounding box
+    """
 
     def __init__(self, xmin=-1.96724487545E7, ymin=-1678452.6019, xmax=1.62682738027E7, ymax=1.15436424852E7):
         self.xmin = xmin
@@ -36,9 +39,10 @@ class BBox:
     def subdivide(self, factor=2):
         """
         Create list of BBox objects that break up the axes of the parent obejct by `factor`. I.e. A factor of
-        2 will create 4 child BBoc objects
-        :param factor: Factor so subdivide by
-        :return:
+        :math:`n` will create :math:`n^2` child BBox objects
+
+        :param factor: Factor to subdivide by
+        :return: List of sub-boxes
         """
         xdiff = (self.xmax - self.xmin)/factor
         ydiff = (self.ymax - self.ymin)/factor
@@ -57,7 +61,8 @@ class BBox:
 
 def tigerweb_endpoint(geometry):
     """
-    Get the API endpoint for making
+    Get the API endpoint for making queries to the census tigerweb
+
     :param geometry: type of census geometry to use
     :return: string of rest API URL endpoint
     """
@@ -68,7 +73,8 @@ def tigerweb_endpoint(geometry):
     return out
 
 
-def tigerweb_params(attributes=["GEOID"], split_factor: int=None):
+# noinspection PyDefaultArgument
+def tigerweb_params(attributes=["GEOID"], split_factor: int = None):
     """
     Create a list of  dictionaries of the necessary parameters to query the census tigerweb API. Returns
     a list to enable combining of queries that return sets larger than the maximum number of objects
@@ -111,6 +117,7 @@ def get_area(geometry, sq_mi=True):
     """
     Create a data frame of Census GEOIDs and Area. Due to the Tigerweb API's limiting of
     the number of features per query to 100,000, block groups aren't currently supported through this wrapper.
+
     :param geometry: type of census geometry to use
     :param sq_mi:  Should areas be converted to square miles?
     :return: pandas data frame
@@ -153,6 +160,7 @@ def tiger_line_url(geometry, year):
     """
     Return URL (or URLs) of zip file(s) containing shape files
     for a given census geography
+
     :param geometry: name of census geometry to download
     :param year: year of geometry to download
     :return: List of URLs
@@ -160,7 +168,7 @@ def tiger_line_url(geometry, year):
     base = "https://www2.census.gov/geo/tiger/"
 
     if geometry == "zcta" and year == 2011:
-        return tiger_line_url("zcta", 2010) # No ZCTAs listed in 2011 (for some reason)
+        return tiger_line_url("zcta", 2010)  # No ZCTAs listed in 2011 (for some reason)
 
     if year >= 2010:
         base += "TIGER" + str(year) + "/"
@@ -173,7 +181,7 @@ def tiger_line_url(geometry, year):
 
     out = []
 
-    ## Define file stem for each geometry
+    # Define file stem for each geometry
     if geometry == "zcta":
         if year == 2000:
             base += "tl_2010_us_zcta500.zip"
@@ -230,7 +238,7 @@ def tiger_line_url(geometry, year):
 
 
 def download_file(url, out_dir):
-    local_filename =  out_dir + "/" + url.split('/')[-1]
+    local_filename = out_dir + "/" + url.split('/')[-1]
     # NOTE the stream=True parameter below
     with r.get(url, stream=True) as result:
         result.raise_for_status()
@@ -245,10 +253,12 @@ def download_file(url, out_dir):
 def download_geometry(geometry, year=2019, out_dir="."):
     """
     Get spatial information for a census geometry in geojson format and save it to disk
+
     :param geometry: type of census geometry to use
+    :param year: Year to get geometry for
     :param out_dir: Directory to save downloaded files in. Note that due to requiring multiple
       downloads, tract and block group downloads will create a directory if no out_dir is defined.
-    :return:
+    :return: None, downloads files only
     """
 
     if geometry == "tract" and out_dir == ".":

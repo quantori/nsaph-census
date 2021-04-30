@@ -39,6 +39,9 @@
 
 <span class="c1"># Code for downloading the census data</span>
 
+<span class="n">SUPPORTED_GEOMETRIES</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;county&quot;</span><span class="p">,</span> <span class="s2">&quot;state&quot;</span><span class="p">,</span> <span class="s2">&quot;zcta&quot;</span><span class="p">,</span> <span class="s2">&quot;block group&quot;</span><span class="p">,</span> <span class="s2">&quot;tract&quot;</span><span class="p">]</span>
+
+
 <div class="viewcode-block" id="get_census_data"><a class="viewcode-back" href="../../query.html#get_census.query.get_census_data">[docs]</a><span class="k">def</span> <span class="nf">get_census_data</span><span class="p">(</span><span class="n">year</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">variables</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">geography</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">sum_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                     <span class="n">state</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">county</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -87,10 +90,12 @@
     <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">options</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;GET_CENSUS_API_KEY&#39;</span><span class="p">]</span>
 
-    <span class="n">out</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">endpoint</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">options</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">endpoint</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">options</span><span class="p">)</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="n">out</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">columns</span><span class="o">=</span><span class="n">out</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
-    <span class="c1">## handle conversion of variables to numeric</span>
+    <span class="c1"># handle conversion of variables to numeric</span>
     <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">out</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="n">out</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">)</span>
@@ -145,7 +150,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">geo</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
-    <span class="k">assert</span> <span class="n">geo</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;county&quot;</span><span class="p">,</span> <span class="s2">&quot;state&quot;</span><span class="p">,</span> <span class="s2">&quot;zcta&quot;</span><span class="p">,</span> <span class="s2">&quot;block group&quot;</span><span class="p">,</span> <span class="s2">&quot;tract&quot;</span><span class="p">]</span>
+    <span class="k">assert</span> <span class="n">geo</span> <span class="ow">in</span> <span class="n">SUPPORTED_GEOMETRIES</span>
 
     <span class="k">if</span> <span class="n">geo</span> <span class="o">==</span> <span class="s2">&quot;zcta&quot;</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;zip code tabulation area&quot;</span>

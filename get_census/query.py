@@ -8,6 +8,7 @@ import pandas as pd
 
 SUPPORTED_GEOMETRIES = ["county", "state", "zcta", "block group", "tract"]
 
+
 def get_census_data(year: int, variables: list, geography: str, dataset: str, sum_file: str = None, key: str = None,
                     state: str = None, county: str = None):
     """
@@ -61,7 +62,7 @@ def get_census_data(year: int, variables: list, geography: str, dataset: str, su
     out = out.json()
     out = pd.DataFrame(out[1:], columns=out[0])
 
-    ## handle conversion of variables to numeric
+    # handle conversion of variables to numeric
     for var in variables:
         try:
             out[var] = out[var].apply(pd.to_numeric)

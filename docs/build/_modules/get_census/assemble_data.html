@@ -34,6 +34,7 @@
 <span></span><span class="kn">from</span> <span class="nn">.census_info</span> <span class="kn">import</span> <span class="n">census_years</span>
 <span class="kn">from</span> <span class="nn">.query</span> <span class="kn">import</span> <span class="n">get_census_data</span><span class="p">,</span> <span class="n">clean_acs_vars</span>
 <span class="kn">from</span> <span class="nn">.data</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.tigerweb</span> <span class="kn">import</span> <span class="n">get_area</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">yaml</span>
 <span class="kn">import</span> <span class="nn">nsaph_utils</span>
@@ -57,6 +58,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="n">supported_out_formats</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;csv&quot;</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yaml_path</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">years</span><span class="o">=</span><span class="n">census_years</span><span class="p">(),</span> <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">county</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -201,7 +203,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">all_vals</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;geoid&#39;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__has_missing</span> <span class="o">=</span> <span class="kc">True</span></div>
 
-<div class="viewcode-block" id="DataPlan.write_data"><a class="viewcode-back" href="../../assemble_data.html#get_census.assemble_data.DataPlan.write_data">[docs]</a>    <span class="k">def</span> <span class="nf">write_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">file_type</span> <span class="o">=</span> <span class="s2">&quot;csv&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="DataPlan.write_data"><a class="viewcode-back" href="../../assemble_data.html#get_census.assemble_data.DataPlan.write_data">[docs]</a>    <span class="k">def</span> <span class="nf">write_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">file_type</span><span class="o">=</span><span class="s2">&quot;csv&quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Write data  out to a file. Default method is to write out to csv. new methods can be implemented in the future.</span>
 
@@ -216,6 +218,30 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No Method currently implemented for that file type&quot;</span><span class="p">)</span>
             <span class="k">return</span></div>
+
+    <span class="c1"># noinspection PyDefaultArgument</span>
+<div class="viewcode-block" id="DataPlan.calculate_densities"><a class="viewcode-back" href="../../assemble_data.html#get_census.assemble_data.DataPlan.calculate_densities">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_densities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="s2">&quot;population&quot;</span><span class="p">),</span> <span class="n">sq_mi</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Divide specified variables by area</span>
+<span class="sd">        :param variables: List of variables to calculate densities for</span>
+<span class="sd">        :param sq_mi: Should denisties be calculated per square mile? If false, calculated per square meter</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="o">==</span> <span class="s2">&quot;block group&quot;</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No support currently added for block group densities, skipping step&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="s2">&quot;geoid&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_geoid</span><span class="p">()</span>
+
+        <span class="n">areas</span> <span class="o">=</span> <span class="n">get_area</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span> <span class="n">sq_mi</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">areas</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s2">&quot;geoid&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">variable</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">:</span>
+            <span class="n">new_varname</span> <span class="o">=</span> <span class="n">variable</span> <span class="o">+</span> <span class="s2">&quot;_density&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">new_varname</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;arealand&#39;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="s1">&#39;arealand&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="DataPlan.interpolate"><a class="viewcode-back" href="../../assemble_data.html#get_census.assemble_data.DataPlan.interpolate">[docs]</a>    <span class="k">def</span> <span class="nf">interpolate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;ma&quot;</span><span class="p">,</span> <span class="n">min_year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_year</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -289,6 +315,8 @@
 <span class="sd">        Run the query defined by the contained variables</span>
 <span class="sd">        :param geometry: census geometry to query</span>
 <span class="sd">        :param year: year of data to query</span>
+<span class="sd">        :param state: 2 Digit Fips code of state to limit the query to</span>
+<span class="sd">        :param county: 3 Digit county code to limit the query to, must be used with state</span>
 <span class="sd">        :return: data frame of all census variables specified by the query</span>
 
 
@@ -320,7 +348,6 @@
         <span class="nb">print</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">out</span>
 
-
     <span class="k">def</span> <span class="nf">_do_query_block_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">year</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">county</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="c1"># if state and county are specified</span>
         <span class="n">out</span> <span class="o">=</span> <span class="kc">None</span>
@@ -347,12 +374,13 @@
         <span class="nb">print</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">out</span>
 
-
 <div class="viewcode-block" id="VariableDef.calculate_var"><a class="viewcode-back" href="../../assemble_data.html#get_census.assemble_data.VariableDef.calculate_var">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">year</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">county</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Query the required data from the census, then calculate the variable defined</span>
 <span class="sd">        :param year: year of data to query</span>
 <span class="sd">        :param geometry: census geometry to query</span>
+<span class="sd">        :param state: 2 Digit Fips code of state to limit the query to</span>
+<span class="sd">        :param county: 3 Digit county code to limit the query to, must be used with state</span>
 <span class="sd">        :return: a data frame with one column of the calcualted variable and the census geography columns</span>
 
 

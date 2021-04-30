@@ -27,7 +27,6 @@ class DataPlan:
 
     supported_out_formats = ["csv"]
 
-
     def __init__(self, yaml_path, geometry, years=census_years(), state=None, county=None):
         """
         initialize a DataPlan object from a get_census yaml document
@@ -171,7 +170,7 @@ class DataPlan:
         self.data = pd.merge(all_vals, self.data, how="left", on=['year', 'geoid'])
         self.__has_missing = True
 
-    def write_data(self, path, file_type = "csv"):
+    def write_data(self, path, file_type="csv"):
         """
         Write data  out to a file. Default method is to write out to csv. new methods can be implemented in the future.
 
@@ -187,7 +186,8 @@ class DataPlan:
             print("No Method currently implemented for that file type")
             return
 
-    def calculate_densities(self, variables=["population"], sq_mi = True):
+    # noinspection PyDefaultArgument
+    def calculate_densities(self, variables=list("population"), sq_mi=True):
         """
         Divide specified variables by area
         :param variables: List of variables to calculate densities for
@@ -206,10 +206,9 @@ class DataPlan:
 
         for variable in variables:
             new_varname = variable + "_density"
-            self.data[new_varname] = self.data[variable]/self.data['arealand']
+            self.data[new_varname] = self.data[variable] / self.data['arealand']
 
         self.data.drop(columns='arealand', inplace=True)
-
 
     def interpolate(self, method="ma", min_year=None, max_year=None):
         """
@@ -283,6 +282,8 @@ class VariableDef:
         Run the query defined by the contained variables
         :param geometry: census geometry to query
         :param year: year of data to query
+        :param state: 2 Digit Fips code of state to limit the query to
+        :param county: 3 Digit county code to limit the query to, must be used with state
         :return: data frame of all census variables specified by the query
 
 
@@ -313,7 +314,6 @@ class VariableDef:
                 out = out.append(state_data, ignore_index=True)
         print()
         return out
-
 
     def _do_query_block_group(self, year, geometry, state=None, county=None):
         # if state and county are specified
@@ -346,6 +346,8 @@ class VariableDef:
         Query the required data from the census, then calculate the variable defined
         :param year: year of data to query
         :param geometry: census geometry to query
+        :param state: 2 Digit Fips code of state to limit the query to
+        :param county: 3 Digit county code to limit the query to, must be used with state
         :return: a data frame with one column of the calcualted variable and the census geography columns
 
 
