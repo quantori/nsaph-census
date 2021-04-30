@@ -6,5 +6,5 @@ from .cli import census_cli
 from .tigerweb import get_area
 
 
-__version__ = "0.1"
+__version__ = "0.2"
 
