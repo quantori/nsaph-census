@@ -1,4 +1,5 @@
 from .census_info import *
+from .exceptions import *
 import requests as r
 import os
 import pandas as pd
@@ -57,8 +58,18 @@ def get_census_data(year: int, variables: list, geography: str, dataset: str, su
     if key is not None:
         options['key'] = os.environ['GET_CENSUS_API_KEY']
 
-    out = r.get(endpoint, params=options)
-    out.raise_for_status()
+    num_tries = 0
+    while num_tries < 5:
+        try:
+            out = r.get(endpoint, params=options)
+            out.raise_for_status()
+            break
+        except:
+            print("Query Failed, re-trying")
+            num_tries += 1
+    if num_tries >= 5:
+        raise GetCensusException("Unable to complete query after " + str(num_tries) + " tries")
+
     out = out.json()
     out = pd.DataFrame(out[1:], columns=out[0])
 
