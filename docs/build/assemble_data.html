@@ -109,6 +109,14 @@ calculated for that year. Created from a yaml file. LINK TO YAML INSTRUCTIONS HE
 </dd></dl>
 
 <dl class="py method">
+<dt id="get_census.assemble_data.DataPlan.quality_check">
+<code class="sig-name descname"><span class="pre">quality_check</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test_file</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/assemble_data.html#DataPlan.quality_check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.assemble_data.DataPlan.quality_check" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test self.data for the checks defined in the test file
+:param test_file: path to a yaml file defining tests per the quality check paradigm in nsaph_utils.qc
+:return: None</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="get_census.assemble_data.DataPlan.write_data">
 <code class="sig-name descname"><span class="pre">write_data</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'csv'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/assemble_data.html#DataPlan.write_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.assemble_data.DataPlan.write_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write data  out to a file. Default method is to write out to csv. new methods can be implemented in the future.</p>
