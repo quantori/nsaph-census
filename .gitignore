@@ -1,4 +1,6 @@
 venv/*
+notebooks/*
+get-census-env/*
 *.ipynb
 *.egg-info/*
 .idea/*
