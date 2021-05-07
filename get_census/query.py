@@ -128,7 +128,8 @@ def api_geography(geo: str):
     """
     geo = geo.lower()
 
-    assert geo in SUPPORTED_GEOMETRIES
+    if geo not in SUPPORTED_GEOMETRIES:
+        raise GetCensusException("Input Geometry not supported")
 
     if geo == "zcta":
         return "zip code tabulation area"
