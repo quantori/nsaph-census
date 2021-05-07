@@ -37,7 +37,8 @@
 <span class="kn">from</span> <span class="nn">.tigerweb</span> <span class="kn">import</span> <span class="n">get_area</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">yaml</span>
-<span class="kn">import</span> <span class="nn">nsaph_utils</span>
+<span class="kn">import</span> <span class="nn">nsaph_utils.interpolation</span>
+<span class="kn">import</span> <span class="nn">nsaph_utils.qc</span>
 
 
 <div class="viewcode-block" id="DataPlan"><a class="viewcode-back" href="../../assemble_data.html#get_census.assemble_data.DataPlan">[docs]</a><span class="k">class</span> <span class="nc">DataPlan</span><span class="p">:</span>
@@ -262,7 +263,19 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__has_missing</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">create_missingness</span><span class="p">(</span><span class="n">min_year</span><span class="p">,</span> <span class="n">max_year</span><span class="p">)</span>
 
-        <span class="n">nsaph_utils</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_var_names</span><span class="p">(),</span> <span class="n">method</span><span class="p">,</span> <span class="s2">&quot;year&quot;</span><span class="p">,</span> <span class="s2">&quot;geoid&quot;</span><span class="p">)</span></div></div>
+        <span class="n">nsaph_utils</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_var_names</span><span class="p">(),</span> <span class="n">method</span><span class="p">,</span> <span class="s2">&quot;year&quot;</span><span class="p">,</span> <span class="s2">&quot;geoid&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DataPlan.quality_check"><a class="viewcode-back" href="../../assemble_data.html#get_census.assemble_data.DataPlan.quality_check">[docs]</a>    <span class="k">def</span> <span class="nf">quality_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">test_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Test self.data for the checks defined in the test file</span>
+<span class="sd">        :param test_file: path to a yaml file defining tests per the quality check paradigm in nsaph_utils.qc</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;census_&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">years</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">years</span><span class="p">))</span>
+        <span class="n">census_tester</span> <span class="o">=</span> <span class="n">nsaph_utils</span><span class="o">.</span><span class="n">qc</span><span class="o">.</span><span class="n">Tester</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">yaml_file</span><span class="o">=</span><span class="n">test_file</span><span class="p">)</span>
+        <span class="n">census_tester</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span></div></div>
+
+
 
 
 <div class="viewcode-block" id="VariableDef"><a class="viewcode-back" href="../../assemble_data.html#get_census.assemble_data.VariableDef">[docs]</a><span class="k">class</span> <span class="nc">VariableDef</span><span class="p">:</span>
@@ -468,6 +481,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../census_info.html">Census Metadata Functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../query.html">Functions for Requesting Data from the Census API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../cached_data.html">Stored Data Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tigerweb.html">Query Area and Download Shapefiles</a></li>
 </ul>
 
 <div class="relations">

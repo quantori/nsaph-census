@@ -32,6 +32,7 @@
             
   <h1>Source code for get_census.query</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">.census_info</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">import</span> <span class="nn">requests</span> <span class="k">as</span> <span class="nn">r</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -90,8 +91,18 @@
     <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">options</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;GET_CENSUS_API_KEY&#39;</span><span class="p">]</span>
 
-    <span class="n">out</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">endpoint</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">options</span><span class="p">)</span>
-    <span class="n">out</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+    <span class="n">num_tries</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="n">num_tries</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">endpoint</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">options</span><span class="p">)</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+            <span class="k">break</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Query Failed, re-trying&quot;</span><span class="p">)</span>
+            <span class="n">num_tries</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">num_tries</span> <span class="o">&gt;=</span> <span class="mi">5</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">GetCensusException</span><span class="p">(</span><span class="s2">&quot;Unable to complete query after &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">num_tries</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; tries&quot;</span><span class="p">)</span>
+
     <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="n">out</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">columns</span><span class="o">=</span><span class="n">out</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
@@ -200,6 +211,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../census_info.html">Census Metadata Functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../query.html">Functions for Requesting Data from the Census API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../cached_data.html">Stored Data Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tigerweb.html">Query Area and Download Shapefiles</a></li>
 </ul>
 
 <div class="relations">
