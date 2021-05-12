@@ -76,6 +76,15 @@ class CensusContext(Context):
                       cardinality=Cardinality.multiple,
                       default="2000:2019"
                       )
+    _quality_check = Argument("quality_check",
+                              aliases=["qc"],
+                              help="""
+                              Path to a yaml file specifying the checks to be run on the data. Yaml file should be 
+                              structured per the paradigm used by nsaph_utils.qc
+                              """,
+                              cardinality=Cardinality.single,
+                              default=None,
+                              required=False)
 
     def __init__(self, doc=None):
         self.var_file = None
@@ -86,6 +95,7 @@ class CensusContext(Context):
         self.interpolate = None
         self.out_file = None
         self.out_format = None
+        self.quality_check = None
         super().__init__(CensusContext, doc)
 
     def validate(self, attr, value):
@@ -120,3 +130,6 @@ def census_cli():
         census.calculate_densities(context.densities)
 
     census.write_data(context.out_file, file_type=context.out_format)
+
+    if context.quality_check:
+        census.quality_check(context.quality_check)

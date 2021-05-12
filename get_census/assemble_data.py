@@ -5,7 +5,8 @@ from .tigerweb import get_area
 from .exceptions import *
 import pandas as pd
 import yaml
-import nsaph_utils
+import nsaph_utils.interpolation
+import nsaph_utils.qc
 
 
 class DataPlan:
@@ -232,6 +233,18 @@ class DataPlan:
             self.create_missingness(min_year, max_year)
 
         nsaph_utils.interpolate(self.data, self.get_var_names(), method, "year", "geoid")
+
+    def quality_check(self, test_file: str):
+        """
+        Test self.data for the checks defined in the test file
+        :param test_file: path to a yaml file defining tests per the quality check paradigm in nsaph_utils.qc
+        :return: None
+        """
+        name = "census_" + self.geometry + "_" + str(min(self.years)) + "_" + str(max(self.years))
+        census_tester = nsaph_utils.qc.Tester(name, yaml_file=test_file)
+        census_tester.check(self.data)
+
+
 
 
 class VariableDef:
