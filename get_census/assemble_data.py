@@ -2,6 +2,7 @@ from .census_info import census_years
 from .query import get_census_data, clean_acs_vars
 from .data import *
 from .tigerweb import get_area
+from .exceptions import *
 import pandas as pd
 import yaml
 import nsaph_utils.interpolation
@@ -219,7 +220,8 @@ class DataPlan:
         :param max_year: Maximum year to interpolate
         :return:
         """
-        assert method in nsaph_utils.interpolation.IMPLEMENTED_METHODS
+        if method not in nsaph_utils.interpolation.IMPLEMENTED_METHODS:
+            raise GetCensusException("Invalid Interpretation Method")
 
         if not min_year:
             min_year = min(self.years)
