@@ -1,0 +1,45 @@
+state:
+  columns:
+    age_pct_0_14:
+      type: REAL
+    age_pct_15_44:
+      type: REAL
+    age_pct_45_65:
+      type: REAL
+    age_pct_65_plus:
+      type: REAL
+    asian_pct:
+      type: REAL
+    blk_pct:
+      type: REAL
+    geoid:
+      type: VARCHAR(2)
+    hispanic_pct:
+      type: REAL
+    median_age:
+      type: REAL
+    median_house_value:
+      type: INT
+    median_household_income:
+      type: INT
+    native_pct:
+      type: REAL
+    no_grad:
+      type: REAL
+    no_grad_mcare:
+      type: REAL
+    owner_occupied:
+      type: REAL
+    population:
+      type: INT
+    poverty:
+      type: REAL
+    poverty_mcare:
+      type: REAL
+    white_pct:
+      type: REAL
+    year:
+      type: INT
+  primary_key:
+  - geoid
+  - year

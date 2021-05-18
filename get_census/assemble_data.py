@@ -4,6 +4,7 @@ from .data import *
 from .tigerweb import get_area
 from .exceptions import *
 import pandas as pd
+import numpy as np
 import yaml
 import nsaph_utils.interpolation
 import nsaph_utils.qc
@@ -121,6 +122,8 @@ class DataPlan:
             for var_def in self.plan[year]:
                 out = list(set().union(out, [var_def.name]))
 
+        # Add in density columns
+        out = list(set().union(out, [s for s in self.data.columns if "_density" in s]))
         return out
 
     def add_geoid(self):
@@ -189,7 +192,7 @@ class DataPlan:
             return
 
     # noinspection PyDefaultArgument
-    def calculate_densities(self, variables=list("population"), sq_mi=True):
+    def calculate_densities(self, variables=["population"], sq_mi=True):
         """
         Divide specified variables by area
         :param variables: List of variables to calculate densities for
@@ -243,6 +246,41 @@ class DataPlan:
         name = "census_" + self.geometry + "_" + str(min(self.years)) + "_" + str(max(self.years))
         census_tester = nsaph_utils.qc.Tester(name, yaml_file=test_file)
         census_tester.check(self.data)
+
+    def schema_dict(self):
+        """
+        return a dictionary containing the names and data types of variables that would be loaded in to a database.
+        Structured as a dictionary to enable writing to either yaml of json
+        :return: dict
+        """
+        if "geoid" not in self.data.columns:
+            self.add_geoid()
+
+        out_cols = ["geoid", "year"] + self.get_var_names()
+        col_dicts = dict()
+        for col in out_cols:
+            col_dicts[col] = {"type" : get_sql_type(self.data[col])}
+
+        out = dict()
+        out[self.geometry] = dict()
+        out[self.geometry]["columns"] = col_dicts
+        out[self.geometry]["primary_key"] = ["geoid", "year"]
+
+        return out
+
+    def write_schema(self, filename: str = None):
+        """
+        Write out a yaml file describing the data schema
+        :param filename: path to write to
+        :return: True
+        """
+        if not filename:
+            filename = "census_" + self.geometry + "_schema.yml"
+
+        with open(filename, 'w') as ff:
+            yaml.dump(self.schema_dict(), ff)
+
+
 
 
 
@@ -426,3 +464,22 @@ def find_year(year, year_list):
     for i in year_list:
         if i >= year:
             return i
+
+
+def get_sql_type(col):
+    """
+    given a numpy array, return the POSTGRES data type needed for that column as a string
+    :param col: a numpy array
+    :return: string of sql type
+    """
+    if type(col[0]) is np.float64:
+        return "FLOAT4"
+    elif type(col[0]) is np.int64:
+        return "INT"
+    elif type(col[0]) is str:
+        max_len = max(map(len, col))
+        return "VARCHAR(" + str(max_len) + ")"
+    else:
+        raise GetCensusException("unexpected column type in data")
+
+
