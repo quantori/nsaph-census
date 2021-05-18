@@ -17,7 +17,7 @@ class SchemaTestCase(unittest.TestCase):
         self.assertEqual(schema[census_data.geometry]["primary_key"], ["geoid", "year"])
         self.assertEqual(schema[census_data.geometry]["columns"]["year"]["type"], "INT")
         self.assertEqual(schema[census_data.geometry]["columns"]["geoid"]["type"], "VARCHAR(2)")
-        self.assertEqual(schema[census_data.geometry]["columns"]["poverty"]["type"], "REAL")
+        self.assertEqual(schema[census_data.geometry]["columns"]["poverty"]["type"], "FLOAT4")
 
 
 if __name__ == '__main__':
