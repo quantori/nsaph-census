@@ -71,6 +71,7 @@ def get_census_data(year: int, variables: list, geography: str, dataset: str, su
             LOG.warning("Query Failed, re-trying")
             num_tries += 1
     if num_tries >= 5:
+        LOG.critical("Unable to complete query after " + str(num_tries) + " tries")
         raise GetCensusException("Unable to complete query after " + str(num_tries) + " tries")
 
     out = out.json()

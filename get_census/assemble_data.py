@@ -91,6 +91,7 @@ class DataPlan:
         """
 
         self.data = None  # Clear in case this has been run previously
+        self.__logger.info("Beginning Census Data Acquisition")
 
         for year in self.years:
             year_data = None
@@ -98,7 +99,7 @@ class DataPlan:
                 continue
 
             for var_def in self.plan[year]:
-                self.__logger.info(str(year) + " " + var_def.name)
+                self.__logger.info("Processing " + str(year) + " " + var_def.name)
                 var_data = var_def.calculate_var(year, self.geometry, self.state, self.county)
                 join_vars = list(set(var_data.columns).difference([var_def.name]))
 
@@ -224,6 +225,7 @@ class DataPlan:
         :return:
         """
         if method not in nsaph_utils.interpolation.IMPLEMENTED_METHODS:
+            self.__logger.exception("Can't interpolate, Invalid Interpretation Method")
             raise GetCensusException("Invalid Interpretation Method")
 
         if not min_year:
