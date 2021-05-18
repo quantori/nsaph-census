@@ -3,9 +3,13 @@ Code for interacting with the Census TIGERWEb API
 """
 import requests as r
 import pandas as pd
+import os
+import logging
 from .query import prep_vars
 from .data import load_state_codes
-import os
+from .exceptions import GetCensusException
+
+
 
 GEOMETRY_CODES = {"zcta": 2,
                   "tract": 8,
@@ -21,6 +25,7 @@ TIGER_NAMES = {
     "block group": "BG"
 }
 
+LOG = logging.getLogger(__name__)
 
 class BBox:
     """
@@ -136,7 +141,7 @@ def get_area(geometry, sq_mi=True):
     queries = 0
     for params in param_list:
         queries += 1
-        print("Area query", queries, "of", len(param_list), end="           \r")
+        LOG.debug("Area query " + str(queries) + " of " + str(len(param_list)))
         result = r.get(url, params)
         result = list(map(lambda x: x['attributes'], result.json()['features']))
         result = pd.DataFrame(result)
@@ -146,8 +151,8 @@ def get_area(geometry, sq_mi=True):
         elif len(result.index) > 0:
             out = pd.merge(out, result, how="outer", on=["GEOID", "AREALAND"])
         elif len(result.index) == 100000:
-            print("Max rows hit, increase split factor")
-            return
+            LOG.error("Max rows hit, increase split factor, ending")
+            raise GetCensusException("Max rows hit, increase split factor, ending")
 
     if sq_mi:
         out['AREALAND'] = out['AREALAND']/2589988  # 2589988 square meters to a square mile
@@ -231,8 +236,8 @@ def tiger_line_url(geometry, year):
             for state in load_state_codes()['state']:
                 out.append(base + state + "_tract.zip")
     else:
-        print("invalid geography")
-        return
+        LOG.error("invalid geography: " + geometry + "provided" )
+        raise GetCensusException("invalid geography: " + geometry + "provided")
 
     return out
 
@@ -245,8 +250,6 @@ def download_file(url, out_dir):
         with open(local_filename, 'wb') as f:
             for chunk in result.iter_content(chunk_size=1024**2):
                 f.write(chunk)
-                print("#", end='')
-        print()
     return local_filename
 
 

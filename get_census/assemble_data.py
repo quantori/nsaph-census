@@ -3,6 +3,7 @@ from .query import get_census_data, clean_acs_vars
 from .data import *
 from .tigerweb import get_area
 from .exceptions import *
+import logging
 import pandas as pd
 import numpy as np
 import yaml
@@ -44,6 +45,7 @@ class DataPlan:
         :param county: 3 digit FIPS code of the county you want to include. Requires state to be specified
         """
         self.geometry = geometry
+        self.__logger = logging.getLogger(__name__ + ".DataPlan." + self.geometry)
         self.years = years
         if type(self.years) is int:
             self.years = [self.years]
@@ -55,6 +57,7 @@ class DataPlan:
         self.__has_missing = False
 
         self.data = pd.DataFrame()
+
 
     def yaml_to_dict(self, yaml_path):
         """
@@ -79,7 +82,7 @@ class DataPlan:
             for varname in yaml_dict.keys():
                 plan_year = find_year(year, list(yaml_dict[varname].keys()))
                 if yaml_dict[varname][plan_year] != "skip":
-                    self.plan[year].append(VariableDef(varname, yaml_dict[varname][plan_year]))
+                    self.plan[year].append(VariableDef(varname, yaml_dict[varname][plan_year], self.__logger))
 
     def assemble_data(self):
         """
@@ -89,6 +92,7 @@ class DataPlan:
         """
 
         self.data = None  # Clear in case this has been run previously
+        self.__logger.info("Beginning Census Data Acquisition")
 
         for year in self.years:
             year_data = None
@@ -96,7 +100,7 @@ class DataPlan:
                 continue
 
             for var_def in self.plan[year]:
-                print(year, var_def.name)
+                self.__logger.info("Processing " + str(year) + " " + var_def.name)
                 var_data = var_def.calculate_var(year, self.geometry, self.state, self.county)
                 join_vars = list(set(var_data.columns).difference([var_def.name]))
 
@@ -164,7 +168,7 @@ class DataPlan:
             max_year = max(self.years)
 
         if self.__has_missing:
-            print("Missing values already created.")
+            self.__logger.warning("Can't create missingness, Missing values already created.")
             return
 
         if "geoid" not in self.data.columns:
@@ -186,10 +190,10 @@ class DataPlan:
 
         if file_type == "csv":
             self.data.to_csv(path, index=False)
-            return
+            return True
         else:
-            print("No Method currently implemented for that file type")
-            return
+            self.__logger.error("Can't output file, No Method currently implemented for file type: " + file_type)
+            return False
 
     # noinspection PyDefaultArgument
     def calculate_densities(self, variables=["population"], sq_mi=True):
@@ -200,7 +204,7 @@ class DataPlan:
         :return: None
         """
         if self.geometry == "block group":
-            print("No support currently added for block group densities, skipping step")
+            self.__logger.error("No support currently added for block group densities, skipping densities")
             return
 
         if "geoid" not in self.data.columns:
@@ -224,6 +228,7 @@ class DataPlan:
         :return:
         """
         if method not in nsaph_utils.interpolation.IMPLEMENTED_METHODS:
+            self.__logger.exception("Can't interpolate, Invalid Interpretation Method")
             raise GetCensusException("Invalid Interpretation Method")
 
         if not min_year:
@@ -297,9 +302,15 @@ class VariableDef:
 
     """
 
-    def __init__(self, name: str, var_dict: dict):
+    def __init__(self, name: str, var_dict: dict, log: logging.Logger = None):
 
         self.name = name
+
+        if not log:
+            self.__logger = logging.getLogger(__name__ + ".VariableDef." + self.name)
+        else:
+            self.__logger = log
+
         self.dataset = list(var_dict.keys())[0]
         self.num = var_dict[self.dataset]['num']
         if type(self.num) is str:
@@ -359,13 +370,12 @@ class VariableDef:
         num_queries = 0
         for i, row in state_codes.iterrows():
             num_queries += 1
-            print("Running query", num_queries, "of", len(state_codes.index), sep=" ", end="\r")
+            self.__logger.debug("Running query " + str(num_queries)  + " of " + str(len(state_codes.index)))
             state_data = get_census_data(year, self.get_vars(), geometry, self.dataset, state=row['state'])
             if out is None:
                 out = state_data
             else:
                 out = out.append(state_data, ignore_index=True)
-        print()
         return out
 
     def _do_query_block_group(self, year, geometry, state=None, county=None):
@@ -384,14 +394,13 @@ class VariableDef:
         num_queries = 0
         for i, row in county_codes.iterrows():
             num_queries += 1
-            print("Running query", num_queries, "of", len(county_codes.index), sep=" ", end="\r")
+            self.__logger.debug("Running query " + str(num_queries)  + " of " + str(len(county_codes.index)))
             county_data = get_census_data(year, self.get_vars(), geometry,
                                           self.dataset, state=row['state'], county=row['county'])
             if out is None:
                 out = county_data
             else:
                 out = out.append(county_data, ignore_index=True)
-        print()
         return out
 
     def calculate_var(self, year, geometry, state=None, county=None):
