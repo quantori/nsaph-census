@@ -473,7 +473,7 @@ def get_sql_type(col):
     :return: string of sql type
     """
     if type(col[0]) is np.float64:
-        return "REAL"
+        return "FLOAT4"
     elif type(col[0]) is np.int64:
         return "INT"
     elif type(col[0]) is str:
