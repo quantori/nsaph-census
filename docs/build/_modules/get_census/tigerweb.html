@@ -36,9 +36,13 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">requests</span> <span class="k">as</span> <span class="nn">r</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">.query</span> <span class="kn">import</span> <span class="n">prep_vars</span>
 <span class="kn">from</span> <span class="nn">.data</span> <span class="kn">import</span> <span class="n">load_state_codes</span>
-<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="n">GetCensusException</span>
+
+
 
 <span class="n">GEOMETRY_CODES</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;zcta&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
                   <span class="s2">&quot;tract&quot;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
@@ -54,6 +58,7 @@
     <span class="s2">&quot;block group&quot;</span><span class="p">:</span> <span class="s2">&quot;BG&quot;</span>
 <span class="p">}</span>
 
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 <div class="viewcode-block" id="BBox"><a class="viewcode-back" href="../../tigerweb.html#get_census.tigerweb.BBox">[docs]</a><span class="k">class</span> <span class="nc">BBox</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -169,7 +174,7 @@
     <span class="n">queries</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">params</span> <span class="ow">in</span> <span class="n">param_list</span><span class="p">:</span>
         <span class="n">queries</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Area query&quot;</span><span class="p">,</span> <span class="n">queries</span><span class="p">,</span> <span class="s2">&quot;of&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">param_list</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;           </span><span class="se">\r</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Area query &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">queries</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; of &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">param_list</span><span class="p">)))</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
         <span class="n">result</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;attributes&#39;</span><span class="p">],</span> <span class="n">result</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s1">&#39;features&#39;</span><span class="p">]))</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
@@ -179,8 +184,8 @@
         <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">out</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;outer&quot;</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GEOID&quot;</span><span class="p">,</span> <span class="s2">&quot;AREALAND&quot;</span><span class="p">])</span>
         <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="mi">100000</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Max rows hit, increase split factor&quot;</span><span class="p">)</span>
-            <span class="k">return</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Max rows hit, increase split factor, ending&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">GetCensusException</span><span class="p">(</span><span class="s2">&quot;Max rows hit, increase split factor, ending&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">sq_mi</span><span class="p">:</span>
         <span class="n">out</span><span class="p">[</span><span class="s1">&#39;AREALAND&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">out</span><span class="p">[</span><span class="s1">&#39;AREALAND&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2589988</span>  <span class="c1"># 2589988 square meters to a square mile</span>
@@ -264,8 +269,8 @@
             <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">load_state_codes</span><span class="p">()[</span><span class="s1">&#39;state&#39;</span><span class="p">]:</span>
                 <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">base</span> <span class="o">+</span> <span class="n">state</span> <span class="o">+</span> <span class="s2">&quot;_tract.zip&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;invalid geography&quot;</span><span class="p">)</span>
-        <span class="k">return</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;invalid geography: &quot;</span> <span class="o">+</span> <span class="n">geometry</span> <span class="o">+</span> <span class="s2">&quot;provided&quot;</span> <span class="p">)</span>
+        <span class="k">raise</span> <span class="n">GetCensusException</span><span class="p">(</span><span class="s2">&quot;invalid geography: &quot;</span> <span class="o">+</span> <span class="n">geometry</span> <span class="o">+</span> <span class="s2">&quot;provided&quot;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">out</span></div>
 
@@ -278,8 +283,6 @@
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">local_filename</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">iter_content</span><span class="p">(</span><span class="n">chunk_size</span><span class="o">=</span><span class="mi">1024</span><span class="o">**</span><span class="mi">2</span><span class="p">):</span>
                 <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">local_filename</span>
 
 
@@ -326,6 +329,7 @@
 <h3>Navigation</h3>
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../start_guide.html">Working with the <code class="docutils literal notranslate"><span class="pre">get_census</span></code> Package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../assemble_data.html">DataPlan: Main Class For Assembling a Census Plan</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../census_info.html">Census Metadata Functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../query.html">Functions for Requesting Data from the Census API</a></li>
