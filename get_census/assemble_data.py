@@ -1,5 +1,5 @@
 from .census_info import census_years
-from .query import get_census_data, clean_acs_vars
+from .query import get_census_data, _clean_acs_vars
 from .data import *
 from .tigerweb import get_area
 from .exceptions import *
@@ -64,13 +64,13 @@ class DataPlan:
         self.county = county
 
         self.plan = dict()
-        self.yaml_to_dict(yaml_path)
+        self._yaml_to_dict(yaml_path)
         self.__has_missing = False
 
         self.data = pd.DataFrame()
 
 
-    def yaml_to_dict(self, yaml_path):
+    def _yaml_to_dict(self, yaml_path):
         """
         Convert a yaml file detailing how to get census variables in to a dictionary. Handles
         the issue of forward counting years to make future code readable.
@@ -91,7 +91,7 @@ class DataPlan:
         for year in self.years:
             self.plan[year] = list()
             for varname in yaml_dict.keys():
-                plan_year = find_year(year, list(yaml_dict[varname].keys()))
+                plan_year = _find_year(year, list(yaml_dict[varname].keys()))
                 if yaml_dict[varname][plan_year] != "skip":
                     self.plan[year].append(VariableDef(varname, yaml_dict[varname][plan_year], self.__logger))
 
@@ -263,7 +263,7 @@ class DataPlan:
         census_tester = nsaph_utils.qc.Tester(name, yaml_file=test_file)
         census_tester.check(self.data)
 
-    def schema_dict(self):
+    def _schema_dict(self):
         """
         return a dictionary containing the names and data types of variables that would be loaded in to a database.
         Structured as a dictionary to enable writing to either yaml of json
@@ -275,7 +275,7 @@ class DataPlan:
         out_cols = ["geoid", "year"] + self.get_var_names()
         col_dicts = dict()
         for col in out_cols:
-            col_dicts[col] = {"type" : get_sql_type(self.data[col])}
+            col_dicts[col] = {"type" : _get_sql_type(self.data[col])}
 
         out = dict()
         out[self.geometry] = dict()
@@ -294,7 +294,7 @@ class DataPlan:
             filename = "census_" + self.geometry + "_schema.yml"
 
         with open(filename, 'w') as ff:
-            yaml.dump(self.schema_dict(), ff)
+            yaml.dump(self._schema_dict(), ff)
 
 
 
@@ -337,12 +337,12 @@ class VariableDef:
             self.den = []
 
         if "acs" in self.dataset:
-            self.make_acs_vars()
+            self._make_acs_vars()
 
-    def make_acs_vars(self):
-        clean_acs_vars(self.num)
+    def _make_acs_vars(self):
+        _clean_acs_vars(self.num)
         if self.has_den:
-            clean_acs_vars(self.den)
+            _clean_acs_vars(self.den)
 
     def get_vars(self):
         """
@@ -469,7 +469,7 @@ class VariableDef:
         return out
 
 
-def find_year(year, year_list):
+def _find_year(year, year_list):
     """
     Internal helper function, not exported. Returns the first
     year in the list greater or equal to the year
@@ -486,7 +486,7 @@ def find_year(year, year_list):
             return i
 
 
-def get_sql_type(col):
+def _get_sql_type(col):
     """
     given a numpy array, return the POSTGRES data type needed for that column as a string
     :param col: a numpy array

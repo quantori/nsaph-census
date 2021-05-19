@@ -269,14 +269,6 @@ calculated for that year. Created from a yaml file. Structure defined in <a clas
 </dd></dl>
 
 <dl class="py method">
-<dt id="get_census.assemble_data.DataPlan.schema_dict">
-<code class="sig-name descname"><span class="pre">schema_dict</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/assemble_data.html#DataPlan.schema_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.assemble_data.DataPlan.schema_dict" title="Permalink to this definition">¶</a></dt>
-<dd><p>return a dictionary containing the names and data types of variables that would be loaded in to a database.
-Structured as a dictionary to enable writing to either yaml of json
-:return: dict</p>
-</dd></dl>
-
-<dl class="py method">
 <dt id="get_census.assemble_data.DataPlan.write_data">
 <code class="sig-name descname"><span class="pre">write_data</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'csv'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/assemble_data.html#DataPlan.write_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.assemble_data.DataPlan.write_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write data  out to a file. Default method is to write out to csv. new methods can be implemented in the future.</p>
@@ -299,22 +291,6 @@ Structured as a dictionary to enable writing to either yaml of json
 <dd><p>Write out a yaml file describing the data schema
 :param filename: path to write to
 :return: True</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="get_census.assemble_data.DataPlan.yaml_to_dict">
-<code class="sig-name descname"><span class="pre">yaml_to_dict</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">yaml_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/assemble_data.html#DataPlan.yaml_to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.assemble_data.DataPlan.yaml_to_dict" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert a yaml file detailing how to get census variables in to a dictionary. Handles
-the issue of forward counting years to make future code readable.</p>
-<p>Yaml structure defined in <a class="reference internal" href="census_yaml.html"><span class="doc">get_census Census Variable File Structure</span></a></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>yaml_path</strong> – </p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>dictionary</p>
-</dd>
-</dl>
 </dd></dl>
 
 </dd></dl>
@@ -360,24 +336,6 @@ Members:
 </dl>
 </dd></dl>
 
-</dd></dl>
-
-<dl class="py function">
-<dt id="get_census.assemble_data.find_year">
-<code class="sig-prename descclassname"><span class="pre">get_census.assemble_data.</span></code><code class="sig-name descname"><span class="pre">find_year</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">year</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/assemble_data.html#find_year"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.assemble_data.find_year" title="Permalink to this definition">¶</a></dt>
-<dd><p>Internal helper function, not exported. Returns the first
-year in the list greater or equal to the year
-:param year: year of interest
-:param year_list:list: list of years, likely from a yaml census list
-:return: first year greater than or equal to “year” in “year_list”</p>
-</dd></dl>
-
-<dl class="py function">
-<dt id="get_census.assemble_data.get_sql_type">
-<code class="sig-prename descclassname"><span class="pre">get_census.assemble_data.</span></code><code class="sig-name descname"><span class="pre">get_sql_type</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">col</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/assemble_data.html#get_sql_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.assemble_data.get_sql_type" title="Permalink to this definition">¶</a></dt>
-<dd><p>given a numpy array, return the POSTGRES data type needed for that column as a string
-:param col: a numpy array
-:return: string of sql type</p>
 </dd></dl>
 
 </div>

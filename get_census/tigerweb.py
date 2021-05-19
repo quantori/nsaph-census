@@ -5,7 +5,7 @@ import requests as r
 import pandas as pd
 import os
 import logging
-from .query import prep_vars
+from .query import _prep_vars
 from .data import load_state_codes
 from .exceptions import GetCensusException
 
@@ -27,7 +27,7 @@ TIGER_NAMES = {
 
 LOG = logging.getLogger(__name__)
 
-class BBox:
+class _BBox:
     """
     Internal class defining a simple bounding box
     """
@@ -56,15 +56,15 @@ class BBox:
 
         for i in range(factor):
             for j in range(factor):
-                out.append(BBox(xmin=self.xmin + (i * xdiff),
-                                ymin=self.ymin + (j * ydiff),
-                                xmax=self.xmin + ((i+1) * xdiff),
-                                ymax=self.ymin + ((j+1) * ydiff)))
+                out.append(_BBox(xmin=self.xmin + (i * xdiff),
+                                 ymin=self.ymin + (j * ydiff),
+                                 xmax=self.xmin + ((i+1) * xdiff),
+                                 ymax=self.ymin + ((j+1) * ydiff)))
 
         return out
 
 
-def tigerweb_endpoint(geometry):
+def _tigerweb_endpoint(geometry):
     """
     Get the API endpoint for making queries to the census tigerweb
 
@@ -79,7 +79,7 @@ def tigerweb_endpoint(geometry):
 
 
 # noinspection PyDefaultArgument
-def tigerweb_params(attributes=["GEOID"], split_factor: int = None):
+def _tigerweb_params(attributes=["GEOID"], split_factor: int = None):
     """
     Create a list of  dictionaries of the necessary parameters to query the census tigerweb API. Returns
     a list to enable combining of queries that return sets larger than the maximum number of objects
@@ -90,7 +90,7 @@ def tigerweb_params(attributes=["GEOID"], split_factor: int = None):
     :return: list of dictionary of needed parameters
     """
     out = []
-    bbox = BBox()
+    bbox = _BBox()
 
     if split_factor:
         boxes = bbox.subdivide(split_factor)
@@ -102,7 +102,7 @@ def tigerweb_params(attributes=["GEOID"], split_factor: int = None):
         params["geometry"] = str(box)
         params["geometryType"] = "esriGeometryEnvelope"
         params["spatialRel"] = "esriSpatialRelIntersects"
-        params["outFields"] = prep_vars(attributes)
+        params["outFields"] = _prep_vars(attributes)
         params["returnTrueCurves"] = "false"
         params["returnTrueCurves"] = "false"
         params["returnIdsOnly"] = "false"
@@ -128,14 +128,14 @@ def get_area(geometry, sq_mi=True):
     :return: pandas data frame
     """
 
-    url = tigerweb_endpoint(geometry)
+    url = _tigerweb_endpoint(geometry)
 
     if geometry == "block group":
         split_factor = 10
     else:
         split_factor = None
 
-    param_list = tigerweb_params(["GEOID", "AREALAND"], split_factor)
+    param_list = _tigerweb_params(["GEOID", "AREALAND"], split_factor)
     out = None
 
     queries = 0
@@ -161,7 +161,7 @@ def get_area(geometry, sq_mi=True):
     return out
 
 
-def tiger_line_url(geometry, year):
+def _tiger_line_url(geometry, year):
     """
     Return URL (or URLs) of zip file(s) containing shape files
     for a given census geography
@@ -173,7 +173,7 @@ def tiger_line_url(geometry, year):
     base = "https://www2.census.gov/geo/tiger/"
 
     if geometry == "zcta" and year == 2011:
-        return tiger_line_url("zcta", 2010)  # No ZCTAs listed in 2011 (for some reason)
+        return _tiger_line_url("zcta", 2010)  # No ZCTAs listed in 2011 (for some reason)
 
     if year >= 2010:
         base += "TIGER" + str(year) + "/"
@@ -242,7 +242,7 @@ def tiger_line_url(geometry, year):
     return out
 
 
-def download_file(url, out_dir):
+def _download_file(url, out_dir):
     local_filename = out_dir + "/" + url.split('/')[-1]
     # NOTE the stream=True parameter below
     with r.get(url, stream=True) as result:
@@ -272,7 +272,7 @@ def download_geometry(geometry, year=2019, out_dir="."):
     if not os.path.isdir(out_dir):
         os.makedirs(out_dir)
 
-    urls = tiger_line_url(geometry, year)
+    urls = _tiger_line_url(geometry, year)
 
     for url in urls:
-        download_file(url, out_dir)
+        _download_file(url, out_dir)
