@@ -1,34 +1,160 @@
 
+
 <!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>get_census.query &mdash; get_census 0.1 documentation</title>
+  
 
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>get_census.query &#8212; get_census 0.1 documentation</title>
-    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
-    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/jquery.js"></script>
-    <script src="../../_static/underscore.js"></script>
-    <script src="../../_static/doctools.js"></script>
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
    
-  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
-
-  </head><body>
-  
-
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
           
 
-          <div class="body" role="main">
+          
+            <a href="../../index.html" class="icon icon-home"> get_census
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../start_guide.html">Working with the <code class="docutils literal notranslate"><span class="pre">get_census</span></code> Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../census_yaml.html"><code class="docutils literal notranslate"><span class="pre">get_census</span></code> Census Variable File Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../assemble_data.html">DataPlan: Main Class For Assembling a Census Plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../census_info.html">Census Metadata Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../query.html">Functions for Requesting Data from the Census API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cached_data.html">Stored Data Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tigerweb.html">Query Area and Download Shapefiles</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">get_census</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>get_census.query</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
             
   <h1>Source code for get_census.query</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">.census_info</span> <span class="kn">import</span> <span class="o">*</span>
@@ -36,11 +162,14 @@
 <span class="kn">import</span> <span class="nn">requests</span> <span class="k">as</span> <span class="nn">r</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">logging</span>
 
 
 <span class="c1"># Code for downloading the census data</span>
 
 <span class="n">SUPPORTED_GEOMETRIES</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;county&quot;</span><span class="p">,</span> <span class="s2">&quot;state&quot;</span><span class="p">,</span> <span class="s2">&quot;zcta&quot;</span><span class="p">,</span> <span class="s2">&quot;block group&quot;</span><span class="p">,</span> <span class="s2">&quot;tract&quot;</span><span class="p">]</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="get_census_data"><a class="viewcode-back" href="../../query.html#get_census.query.get_census_data">[docs]</a><span class="k">def</span> <span class="nf">get_census_data</span><span class="p">(</span><span class="n">year</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">variables</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">geography</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">sum_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -66,7 +195,7 @@
         <span class="n">dataset</span> <span class="o">=</span> <span class="s2">&quot;dec&quot;</span>
 
     <span class="k">if</span> <span class="n">year</span> <span class="o">==</span> <span class="mi">2000</span> <span class="ow">and</span> <span class="n">dataset</span> <span class="o">==</span> <span class="s2">&quot;dec&quot;</span> <span class="ow">and</span> <span class="n">sum_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">sum_file</span> <span class="o">=</span> <span class="n">choose_sum_file</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span>
+        <span class="n">sum_file</span> <span class="o">=</span> <span class="n">_choose_sum_file</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span>
 
     <span class="n">endpoint</span> <span class="o">=</span> <span class="n">get_endpoint</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">sum_file</span><span class="p">)</span>
     <span class="n">geography</span> <span class="o">=</span> <span class="n">api_geography</span><span class="p">(</span><span class="n">geography</span><span class="p">)</span>
@@ -79,10 +208,10 @@
         <span class="n">variables</span> <span class="o">=</span> <span class="p">[</span><span class="n">variables</span><span class="p">]</span>
 
     <span class="k">if</span> <span class="n">dataset</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;acs1&quot;</span><span class="p">,</span> <span class="s2">&quot;acs5&quot;</span><span class="p">]:</span>
-        <span class="n">clean_acs_vars</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span>
+        <span class="n">_clean_acs_vars</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span>
 
     <span class="n">options</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-    <span class="n">options</span><span class="p">[</span><span class="s1">&#39;get&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">prep_vars</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span>
+    <span class="n">options</span><span class="p">[</span><span class="s1">&#39;get&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_prep_vars</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span>
     <span class="n">options</span><span class="p">[</span><span class="s1">&#39;for&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">geography</span>
     <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">options</span><span class="p">[</span><span class="s1">&#39;in&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;state:&#39;</span> <span class="o">+</span> <span class="n">state</span>
@@ -98,9 +227,10 @@
             <span class="n">out</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
             <span class="k">break</span>
         <span class="k">except</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Query Failed, re-trying&quot;</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Query Failed, re-trying&quot;</span><span class="p">)</span>
             <span class="n">num_tries</span> <span class="o">+=</span> <span class="mi">1</span>
     <span class="k">if</span> <span class="n">num_tries</span> <span class="o">&gt;=</span> <span class="mi">5</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s2">&quot;Unable to complete query after &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">num_tries</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; tries&quot;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="n">GetCensusException</span><span class="p">(</span><span class="s2">&quot;Unable to complete query after &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">num_tries</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; tries&quot;</span><span class="p">)</span>
 
     <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
@@ -111,14 +241,14 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">out</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="n">out</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Unable to convert variable &quot;</span> <span class="o">+</span> <span class="n">var</span> <span class="o">+</span> <span class="s2">&quot; to Numeric array&quot;</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Unable to convert variable &quot;</span> <span class="o">+</span> <span class="n">var</span> <span class="o">+</span> <span class="s2">&quot; to Numeric array&quot;</span><span class="p">)</span>
 
     <span class="n">out</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">year</span>
 
     <span class="k">return</span> <span class="n">out</span></div>
 
 
-<div class="viewcode-block" id="clean_acs_vars"><a class="viewcode-back" href="../../query.html#get_census.query.clean_acs_vars">[docs]</a><span class="k">def</span> <span class="nf">clean_acs_vars</span><span class="p">(</span><span class="n">variables</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_clean_acs_vars</span><span class="p">(</span><span class="n">variables</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Ensure that the estimate value is specified for a list of ACS variables</span>
 
@@ -130,10 +260,10 @@
     <span class="c1"># If vars is not a string, assume it is a list of strings</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">variables</span><span class="p">)):</span>
         <span class="k">if</span> <span class="n">variables</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;E&quot;</span><span class="p">:</span>
-            <span class="n">variables</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="s2">&quot;E&quot;</span></div>
+            <span class="n">variables</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="s2">&quot;E&quot;</span>
 
 
-<div class="viewcode-block" id="prep_vars"><a class="viewcode-back" href="../../query.html#get_census.query.prep_vars">[docs]</a><span class="k">def</span> <span class="nf">prep_vars</span><span class="p">(</span><span class="n">variables</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_prep_vars</span><span class="p">(</span><span class="n">variables</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert from a list to a comma separated string</span>
 
@@ -149,7 +279,7 @@
 
     <span class="n">out</span> <span class="o">+=</span> <span class="n">variables</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
-    <span class="k">return</span> <span class="n">out</span></div>
+    <span class="k">return</span> <span class="n">out</span>
 
 
 <div class="viewcode-block" id="api_geography"><a class="viewcode-back" href="../../query.html#get_census.query.api_geography">[docs]</a><span class="k">def</span> <span class="nf">api_geography</span><span class="p">(</span><span class="n">geo</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
@@ -161,7 +291,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">geo</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
-    <span class="k">assert</span> <span class="n">geo</span> <span class="ow">in</span> <span class="n">SUPPORTED_GEOMETRIES</span>
+    <span class="k">if</span> <span class="n">geo</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">SUPPORTED_GEOMETRIES</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">GetCensusException</span><span class="p">(</span><span class="s2">&quot;Input Geometry not supported&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">geo</span> <span class="o">==</span> <span class="s2">&quot;zcta&quot;</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;zip code tabulation area&quot;</span>
@@ -169,7 +300,7 @@
         <span class="k">return</span> <span class="n">geo</span></div>
 
 
-<div class="viewcode-block" id="choose_sum_file"><a class="viewcode-back" href="../../query.html#get_census.query.choose_sum_file">[docs]</a><span class="k">def</span> <span class="nf">choose_sum_file</span><span class="p">(</span><span class="n">variables</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_choose_sum_file</span><span class="p">(</span><span class="n">variables</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Internal function, not exported</span>
 <span class="sd">    If we&#39;re querying the 2000 US census, and we&#39;re not sure which summary file to</span>
@@ -186,76 +317,50 @@
     <span class="k">if</span> <span class="n">sf1</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;sf1&quot;</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s2">&quot;sf3&quot;</span></div>
+        <span class="k">return</span> <span class="s2">&quot;sf3&quot;</span>
 </pre></div>
 
+           </div>
+           
           </div>
-          
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Ben Sabath.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="../../index.html">get_census</a></h1>
 
+    </section>
 
+  </div>
+  
 
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
 
-
-
-
-
-<h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../assemble_data.html">DataPlan: Main Class For Assembling a Census Plan</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../census_info.html">Census Metadata Functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../query.html">Functions for Requesting Data from the Census API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../cached_data.html">Stored Data Files</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tigerweb.html">Query Area and Download Shapefiles</a></li>
-</ul>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../../index.html">Documentation overview</a><ul>
-  <li><a href="../index.html">Module code</a><ul>
-  </ul></li>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>$('#searchbox').show(0);</script>
-
-
-
-
-
-
-
-
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &copy;2021, Ben Sabath.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
-      
-    </div>
-
+  
+  
     
+   
 
-    
-  </body>
+</body>
 </html>

@@ -9,7 +9,7 @@ class SchemaTestCase(unittest.TestCase):
         with open( os.path.dirname(__file__) + "/data_cache/census_walkthrough_data.pkl", 'rb') as f:
             census_data = pickle.load(f)
 
-        schema = census_data.schema_dict()
+        schema = census_data._schema_dict()
         self.assertEqual(list(schema.keys()), [census_data.geometry])
         self.assertEqual(list(schema[census_data.geometry].keys()), ["columns", "primary_key"])
         self.assertEqual(list(schema[census_data.geometry]["columns"].keys()),
