@@ -263,7 +263,7 @@ class DataPlan:
         census_tester = nsaph_utils.qc.Tester(name, yaml_file=test_file)
         census_tester.check(self.data)
 
-    def _schema_dict(self):
+    def _schema_dict(self, table_name: str = None):
         """
         return a dictionary containing the names and data types of variables that would be loaded in to a database.
         Structured as a dictionary to enable writing to either yaml of json
@@ -272,29 +272,36 @@ class DataPlan:
         if "geoid" not in self.data.columns:
             self.add_geoid()
 
+        if not table_name:
+            table_name = self.geometry
+
         out_cols = ["geoid", "year"] + self.get_var_names()
         col_dicts = dict()
         for col in out_cols:
             col_dicts[col] = {"type" : _get_sql_type(self.data[col])}
 
         out = dict()
-        out[self.geometry] = dict()
-        out[self.geometry]["columns"] = col_dicts
-        out[self.geometry]["primary_key"] = ["geoid", "year"]
+        out[table_name] = dict()
+        out[table_name]["columns"] = col_dicts
+        out[table_name]["primary_key"] = ["geoid", "year"]
 
         return out
 
-    def write_schema(self, filename: str = None):
+    def write_schema(self, filename: str = None, table_name: str = None):
         """
         Write out a yaml file describing the data schema
         :param filename: path to write to
+        :param table_name: Name of the table for the schema
         :return: True
         """
         if not filename:
-            filename = "census_" + self.geometry + "_schema.yml"
+            if table_name:
+                filename = table_name + "_schema.yml"
+            else:
+                filename = "census_" + self.geometry + "_schema.yml"
 
         with open(filename, 'w') as ff:
-            yaml.dump(self._schema_dict(), ff)
+            yaml.dump(self._schema_dict(table_name), ff)
 
 
 
