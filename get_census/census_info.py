@@ -1,8 +1,11 @@
 import requests as r
+import logging
 import os
 from .exceptions import *
 
 # Code for handling census metadata
+
+LOG = logging.getLogger(__name__)
 
 
 def get_endpoint(year: int, dataset: str, sum_file: str = None):
@@ -53,8 +56,20 @@ def get_varlist(year: int, dataset: str, sum_file: str = None):
 
     endpoint = get_endpoint(year, dataset, sum_file)
 
-    out = r.get(endpoint + "/variables.json").json()
+    num_tries = 0
+    while num_tries < 5:
+        try:
+            out = r.get(endpoint + "/variables.json")
+            out.raise_for_status()
+            break
+        except:
+            LOG.warning("Varlist Query Failed, re-trying")
+            num_tries += 1
+    if num_tries >= 5:
+        LOG.critical("Unable to complete query after " + str(num_tries) + " tries")
+        raise GetCensusException("Unable to complete varlist query after " + str(num_tries) + " tries")
 
+    out = out.json()
     varnames = list(out['variables'].keys())[3:]
 
     return varnames
