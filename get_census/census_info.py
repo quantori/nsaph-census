@@ -56,10 +56,15 @@ def get_varlist(year: int, dataset: str, sum_file: str = None):
 
     endpoint = get_endpoint(year, dataset, sum_file)
 
+    params = {}
+
+    if "GET_CENSUS_API_KEY" in os.environ.keys():
+        params['key'] = os.environ["GET_CENSUS_API_KEY"]
+
     num_tries = 0
     while num_tries < 5:
         try:
-            out = r.get(endpoint + "/variables.json")
+            out = r.get(endpoint + "/variables.json", params=params)
             out.raise_for_status()
             break
         except:
