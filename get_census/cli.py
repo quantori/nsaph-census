@@ -5,6 +5,7 @@ from .query import SUPPORTED_GEOMETRIES
 from .census_info import census_years
 from .assemble_data import DataPlan
 from nsaph_utils.utils.context import Context, Argument, Cardinality
+import logging
 
 
 class CensusContext(Context):
@@ -85,6 +86,17 @@ class CensusContext(Context):
                               cardinality=Cardinality.single,
                               default=None,
                               required=False)
+    _log = Argument("log",
+                    help="""
+                    Path to output log file. If you want logging info to print on the screen, enter "screen".
+                    """,
+                    cardinality=Cardinality.single,
+                    default="get_census.log")
+    _debug = Argument("debug",
+                      help = """
+                      Boolean. If included, debug level messages will be logged. Otherwise defaults to "info" level.
+                      """,
+                      type=bool)
 
     def __init__(self, doc=None):
         self.var_file = None
@@ -96,6 +108,8 @@ class CensusContext(Context):
         self.out_file = None
         self.out_format = None
         self.quality_check = None
+        self.log = None
+        self.debug = None
         super().__init__(CensusContext, doc)
 
     def validate(self, attr, value):
@@ -115,7 +129,19 @@ class CensusContext(Context):
 
 
 def census_cli():
+
     context = CensusContext(__doc__).instantiate()
+
+    if context.debug:
+        level = logging.DEBUG
+    else:
+        level = logging.INFO
+
+    if context.log == "screen":
+        logging.basicConfig(level=level)
+    else:
+        logging.basicConfig(filename=context.log, level = level)
+
     census = DataPlan(context.var_file,
                       context.geometry,
                       years=census_years(min(context.years), max(context.years)),

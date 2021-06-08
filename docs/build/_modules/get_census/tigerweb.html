@@ -1,34 +1,160 @@
 
+
 <!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>get_census.tigerweb &mdash; get_census 0.1 documentation</title>
+  
 
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>get_census.tigerweb &#8212; get_census 0.1 documentation</title>
-    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
-    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/jquery.js"></script>
-    <script src="../../_static/underscore.js"></script>
-    <script src="../../_static/doctools.js"></script>
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
    
-  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
-
-  </head><body>
-  
-
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
           
 
-          <div class="body" role="main">
+          
+            <a href="../../index.html" class="icon icon-home"> get_census
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../start_guide.html">Working with the <code class="docutils literal notranslate"><span class="pre">get_census</span></code> Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../census_yaml.html"><code class="docutils literal notranslate"><span class="pre">get_census</span></code> Census Variable File Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../assemble_data.html">DataPlan: Main Class For Assembling a Census Plan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../census_info.html">Census Metadata Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../query.html">Functions for Requesting Data from the Census API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cached_data.html">Stored Data Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tigerweb.html">Query Area and Download Shapefiles</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">get_census</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>get_census.tigerweb</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
             
   <h1>Source code for get_census.tigerweb</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
@@ -36,9 +162,13 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">requests</span> <span class="k">as</span> <span class="nn">r</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">.query</span> <span class="kn">import</span> <span class="n">prep_vars</span>
-<span class="kn">from</span> <span class="nn">.data</span> <span class="kn">import</span> <span class="n">load_state_codes</span>
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">.query</span> <span class="kn">import</span> <span class="n">_prep_vars</span>
+<span class="kn">from</span> <span class="nn">.data</span> <span class="kn">import</span> <span class="n">load_state_codes</span>
+<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="n">GetCensusException</span>
+
+
 
 <span class="n">GEOMETRY_CODES</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;zcta&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
                   <span class="s2">&quot;tract&quot;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
@@ -54,8 +184,9 @@
     <span class="s2">&quot;block group&quot;</span><span class="p">:</span> <span class="s2">&quot;BG&quot;</span>
 <span class="p">}</span>
 
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
-<div class="viewcode-block" id="BBox"><a class="viewcode-back" href="../../tigerweb.html#get_census.tigerweb.BBox">[docs]</a><span class="k">class</span> <span class="nc">BBox</span><span class="p">:</span>
+<span class="k">class</span> <span class="nc">_BBox</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Internal class defining a simple bounding box</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -69,7 +200,7 @@
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xmin</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ymin</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xmax</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ymax</span><span class="p">)</span>
 
-<div class="viewcode-block" id="BBox.subdivide"><a class="viewcode-back" href="../../tigerweb.html#get_census.tigerweb.BBox.subdivide">[docs]</a>    <span class="k">def</span> <span class="nf">subdivide</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">subdivide</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create list of BBox objects that break up the axes of the parent obejct by `factor`. I.e. A factor of</span>
 <span class="sd">        :math:`n` will create :math:`n^2` child BBox objects</span>
@@ -84,15 +215,15 @@
 
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">factor</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">factor</span><span class="p">):</span>
-                <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">BBox</span><span class="p">(</span><span class="n">xmin</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">xmin</span> <span class="o">+</span> <span class="p">(</span><span class="n">i</span> <span class="o">*</span> <span class="n">xdiff</span><span class="p">),</span>
-                                <span class="n">ymin</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ymin</span> <span class="o">+</span> <span class="p">(</span><span class="n">j</span> <span class="o">*</span> <span class="n">ydiff</span><span class="p">),</span>
-                                <span class="n">xmax</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">xmin</span> <span class="o">+</span> <span class="p">((</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">xdiff</span><span class="p">),</span>
-                                <span class="n">ymax</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ymin</span> <span class="o">+</span> <span class="p">((</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">ydiff</span><span class="p">)))</span>
+                <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_BBox</span><span class="p">(</span><span class="n">xmin</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">xmin</span> <span class="o">+</span> <span class="p">(</span><span class="n">i</span> <span class="o">*</span> <span class="n">xdiff</span><span class="p">),</span>
+                                 <span class="n">ymin</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ymin</span> <span class="o">+</span> <span class="p">(</span><span class="n">j</span> <span class="o">*</span> <span class="n">ydiff</span><span class="p">),</span>
+                                 <span class="n">xmax</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">xmin</span> <span class="o">+</span> <span class="p">((</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">xdiff</span><span class="p">),</span>
+                                 <span class="n">ymax</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ymin</span> <span class="o">+</span> <span class="p">((</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">ydiff</span><span class="p">)))</span>
 
-        <span class="k">return</span> <span class="n">out</span></div></div>
+        <span class="k">return</span> <span class="n">out</span>
 
 
-<div class="viewcode-block" id="tigerweb_endpoint"><a class="viewcode-back" href="../../tigerweb.html#get_census.tigerweb.tigerweb_endpoint">[docs]</a><span class="k">def</span> <span class="nf">tigerweb_endpoint</span><span class="p">(</span><span class="n">geometry</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_tigerweb_endpoint</span><span class="p">(</span><span class="n">geometry</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the API endpoint for making queries to the census tigerweb</span>
 
@@ -103,11 +234,11 @@
     <span class="n">out</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="n">GEOMETRY_CODES</span><span class="p">[</span><span class="n">geometry</span><span class="p">])</span>
     <span class="n">out</span> <span class="o">+=</span> <span class="s2">&quot;/query&quot;</span>
 
-    <span class="k">return</span> <span class="n">out</span></div>
+    <span class="k">return</span> <span class="n">out</span>
 
 
 <span class="c1"># noinspection PyDefaultArgument</span>
-<div class="viewcode-block" id="tigerweb_params"><a class="viewcode-back" href="../../tigerweb.html#get_census.tigerweb.tigerweb_params">[docs]</a><span class="k">def</span> <span class="nf">tigerweb_params</span><span class="p">(</span><span class="n">attributes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GEOID&quot;</span><span class="p">],</span> <span class="n">split_factor</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_tigerweb_params</span><span class="p">(</span><span class="n">attributes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GEOID&quot;</span><span class="p">],</span> <span class="n">split_factor</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a list of  dictionaries of the necessary parameters to query the census tigerweb API. Returns</span>
 <span class="sd">    a list to enable combining of queries that return sets larger than the maximum number of objects</span>
@@ -118,7 +249,7 @@
 <span class="sd">    :return: list of dictionary of needed parameters</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">bbox</span> <span class="o">=</span> <span class="n">BBox</span><span class="p">()</span>
+    <span class="n">bbox</span> <span class="o">=</span> <span class="n">_BBox</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="n">split_factor</span><span class="p">:</span>
         <span class="n">boxes</span> <span class="o">=</span> <span class="n">bbox</span><span class="o">.</span><span class="n">subdivide</span><span class="p">(</span><span class="n">split_factor</span><span class="p">)</span>
@@ -130,7 +261,7 @@
         <span class="n">params</span><span class="p">[</span><span class="s2">&quot;geometry&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
         <span class="n">params</span><span class="p">[</span><span class="s2">&quot;geometryType&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;esriGeometryEnvelope&quot;</span>
         <span class="n">params</span><span class="p">[</span><span class="s2">&quot;spatialRel&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;esriSpatialRelIntersects&quot;</span>
-        <span class="n">params</span><span class="p">[</span><span class="s2">&quot;outFields&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">prep_vars</span><span class="p">(</span><span class="n">attributes</span><span class="p">)</span>
+        <span class="n">params</span><span class="p">[</span><span class="s2">&quot;outFields&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_prep_vars</span><span class="p">(</span><span class="n">attributes</span><span class="p">)</span>
         <span class="n">params</span><span class="p">[</span><span class="s2">&quot;returnTrueCurves&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;false&quot;</span>
         <span class="n">params</span><span class="p">[</span><span class="s2">&quot;returnTrueCurves&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;false&quot;</span>
         <span class="n">params</span><span class="p">[</span><span class="s2">&quot;returnIdsOnly&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;false&quot;</span>
@@ -143,7 +274,7 @@
 
         <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">out</span></div>
+    <span class="k">return</span> <span class="n">out</span>
 
 
 <div class="viewcode-block" id="get_area"><a class="viewcode-back" href="../../tigerweb.html#get_census.tigerweb.get_area">[docs]</a><span class="k">def</span> <span class="nf">get_area</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="n">sq_mi</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
@@ -156,20 +287,20 @@
 <span class="sd">    :return: pandas data frame</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">url</span> <span class="o">=</span> <span class="n">tigerweb_endpoint</span><span class="p">(</span><span class="n">geometry</span><span class="p">)</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">_tigerweb_endpoint</span><span class="p">(</span><span class="n">geometry</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">geometry</span> <span class="o">==</span> <span class="s2">&quot;block group&quot;</span><span class="p">:</span>
         <span class="n">split_factor</span> <span class="o">=</span> <span class="mi">10</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">split_factor</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="n">param_list</span> <span class="o">=</span> <span class="n">tigerweb_params</span><span class="p">([</span><span class="s2">&quot;GEOID&quot;</span><span class="p">,</span> <span class="s2">&quot;AREALAND&quot;</span><span class="p">],</span> <span class="n">split_factor</span><span class="p">)</span>
+    <span class="n">param_list</span> <span class="o">=</span> <span class="n">_tigerweb_params</span><span class="p">([</span><span class="s2">&quot;GEOID&quot;</span><span class="p">,</span> <span class="s2">&quot;AREALAND&quot;</span><span class="p">],</span> <span class="n">split_factor</span><span class="p">)</span>
     <span class="n">out</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="n">queries</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">params</span> <span class="ow">in</span> <span class="n">param_list</span><span class="p">:</span>
         <span class="n">queries</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Area query&quot;</span><span class="p">,</span> <span class="n">queries</span><span class="p">,</span> <span class="s2">&quot;of&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">param_list</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;           </span><span class="se">\r</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Area query &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">queries</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; of &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">param_list</span><span class="p">)))</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
         <span class="n">result</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;attributes&#39;</span><span class="p">],</span> <span class="n">result</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s1">&#39;features&#39;</span><span class="p">]))</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
@@ -179,8 +310,8 @@
         <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">out</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;outer&quot;</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GEOID&quot;</span><span class="p">,</span> <span class="s2">&quot;AREALAND&quot;</span><span class="p">])</span>
         <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="mi">100000</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Max rows hit, increase split factor&quot;</span><span class="p">)</span>
-            <span class="k">return</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Max rows hit, increase split factor, ending&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">GetCensusException</span><span class="p">(</span><span class="s2">&quot;Max rows hit, increase split factor, ending&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">sq_mi</span><span class="p">:</span>
         <span class="n">out</span><span class="p">[</span><span class="s1">&#39;AREALAND&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">out</span><span class="p">[</span><span class="s1">&#39;AREALAND&#39;</span><span class="p">]</span><span class="o">/</span><span class="mi">2589988</span>  <span class="c1"># 2589988 square meters to a square mile</span>
@@ -189,7 +320,7 @@
     <span class="k">return</span> <span class="n">out</span></div>
 
 
-<div class="viewcode-block" id="tiger_line_url"><a class="viewcode-back" href="../../tigerweb.html#get_census.tigerweb.tiger_line_url">[docs]</a><span class="k">def</span> <span class="nf">tiger_line_url</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="n">year</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_tiger_line_url</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="n">year</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return URL (or URLs) of zip file(s) containing shape files</span>
 <span class="sd">    for a given census geography</span>
@@ -201,7 +332,7 @@
     <span class="n">base</span> <span class="o">=</span> <span class="s2">&quot;https://www2.census.gov/geo/tiger/&quot;</span>
 
     <span class="k">if</span> <span class="n">geometry</span> <span class="o">==</span> <span class="s2">&quot;zcta&quot;</span> <span class="ow">and</span> <span class="n">year</span> <span class="o">==</span> <span class="mi">2011</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">tiger_line_url</span><span class="p">(</span><span class="s2">&quot;zcta&quot;</span><span class="p">,</span> <span class="mi">2010</span><span class="p">)</span>  <span class="c1"># No ZCTAs listed in 2011 (for some reason)</span>
+        <span class="k">return</span> <span class="n">_tiger_line_url</span><span class="p">(</span><span class="s2">&quot;zcta&quot;</span><span class="p">,</span> <span class="mi">2010</span><span class="p">)</span>  <span class="c1"># No ZCTAs listed in 2011 (for some reason)</span>
 
     <span class="k">if</span> <span class="n">year</span> <span class="o">&gt;=</span> <span class="mi">2010</span><span class="p">:</span>
         <span class="n">base</span> <span class="o">+=</span> <span class="s2">&quot;TIGER&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">year</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span>
@@ -264,13 +395,13 @@
             <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">load_state_codes</span><span class="p">()[</span><span class="s1">&#39;state&#39;</span><span class="p">]:</span>
                 <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">base</span> <span class="o">+</span> <span class="n">state</span> <span class="o">+</span> <span class="s2">&quot;_tract.zip&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;invalid geography&quot;</span><span class="p">)</span>
-        <span class="k">return</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;invalid geography: &quot;</span> <span class="o">+</span> <span class="n">geometry</span> <span class="o">+</span> <span class="s2">&quot;provided&quot;</span> <span class="p">)</span>
+        <span class="k">raise</span> <span class="n">GetCensusException</span><span class="p">(</span><span class="s2">&quot;invalid geography: &quot;</span> <span class="o">+</span> <span class="n">geometry</span> <span class="o">+</span> <span class="s2">&quot;provided&quot;</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">out</span></div>
+    <span class="k">return</span> <span class="n">out</span>
 
 
-<span class="k">def</span> <span class="nf">download_file</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_download_file</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">):</span>
     <span class="n">local_filename</span> <span class="o">=</span> <span class="n">out_dir</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">url</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
     <span class="c1"># NOTE the stream=True parameter below</span>
     <span class="k">with</span> <span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">result</span><span class="p">:</span>
@@ -278,8 +409,6 @@
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">local_filename</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">iter_content</span><span class="p">(</span><span class="n">chunk_size</span><span class="o">=</span><span class="mi">1024</span><span class="o">**</span><span class="mi">2</span><span class="p">):</span>
                 <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">local_filename</span>
 
 
@@ -302,79 +431,53 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">out_dir</span><span class="p">):</span>
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">out_dir</span><span class="p">)</span>
 
-    <span class="n">urls</span> <span class="o">=</span> <span class="n">tiger_line_url</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="n">year</span><span class="p">)</span>
+    <span class="n">urls</span> <span class="o">=</span> <span class="n">_tiger_line_url</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="n">year</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">urls</span><span class="p">:</span>
-        <span class="n">download_file</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">)</span></div>
+        <span class="n">_download_file</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">)</span></div>
 </pre></div>
 
+           </div>
+           
           </div>
-          
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Ben Sabath.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="../../index.html">get_census</a></h1>
 
+    </section>
 
+  </div>
+  
 
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
 
-
-
-
-
-<h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../assemble_data.html">DataPlan: Main Class For Assembling a Census Plan</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../census_info.html">Census Metadata Functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../query.html">Functions for Requesting Data from the Census API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../cached_data.html">Stored Data Files</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tigerweb.html">Query Area and Download Shapefiles</a></li>
-</ul>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../../index.html">Documentation overview</a><ul>
-  <li><a href="../index.html">Module code</a><ul>
-  </ul></li>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>$('#searchbox').show(0);</script>
-
-
-
-
-
-
-
-
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &copy;2021, Ben Sabath.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
-      
-    </div>
-
+  
+  
     
+   
 
-    
-  </body>
+</body>
 </html>

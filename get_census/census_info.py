@@ -1,7 +1,11 @@
 import requests as r
+import logging
 import os
+from .exceptions import *
 
 # Code for handling census metadata
+
+LOG = logging.getLogger(__name__)
 
 
 def get_endpoint(year: int, dataset: str, sum_file: str = None):
@@ -16,24 +20,28 @@ def get_endpoint(year: int, dataset: str, sum_file: str = None):
     # Questions about where best to fail?
     # Do we throw an error here (or elsewhere while prepping the query
 
-    assert dataset in ['dec', 'acs1', 'acs5', 'pums']
+    if dataset not in ['dec', 'acs1', 'acs5']:
+        raise GetCensusException("Input dataset not currently supported")
 
     out = "https://api.census.gov/data/" + str(year) + "/"
 
     if dataset == 'dec':
-        assert year in [2000, 2010]
+        if year not in [2000, 2010]:
+            raise GetCensusException("Invalid year for decennial census")
         out += "dec/"
         if year == 2000:
-            assert sum_file in ["sf1", "sf3"]
+            if sum_file not in ["sf1", "sf3"]:
+                raise GetCensusException("Invalid summary file input")
             out += sum_file
         else:
             out += "sf1"
     elif dataset in ['acs1', 'acs5']:
-        assert year > 2008
+        if year <= 2008:
+            raise GetCensusException("Invalid year for ACS5")
         out += "acs/" + dataset
-    elif dataset == 'pums':
-        assert year > 2008
-        out += 'acs/acs5/pums'
+    #elif dataset == 'pums':
+    #    assert year > 2008
+    #    out += 'acs/acs5/pums'
 
     return out
 
@@ -48,8 +56,25 @@ def get_varlist(year: int, dataset: str, sum_file: str = None):
 
     endpoint = get_endpoint(year, dataset, sum_file)
 
-    out = r.get(endpoint + "/variables.json").json()
+    params = {}
 
+    if "GET_CENSUS_API_KEY" in os.environ.keys():
+        params['key'] = os.environ["GET_CENSUS_API_KEY"]
+
+    num_tries = 0
+    while num_tries < 5:
+        try:
+            out = r.get(endpoint + "/variables.json", params=params)
+            out.raise_for_status()
+            break
+        except:
+            LOG.warning("Varlist Query Failed, re-trying")
+            num_tries += 1
+    if num_tries >= 5:
+        LOG.critical("Unable to complete query after " + str(num_tries) + " tries")
+        raise GetCensusException("Unable to complete varlist query after " + str(num_tries) + " tries")
+
+    out = out.json()
     varnames = list(out['variables'].keys())[3:]
 
     return varnames

@@ -1,8 +1,11 @@
 from .census_info import census_years
-from .query import get_census_data, clean_acs_vars
+from .query import get_census_data, _clean_acs_vars
 from .data import *
 from .tigerweb import get_area
+from .exceptions import *
+import logging
 import pandas as pd
+import numpy as np
 import yaml
 import nsaph_utils.interpolation
 import nsaph_utils.qc
@@ -12,6 +15,17 @@ class DataPlan:
     """
     a class containing information on how to create a desired set of census data.
 
+    Inputs for initializing a DataPlan object from a get_census yaml document
+        :yaml_path: path to a yaml file. Structure defined in :doc:`census_yaml`
+        :geometry: which census geography this plan is for
+        :years: The list of years to query data from. The census_years() function can
+            calculate which years in your timeframe of interest can be queried for the decennial and
+            5 year acs data. Note that this may not apply for the ACS1 or other data. That function may be
+            updated in the future, but for now creating lists of years besides the defaults is left as an exercise
+            for the interested reader.
+        :state: 2 digit FIPS code of the state you want to limit the query to (i.e. "06" for CA)
+        :county: 3 digit FIPS code of the county you want to include. Requires state to be specified
+
     Members:
 
     * ``geometry``: which census geography this plan is for
@@ -19,7 +33,7 @@ class DataPlan:
     * ``state``: 2 digit FIPS code of the state you want to limit the query to (i.e. "06" for CA)
     * ``county``: 3 digit FIPS code of the county you want to include. Requires state to be specified
     * ``plan``: A ``dict`` with keys of years, storing lists of ``VariableDef`` objects defining the variables to be
-      calculated for that year. Created from a yaml file. LINK TO YAML INSTRUCTIONS HERE
+      calculated for that year. Created from a yaml file. Structure defined in :doc:`census_yaml`
     * ``data``: A pandas data frame created based on the defined data plan. only exists after the
       ``DataPlan.assemble_data()`` method is called.
 
@@ -31,7 +45,7 @@ class DataPlan:
     def __init__(self, yaml_path, geometry, years=census_years(), state=None, county=None):
         """
         initialize a DataPlan object from a get_census yaml document
-        :param yaml_path: path to a yaml file
+        :param yaml_path: path to a yaml file. Structure defined in :doc:`census_yaml`
         :param geometry: which census geography this plan is for
         :param years: The list of years to query data from. The census_years() function can
             calculate which years in your timeframe of interest can be queried for the decennial and
@@ -42,6 +56,7 @@ class DataPlan:
         :param county: 3 digit FIPS code of the county you want to include. Requires state to be specified
         """
         self.geometry = geometry
+        self.__logger = logging.getLogger(__name__ + ".DataPlan." + self.geometry)
         self.years = years
         if type(self.years) is int:
             self.years = [self.years]
@@ -49,17 +64,18 @@ class DataPlan:
         self.county = county
 
         self.plan = dict()
-        self.yaml_to_dict(yaml_path)
+        self._yaml_to_dict(yaml_path)
         self.__has_missing = False
 
         self.data = pd.DataFrame()
 
-    def yaml_to_dict(self, yaml_path):
+
+    def _yaml_to_dict(self, yaml_path):
         """
         Convert a yaml file detailing how to get census variables in to a dictionary. Handles
         the issue of forward counting years to make future code readable.
 
-        INSERT LINK TO CENSUS README TO GUIDE HOW TO WRITE THE YAML
+        Yaml structure defined in :doc:`census_yaml`
 
         :param yaml_path:
         :return: dictionary
@@ -75,9 +91,9 @@ class DataPlan:
         for year in self.years:
             self.plan[year] = list()
             for varname in yaml_dict.keys():
-                plan_year = find_year(year, list(yaml_dict[varname].keys()))
+                plan_year = _find_year(year, list(yaml_dict[varname].keys()))
                 if yaml_dict[varname][plan_year] != "skip":
-                    self.plan[year].append(VariableDef(varname, yaml_dict[varname][plan_year]))
+                    self.plan[year].append(VariableDef(varname, yaml_dict[varname][plan_year], self.__logger))
 
     def assemble_data(self):
         """
@@ -87,6 +103,7 @@ class DataPlan:
         """
 
         self.data = None  # Clear in case this has been run previously
+        self.__logger.info("Beginning Census Data Acquisition")
 
         for year in self.years:
             year_data = None
@@ -94,7 +111,7 @@ class DataPlan:
                 continue
 
             for var_def in self.plan[year]:
-                print(year, var_def.name)
+                self.__logger.info("Processing " + str(year) + " " + var_def.name)
                 var_data = var_def.calculate_var(year, self.geometry, self.state, self.county)
                 join_vars = list(set(var_data.columns).difference([var_def.name]))
 
@@ -120,6 +137,8 @@ class DataPlan:
             for var_def in self.plan[year]:
                 out = list(set().union(out, [var_def.name]))
 
+        # Add in density columns
+        out = list(set().union(out, [s for s in self.data.columns if "_density" in s]))
         return out
 
     def add_geoid(self):
@@ -160,7 +179,7 @@ class DataPlan:
             max_year = max(self.years)
 
         if self.__has_missing:
-            print("Missing values already created.")
+            self.__logger.warning("Can't create missingness, Missing values already created.")
             return
 
         if "geoid" not in self.data.columns:
@@ -182,13 +201,13 @@ class DataPlan:
 
         if file_type == "csv":
             self.data.to_csv(path, index=False)
-            return
+            return True
         else:
-            print("No Method currently implemented for that file type")
-            return
+            self.__logger.error("Can't output file, No Method currently implemented for file type: " + file_type)
+            return False
 
     # noinspection PyDefaultArgument
-    def calculate_densities(self, variables=list("population"), sq_mi=True):
+    def calculate_densities(self, variables=["population"], sq_mi=True):
         """
         Divide specified variables by area
         :param variables: List of variables to calculate densities for
@@ -196,7 +215,7 @@ class DataPlan:
         :return: None
         """
         if self.geometry == "block group":
-            print("No support currently added for block group densities, skipping step")
+            self.__logger.error("No support currently added for block group densities, skipping densities")
             return
 
         if "geoid" not in self.data.columns:
@@ -219,7 +238,9 @@ class DataPlan:
         :param max_year: Maximum year to interpolate
         :return:
         """
-        assert method in nsaph_utils.interpolation.IMPLEMENTED_METHODS
+        if method not in nsaph_utils.interpolation.IMPLEMENTED_METHODS:
+            self.__logger.exception("Can't interpolate, Invalid Interpretation Method")
+            raise GetCensusException("Invalid Interpretation Method")
 
         if not min_year:
             min_year = min(self.years)
@@ -242,6 +263,48 @@ class DataPlan:
         census_tester = nsaph_utils.qc.Tester(name, yaml_file=test_file)
         census_tester.check(self.data)
 
+    def _schema_dict(self, table_name: str = None):
+        """
+        return a dictionary containing the names and data types of variables that would be loaded in to a database.
+        Structured as a dictionary to enable writing to either yaml of json
+        :return: dict
+        """
+        if "geoid" not in self.data.columns:
+            self.add_geoid()
+
+        if not table_name:
+            table_name = self.geometry
+
+        out_cols = ["geoid", "year"] + self.get_var_names()
+        col_dicts = dict()
+        for col in out_cols:
+            col_dicts[col] = {"type" : _get_sql_type(self.data[col])}
+
+        out = dict()
+        out[table_name] = dict()
+        out[table_name]["columns"] = col_dicts
+        out[table_name]["primary_key"] = ["geoid", "year"]
+
+        return out
+
+    def write_schema(self, filename: str = None, table_name: str = None):
+        """
+        Write out a yaml file describing the data schema
+        :param filename: path to write to
+        :param table_name: Name of the table for the schema
+        :return: True
+        """
+        if not filename:
+            if table_name:
+                filename = table_name + "_schema.yml"
+            else:
+                filename = "census_" + self.geometry + "_schema.yml"
+
+        with open(filename, 'w') as ff:
+            yaml.dump(self._schema_dict(table_name), ff)
+
+
+
 
 
 
@@ -257,9 +320,15 @@ class VariableDef:
 
     """
 
-    def __init__(self, name: str, var_dict: dict):
+    def __init__(self, name: str, var_dict: dict, log: logging.Logger = None):
 
         self.name = name
+
+        if not log:
+            self.__logger = logging.getLogger(__name__ + ".VariableDef." + self.name)
+        else:
+            self.__logger = log
+
         self.dataset = list(var_dict.keys())[0]
         self.num = var_dict[self.dataset]['num']
         if type(self.num) is str:
@@ -275,12 +344,12 @@ class VariableDef:
             self.den = []
 
         if "acs" in self.dataset:
-            self.make_acs_vars()
+            self._make_acs_vars()
 
-    def make_acs_vars(self):
-        clean_acs_vars(self.num)
+    def _make_acs_vars(self):
+        _clean_acs_vars(self.num)
         if self.has_den:
-            clean_acs_vars(self.den)
+            _clean_acs_vars(self.den)
 
     def get_vars(self):
         """
@@ -319,13 +388,12 @@ class VariableDef:
         num_queries = 0
         for i, row in state_codes.iterrows():
             num_queries += 1
-            print("Running query", num_queries, "of", len(state_codes.index), sep=" ", end="\r")
+            self.__logger.debug("Running query " + str(num_queries)  + " of " + str(len(state_codes.index)))
             state_data = get_census_data(year, self.get_vars(), geometry, self.dataset, state=row['state'])
             if out is None:
                 out = state_data
             else:
                 out = out.append(state_data, ignore_index=True)
-        print()
         return out
 
     def _do_query_block_group(self, year, geometry, state=None, county=None):
@@ -344,14 +412,13 @@ class VariableDef:
         num_queries = 0
         for i, row in county_codes.iterrows():
             num_queries += 1
-            print("Running query", num_queries, "of", len(county_codes.index), sep=" ", end="\r")
+            self.__logger.debug("Running query " + str(num_queries)  + " of " + str(len(county_codes.index)))
             county_data = get_census_data(year, self.get_vars(), geometry,
                                           self.dataset, state=row['state'], county=row['county'])
             if out is None:
                 out = county_data
             else:
                 out = out.append(county_data, ignore_index=True)
-        print()
         return out
 
     def calculate_var(self, year, geometry, state=None, county=None):
@@ -409,7 +476,7 @@ class VariableDef:
         return out
 
 
-def find_year(year, year_list):
+def _find_year(year, year_list):
     """
     Internal helper function, not exported. Returns the first
     year in the list greater or equal to the year
@@ -424,3 +491,22 @@ def find_year(year, year_list):
     for i in year_list:
         if i >= year:
             return i
+
+
+def _get_sql_type(col):
+    """
+    given a numpy array, return the POSTGRES data type needed for that column as a string
+    :param col: a numpy array
+    :return: string of sql type
+    """
+    if type(col[0]) is np.float64:
+        return "FLOAT4"
+    elif type(col[0]) is np.int64:
+        return "INT"
+    elif type(col[0]) is str:
+        max_len = max(map(len, col))
+        return "VARCHAR(" + str(max_len) + ")"
+    else:
+        raise GetCensusException("unexpected column type in data")
+
+

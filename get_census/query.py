@@ -3,11 +3,14 @@ from .exceptions import *
 import requests as r
 import os
 import pandas as pd
+import logging
 
 
 # Code for downloading the census data
 
 SUPPORTED_GEOMETRIES = ["county", "state", "zcta", "block group", "tract"]
+
+LOG = logging.getLogger(__name__)
 
 
 def get_census_data(year: int, variables: list, geography: str, dataset: str, sum_file: str = None, key: str = None,
@@ -33,7 +36,7 @@ def get_census_data(year: int, variables: list, geography: str, dataset: str, su
         dataset = "dec"
 
     if year == 2000 and dataset == "dec" and sum_file is None:
-        sum_file = choose_sum_file(variables)
+        sum_file = _choose_sum_file(variables)
 
     endpoint = get_endpoint(year, dataset, sum_file)
     geography = api_geography(geography)
@@ -46,10 +49,10 @@ def get_census_data(year: int, variables: list, geography: str, dataset: str, su
         variables = [variables]
 
     if dataset in ["acs1", "acs5"]:
-        clean_acs_vars(variables)
+        _clean_acs_vars(variables)
 
     options = dict()
-    options['get'] = prep_vars(variables)
+    options['get'] = _prep_vars(variables)
     options['for'] = geography
     if state is not None:
         options['in'] = 'state:' + state
@@ -65,9 +68,10 @@ def get_census_data(year: int, variables: list, geography: str, dataset: str, su
             out.raise_for_status()
             break
         except:
-            print("Query Failed, re-trying")
+            LOG.warning("Query Failed, re-trying")
             num_tries += 1
     if num_tries >= 5:
+        LOG.critical("Unable to complete query after " + str(num_tries) + " tries")
         raise GetCensusException("Unable to complete query after " + str(num_tries) + " tries")
 
     out = out.json()
@@ -78,14 +82,14 @@ def get_census_data(year: int, variables: list, geography: str, dataset: str, su
         try:
             out[var] = out[var].apply(pd.to_numeric)
         except ValueError:
-            print("Unable to convert variable " + var + " to Numeric array")
+            LOG.error("Unable to convert variable " + var + " to Numeric array")
 
     out['year'] = year
 
     return out
 
 
-def clean_acs_vars(variables: list):
+def _clean_acs_vars(variables: list):
     """
     Ensure that the estimate value is specified for a list of ACS variables
 
@@ -100,7 +104,7 @@ def clean_acs_vars(variables: list):
             variables[i] += "E"
 
 
-def prep_vars(variables: list):
+def _prep_vars(variables: list):
     """
     Convert from a list to a comma separated string
 
@@ -128,7 +132,8 @@ def api_geography(geo: str):
     """
     geo = geo.lower()
 
-    assert geo in SUPPORTED_GEOMETRIES
+    if geo not in SUPPORTED_GEOMETRIES:
+        raise GetCensusException("Input Geometry not supported")
 
     if geo == "zcta":
         return "zip code tabulation area"
@@ -136,7 +141,7 @@ def api_geography(geo: str):
         return geo
 
 
-def choose_sum_file(variables: list):
+def _choose_sum_file(variables: list):
     """
     Internal function, not exported
     If we're querying the 2000 US census, and we're not sure which summary file to

@@ -10,11 +10,15 @@ Welcome to get_census's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   start_guide
+   census_yaml
    assemble_data
    census_info
    query
    cached_data
    tigerweb
+
+
 
 
 
