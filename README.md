@@ -2,10 +2,11 @@
  
 A Python Module for easy specification of custom census data sets.
 
-For instructions on running code see the notebook (here)[notebooks/workflow_example.ipynb]
+For instructions on running code see the notebook [here](notebooks/workflow_example.ipynb)
 
-## TODO
+## Change Log
 
-- Detailed Readme
-- Change `assert` statements to better exceptions
-- ensure that DataPlan.add_geoid correctly assembles FIPS codes
+#### Version 0.3 June 2021:
+Logging in place instead of print statements, successful complete runs with CWL.
+Some user + code documentation, support for commonly used geographies.
+
