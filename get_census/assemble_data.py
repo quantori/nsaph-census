@@ -69,7 +69,6 @@ class DataPlan:
 
         self.data = pd.DataFrame()
 
-
     def _yaml_to_dict(self, yaml_path):
         """
         Convert a yaml file detailing how to get census variables in to a dictionary. Handles
@@ -302,10 +301,6 @@ class DataPlan:
 
         with open(filename, 'w') as ff:
             yaml.dump(self._schema_dict(table_name), ff)
-
-
-
-
 
 
 class VariableDef:

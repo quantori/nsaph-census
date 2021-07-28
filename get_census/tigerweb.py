@@ -10,7 +10,6 @@ from .data import load_state_codes
 from .exceptions import GetCensusException
 
 
-
 GEOMETRY_CODES = {"zcta": 2,
                   "tract": 8,
                   "block group": 10,
@@ -26,6 +25,7 @@ TIGER_NAMES = {
 }
 
 LOG = logging.getLogger(__name__)
+
 
 class _BBox:
     """
