@@ -1,6 +1,11 @@
+image: alpine:latest
+
 pages:
+  stage: deploy
+  script:
+    - echo 'deploying pages ... '
   artifacts: 
     paths:
-    - public
+      - public
   only:
   - iss_doc
