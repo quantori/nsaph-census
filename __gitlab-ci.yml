@@ -1,3 +1,4 @@
+# when the resoures for gitlab pages are available, rename this file to .git-ci.yml and remove this comment.
 image: alpine:latest
 
 pages:  
@@ -8,4 +9,4 @@ pages:
     paths:  
       - public  
   only:  
-  - iss_doc  
+  - master
