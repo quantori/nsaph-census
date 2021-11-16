@@ -1,12 +1,13 @@
-from setuptools import setup, find_packages
+from setuptools import setup
+import setuptools
 from get_census import __version__
 
 setup(
     name='get_census',
     version=__version__,
-    packages=find_packages(),
     url='',
     license='',
+    packages=setuptools.find_packages(exclude=['docs*', 'tests*']),
     author='Ben Sabath',
     author_email='sabath@fas.harvard.edu',
     description='',
