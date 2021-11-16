@@ -1,14 +1,42 @@
-.. get_census documentation master file, created by
-   sphinx-quickstart on Mon Feb 22 16:18:00 2021.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+Census
+======
 
-Welcome to get_census's documentation!
-======================================
+*A short description about the package*
+
+
+.. toctree::
+   :glob:
+   :maxdepth: 2
+   :caption: Introduction
+
+   about
+
+.. toctree::
+   :glob:
+   :maxdepth: 2
+   :caption: Researchers
+
+   env_set_up
+
+.. toctree::
+   :glob:
+   :caption: Developers
+   
+   env_set_up_dev
+   modules
+
+.. toctree::
+   :glob:
+   :maxdepth: 2
+   :caption: Community
+
+   contact
+   CHANGELOG    
+
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Contents
 
    start_guide
    census_yaml
@@ -17,7 +45,6 @@ Welcome to get_census's documentation!
    query
    cached_data
    tigerweb
-   CHANGELOG
 
 
 

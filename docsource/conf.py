@@ -21,7 +21,7 @@ autodoc_member_order = 'bysource'
 
 # -- Project information -----------------------------------------------------
 
-project = 'NSAPH Data Platform'
+project = 'Census'
 copyright = '2021, Harvard University'
 author = 'Michael A Bouzinier'
 
