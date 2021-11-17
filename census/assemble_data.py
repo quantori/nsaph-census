@@ -4,17 +4,19 @@ assemble_data.py
 Core module for assembling a census plan
 """
 
+import logging
+
+import yaml
+import numpy as np
+import pandas as pd
+import nsaph_utils.qc   
+import nsaph_utils.interpolation
+
+from .data import *
+from .exceptions import *
+from .tigerweb import get_area
 from .census_info import census_years
 from .query import get_census_data, _clean_acs_vars
-from .data import *
-from .tigerweb import get_area
-from .exceptions import *
-import logging
-import pandas as pd
-import numpy as np
-import yaml
-import nsaph_utils.interpolation
-import nsaph_utils.qc   
 
 class DataPlan:
     """

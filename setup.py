@@ -1,9 +1,9 @@
 from setuptools import setup
 import setuptools
-from get_census import __version__
+from census import __version__
 
 setup(
-    name='get_census',
+    name='census',
     version=__version__,
     url='',
     license='',
@@ -13,7 +13,7 @@ setup(
     description='',
     entry_points="""
     [console_scripts]
-    get_census=get_census:cli.census_cli
+    census=census:cli.census_cli
     """,
     include_package_data=True
 )
