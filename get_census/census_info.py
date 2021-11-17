@@ -1,3 +1,9 @@
+"""
+census_info.py
+========================================
+Core module for handling census metadata 
+"""
+
 import requests as r
 import logging
 import os

@@ -1,0 +1,12 @@
+# when the resoures for gitlab pages are available, rename this file to .git-ci.yml and remove this comment.
+image: alpine:latest
+
+pages:  
+  stage: deploy  
+  script:  
+    - echo 'deploying pages ... '  
+  artifacts:  
+    paths:  
+      - public  
+  only:  
+  - master

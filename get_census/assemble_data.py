@@ -1,3 +1,9 @@
+"""
+assemble_data.py
+=======================================
+Core module for assembling a census plan
+"""
+
 from .census_info import census_years
 from .query import get_census_data, _clean_acs_vars
 from .data import *
@@ -8,36 +14,28 @@ import pandas as pd
 import numpy as np
 import yaml
 import nsaph_utils.interpolation
-import nsaph_utils.qc
-
+import nsaph_utils.qc   
 
 class DataPlan:
     """
-    a class containing information on how to create a desired set of census data.
-
+    A class containing information on how to create a desired set of census data.   
+    
     Inputs for initializing a DataPlan object from a get_census yaml document
-        :yaml_path: path to a yaml file. Structure defined in :doc:`census_yaml`
-        :geometry: which census geography this plan is for
-        :years: The list of years to query data from. The census_years() function can
-            calculate which years in your timeframe of interest can be queried for the decennial and
-            5 year acs data. Note that this may not apply for the ACS1 or other data. That function may be
-            updated in the future, but for now creating lists of years besides the defaults is left as an exercise
-            for the interested reader.
-        :state: 2 digit FIPS code of the state you want to limit the query to (i.e. "06" for CA)
-        :county: 3 digit FIPS code of the county you want to include. Requires state to be specified
 
+    :yaml_path: path to a yaml file. Structure defined in :doc:`census_yaml`  
+    :geometry: which census geography this plan is for  
+    :years: The list of years to query data from. The census_years() function can calculate which years in your timeframe of interest can be queried for the decennial and 5 year acs data. Note that this may not apply for the ACS1 or other data. That function may be updated in the future, but for now creating lists of years besides the defaults is left as an exercise for the interested reader.  
+    :state: 2 digit FIPS code of the state you want to limit the query to (i.e. "06" for CA)  
+    :county: 3 digit FIPS code of the county you want to include. Requires state to be specified    
+        
     Members:
 
     * ``geometry``: which census geography this plan is for
     * ``years``: The ``list`` of years that the data should be queried for
     * ``state``: 2 digit FIPS code of the state you want to limit the query to (i.e. "06" for CA)
     * ``county``: 3 digit FIPS code of the county you want to include. Requires state to be specified
-    * ``plan``: A ``dict`` with keys of years, storing lists of ``VariableDef`` objects defining the variables to be
-      calculated for that year. Created from a yaml file. Structure defined in :doc:`census_yaml`
-    * ``data``: A pandas data frame created based on the defined data plan. only exists after the
-      ``DataPlan.assemble_data()`` method is called.
-
-
+    * ``plan``: A ``dict`` with keys of years, storing lists of ``VariableDef`` objects defining the variables to be calculated for that year. Created from a yaml file. Structure defined in :doc:`census_yaml`
+    * ``data``: A pandas data frame created based on the defined data plan. only exists after the ``DataPlan.assemble_data()`` method is called.
     """
 
     supported_out_formats = ["csv"]
@@ -45,6 +43,7 @@ class DataPlan:
     def __init__(self, yaml_path, geometry, years=census_years(), state=None, county=None):
         """
         initialize a DataPlan object from a get_census yaml document
+        
         :param yaml_path: path to a yaml file. Structure defined in :doc:`census_yaml`
         :param geometry: which census geography this plan is for
         :param years: The list of years to query data from. The census_years() function can

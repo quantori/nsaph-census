@@ -1,9 +1,17 @@
-from .census_info import *
-from .exceptions import *
-import requests as r
+"""
+query.py
+=================================================
+Functions for Requesting Data from the Census API
+"""
+
 import os
-import pandas as pd
 import logging
+import requests as r
+
+import pandas as pd
+
+from .exceptions import *
+from .census_info import *
 
 
 # Code for downloading the census data
