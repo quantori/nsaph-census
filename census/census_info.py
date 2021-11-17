@@ -4,9 +4,10 @@ census_info.py
 Core module for handling census metadata 
 """
 
-import requests as r
-import logging
 import os
+import logging
+import requests as r
+
 from .exceptions import *
 
 # Code for handling census metadata
