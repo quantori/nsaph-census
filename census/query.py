@@ -6,9 +6,9 @@ Functions for Requesting Data from the Census API
 
 import os
 import logging
-import requests as r
 
 import pandas as pd
+import requests as r
 
 from .exceptions import *
 from .census_info import *
@@ -21,8 +21,9 @@ SUPPORTED_GEOMETRIES = ["county", "state", "zcta", "block group", "tract"]
 LOG = logging.getLogger(__name__)
 
 
-def get_census_data(year: int, variables: list, geography: str, dataset: str, sum_file: str = None, key: str = None,
-                    state: str = None, county: str = None):
+def get_census_data(year: int, variables: list, geography: str, dataset: str,
+                    sum_file: str = None, key: str = None, state: str = None,
+                    county: str = None):
     """
 
     :param year: Year of data that we are querying
@@ -50,8 +51,8 @@ def get_census_data(year: int, variables: list, geography: str, dataset: str, su
     geography = api_geography(geography)
 
     if key is None:
-        if "GET_CENSUS_API_KEY" in os.environ.keys():
-            key = os.environ["GET_CENSUS_API_KEY"]
+        if "CENSUS_API_KEY" in os.environ.keys():
+            key = os.environ["CENSUS_API_KEY"]
 
     if type(variables) is str:
         variables = [variables]
@@ -67,7 +68,7 @@ def get_census_data(year: int, variables: list, geography: str, dataset: str, su
         if county is not None:
             options['in'] += '+county:' + county
     if key is not None:
-        options['key'] = os.environ['GET_CENSUS_API_KEY']
+        options['key'] = os.environ['CENSUS_API_KEY']
 
     num_tries = 0
     while num_tries < 5:
@@ -80,7 +81,7 @@ def get_census_data(year: int, variables: list, geography: str, dataset: str, su
             num_tries += 1
     if num_tries >= 5:
         LOG.critical("Unable to complete query after " + str(num_tries) + " tries")
-        raise GetCensusException("Unable to complete query after " + str(num_tries) + " tries")
+        raise CensusException("Unable to complete query after " + str(num_tries) + " tries")
 
     out = out.json()
     out = pd.DataFrame(out[1:], columns=out[0])
@@ -101,7 +102,7 @@ def _clean_acs_vars(variables: list):
     """
     Ensure that the estimate value is specified for a list of ACS variables
 
-    :param variables: list of strings ccontaining the variable names to request
+    :param variables: list of strings containing the variable names to request
     :return: list of strings containing ACS vars, postpended with an "E"
          (where not previously postended)
     """
@@ -141,7 +142,7 @@ def api_geography(geo: str):
     geo = geo.lower()
 
     if geo not in SUPPORTED_GEOMETRIES:
-        raise GetCensusException("Input Geometry not supported")
+        raise CensusException("Input Geometry not supported")
 
     if geo == "zcta":
         return "zip code tabulation area"

@@ -6,6 +6,7 @@ Core module for handling census metadata
 
 import os
 import logging
+
 import requests as r
 
 from .exceptions import CensusException
@@ -44,6 +45,7 @@ def get_endpoint(year: int, dataset: str, sum_file: str = None):
             out += "sf1"
     elif dataset in ['acs1', 'acs5']:
         if year <= 2008:
+            #TODO: Either the condition or error message is not correct. What if dataset is acs1?
             raise CensusException("Invalid year for ACS5")
         out += "acs/" + dataset
     #elif dataset == 'pums':
@@ -65,8 +67,8 @@ def get_varlist(year: int, dataset: str, sum_file: str = None):
 
     params = {}
 
-    if "GET_CENSUS_API_KEY" in os.environ.keys():
-        params['key'] = os.environ["GET_CENSUS_API_KEY"]
+    if "CENSUS_API_KEY" in os.environ.keys():
+        params['key'] = os.environ["CENSUS_API_KEY"]
 
     num_tries = 0
     while num_tries < 5:
@@ -90,12 +92,14 @@ def get_varlist(year: int, dataset: str, sum_file: str = None):
 def set_api_key(key: str):
     """
     Sets an environment variable to contain your census API key. To avoid needing to run this
-    every session you can also permanently set GET_CENSUS_API_KEY to your key in your environment.
+    every session you can also permanently set CENSUS_API_KEY to your key in your environment.
 
     :param key: Your Census API key as a string
     :return: nothing
     """
-    os.environ['GET_CENSUS_API_KEY'] = key
+    # TODO: Why not set the API key directly in python script?
+    # Also I suggest to change the name to set_census_api_key.
+    os.environ['CENSUS_API_KEY'] = key
 
 
 def census_years(min_year: int = 2000, max_year: int = 2019):

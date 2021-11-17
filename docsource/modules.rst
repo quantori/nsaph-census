@@ -24,3 +24,6 @@ Modules that are used in this project are listed in this section.
 
 .. automodule:: census.data.load_data
   :members:
+
+.. automodule:: census.utils
+  :members:

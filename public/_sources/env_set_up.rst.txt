@@ -58,7 +58,7 @@ Setting up Census API Key
 In order to interact with the US Census API at scale, you'll a Census API
 key. You can get one `here <https://api.census.gov/data/key_signup.html>`_. Once
 you have your key, you'll need to add it to your environment. You can either do that
-through ``conda`` (``conda env config vars set GET_CENSUS_API_KEY=<your key>``), setting
+through ``conda`` (``conda env config vars set CENSUS_API_KEY=<your key>``), setting
 the key directly in your ``.rc`` file, or by using the ``get_census.set_api_key`` function
 (this only affects your current session, and isn't permanent).
 

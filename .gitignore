@@ -6,3 +6,4 @@ get-census-env/*
 .idea/*
 __pycache__
 *.DS_Store
+.pytest_cache/
