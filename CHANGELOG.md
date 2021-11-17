@@ -6,6 +6,7 @@
 
 - public folder to hold webpage documents for gitlab.
 - docs folder to hold webpage documents for github.
+- Set up environment page. 
 
 
 ### Changed

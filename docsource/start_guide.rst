@@ -1,8 +1,6 @@
 Working with the ``get_census`` Package
 =======================================
 
-
-
 Running the Command Line Interface
 ----------------------------------
 
