@@ -89,25 +89,31 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="about.html">About</a></li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Researchers</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="env_set_up.html">Setting Up Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quick Start</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developers</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="env_set_up_dev.html">Setting Up Environment (Developers)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">Community</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="contact.html">Contant</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Changelog</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<p class="caption" role="heading"><span class="caption-text">Old Doc</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Working with the <code class="docutils literal notranslate"><span class="pre">get_census</span></code> Package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#environment-set-up">Environment Set-up</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#running-the-command-line-interface">Running the Command Line Interface</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#main-python-workflow">Main Python Workflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#shapefile-downloads">Shapefile Downloads</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="census_yaml.html"><code class="docutils literal notranslate"><span class="pre">get_census</span></code> Census Variable File Structure</a></li>
-<li class="toctree-l1"><a class="reference internal" href="assemble_data.html">DataPlan: Main Class For Assembling a Census Plan</a></li>
-<li class="toctree-l1"><a class="reference internal" href="census_info.html">Census Metadata Functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="query.html">Functions for Requesting Data from the Census API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cached_data.html">Stored Data Files</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tigerweb.html">Query Area and Download Shapefiles</a></li>
 </ul>
 
             
@@ -174,25 +180,6 @@
             
   <section id="working-with-the-get-census-package">
 <h1>Working with the <code class="docutils literal notranslate"><span class="pre">get_census</span></code> Package<a class="headerlink" href="#working-with-the-get-census-package" title="Permalink to this headline">¶</a></h1>
-<p>The Get Census package provides an interface with US Census Data,
-including the main API, some functionality for working with the TigerWeb API,
-and the FTP site for Tiger Shapefile Downloads. This package also includes a command
-line interface to enable quick running of standard workflows.</p>
-<section id="environment-set-up">
-<h2>Environment Set-up<a class="headerlink" href="#environment-set-up" title="Permalink to this headline">¶</a></h2>
-<p>In the <code class="docutils literal notranslate"><span class="pre">get_census</span></code> git repostory, we have included a yaml
-file (<code class="docutils literal notranslate"><span class="pre">get_census_env.yml</span></code>) that can be used to create a <code class="docutils literal notranslate"><span class="pre">conda</span></code> environment
-with the needed dependencies. In addition to this, the <code class="docutils literal notranslate"><span class="pre">nsaph_utils</span></code> package
-and the <code class="docutils literal notranslate"><span class="pre">get_census</span></code> packages will need to be installed from source using <code class="docutils literal notranslate"><span class="pre">pip</span></code>.
-Cloning the repository and running <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">&lt;path</span> <span class="pre">to</span> <span class="pre">package&gt;</span></code> will handle
-that installation.</p>
-<p>Finally, in order to interact with the US Census API at scale, you’ll a Census API
-key. You can get one <a class="reference external" href="https://api.census.gov/data/key_signup.html">here</a>. Once
-you have your key, you’ll need to add it to your environment. You can either do that
-through <code class="docutils literal notranslate"><span class="pre">conda</span></code> (<code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">env</span> <span class="pre">config</span> <span class="pre">vars</span> <span class="pre">set</span> <span class="pre">GET_CENSUS_API_KEY=&lt;your</span> <span class="pre">key&gt;</span></code>), setting
-the key directly in your <code class="docutils literal notranslate"><span class="pre">.rc</span></code> file, or by using the <code class="docutils literal notranslate"><span class="pre">get_census.set_api_key</span></code> function
-(this only affects your current session, and isn’t permanent).</p>
-</section>
 <section id="running-the-command-line-interface">
 <h2>Running the Command Line Interface<a class="headerlink" href="#running-the-command-line-interface" title="Permalink to this headline">¶</a></h2>
 <p>When <code class="docutils literal notranslate"><span class="pre">get_census</span></code> is installed, a command line utility (also named <code class="docutils literal notranslate"><span class="pre">get_census</span></code>)
@@ -214,7 +201,7 @@ path specified by <code class="docutils literal notranslate"><span class="pre">-
 <section id="main-python-workflow">
 <h2>Main Python Workflow<a class="headerlink" href="#main-python-workflow" title="Permalink to this headline">¶</a></h2>
 <p>All main functionality for this package is contained within the <cite>DataPlan</cite> object.
-For detailed documentation on its methods, please see <a class="reference internal" href="assemble_data.html"><span class="doc">DataPlan: Main Class For Assembling a Census Plan</span></a>.</p>
+For detailed documentation on its methods, please see <span class="xref std std-doc">assemble_data</span>.</p>
 <p>The general workflow is as follows:</p>
 <ul>
 <li><p>Create your DataPlan Object (this one is for county data for 2000-2019):</p>
@@ -277,7 +264,7 @@ unit from the tigerweb API. Also note that due to limited data availability, the
 <section id="shapefile-downloads">
 <h2>Shapefile Downloads<a class="headerlink" href="#shapefile-downloads" title="Permalink to this headline">¶</a></h2>
 <p>In addition to the general processing workflow, the package also includes
-a function for downloading Census geography shape files. Please see <a class="reference internal" href="tigerweb.html"><span class="doc">Query Area and Download Shapefiles</span></a>
+a function for downloading Census geography shape files. Please see <span class="xref std std-doc">tigerweb</span>
 for documentation on the functions interacting with the Census geographic resources.</p>
 </section>
 </section>

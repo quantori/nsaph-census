@@ -1,27 +1,7 @@
 Working with the ``get_census`` Package
 =======================================
 
-The Get Census package provides an interface with US Census Data,
-including the main API, some functionality for working with the TigerWeb API,
-and the FTP site for Tiger Shapefile Downloads. This package also includes a command
-line interface to enable quick running of standard workflows.
 
-Environment Set-up
-------------------
-
-In the ``get_census`` git repostory, we have included a yaml
-file (``get_census_env.yml``) that can be used to create a ``conda`` environment
-with the needed dependencies. In addition to this, the ``nsaph_utils`` package
-and the ``get_census`` packages will need to be installed from source using ``pip``.
-Cloning the repository and running ``pip install -e <path to package>`` will handle
-that installation.
-
-Finally, in order to interact with the US Census API at scale, you'll a Census API
-key. You can get one `here <https://api.census.gov/data/key_signup.html>`_. Once
-you have your key, you'll need to add it to your environment. You can either do that
-through ``conda`` (``conda env config vars set GET_CENSUS_API_KEY=<your key>``), setting
-the key directly in your ``.rc`` file, or by using the ``get_census.set_api_key`` function
-(this only affects your current session, and isn't permanent).
 
 Running the Command Line Interface
 ----------------------------------

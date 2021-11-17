@@ -1,5 +1,8 @@
 """
-Code for interacting with the Census TIGERWEb API
+tigerweb.py
+=================================================
+Code for interacting with the Census TIGERWEb API, query area and download shape
+ files.
 """
 import requests as r
 import pandas as pd

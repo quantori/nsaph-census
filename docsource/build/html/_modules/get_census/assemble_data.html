@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>get_census.assemble_data &mdash; NSAPH Data Platform 0.0.1 documentation</title>
+  <title>get_census.assemble_data &mdash; Census 0.0.1 documentation</title>
   
 
   
@@ -36,6 +36,7 @@
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/sphinx_paramlinks.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../../about.html" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 </head>
@@ -51,7 +52,7 @@
           
 
           
-            <a href="../../index.html" class="icon icon-home"> NSAPH Data Platform
+            <a href="../../index.html" class="icon icon-home"> Census
           
 
           
@@ -81,16 +82,30 @@
               
             
             
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">About</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Researchers</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../env_set_up.html">Setting Up Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quick_start.html">Quick Start</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developers</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../env_set_up_dev.html">Setting Up Environment (Developers)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">Modules</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Community</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contact.html">Contant</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CHANGELOG.html">Changelog</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Old Doc</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../start_guide.html">Working with the <code class="docutils literal notranslate"><span class="pre">get_census</span></code> Package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../census_yaml.html"><code class="docutils literal notranslate"><span class="pre">get_census</span></code> Census Variable File Structure</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../assemble_data.html">DataPlan: Main Class For Assembling a Census Plan</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../census_info.html">Census Metadata Functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../query.html">Functions for Requesting Data from the Census API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../cached_data.html">Stored Data Files</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tigerweb.html">Query Area and Download Shapefiles</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../CHANGELOG.html">Changelog</a></li>
 </ul>
 
             
@@ -105,7 +120,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">NSAPH Data Platform</a>
+          <a href="../../index.html">Census</a>
         
       </nav>
 
@@ -154,7 +169,13 @@
            <div itemprop="articleBody">
             
   <h1>Source code for get_census.assemble_data</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">.census_info</span> <span class="kn">import</span> <span class="n">census_years</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">assemble_data.py</span>
+<span class="sd">=======================================</span>
+<span class="sd">Core module for assembling a census plan</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">.census_info</span> <span class="kn">import</span> <span class="n">census_years</span>
 <span class="kn">from</span> <span class="nn">.query</span> <span class="kn">import</span> <span class="n">get_census_data</span><span class="p">,</span> <span class="n">_clean_acs_vars</span>
 <span class="kn">from</span> <span class="nn">.data</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">.tigerweb</span> <span class="kn">import</span> <span class="n">get_area</span>
@@ -164,36 +185,28 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">yaml</span>
 <span class="kn">import</span> <span class="nn">nsaph_utils.interpolation</span>
-<span class="kn">import</span> <span class="nn">nsaph_utils.qc</span>
+<span class="kn">import</span> <span class="nn">nsaph_utils.qc</span>   
 
-
-<div class="viewcode-block" id="DataPlan"><a class="viewcode-back" href="../../assemble_data.html#get_census.assemble_data.DataPlan">[docs]</a><span class="k">class</span> <span class="nc">DataPlan</span><span class="p">:</span>
+<div class="viewcode-block" id="DataPlan"><a class="viewcode-back" href="../../modules.html#get_census.assemble_data.DataPlan">[docs]</a><span class="k">class</span> <span class="nc">DataPlan</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    a class containing information on how to create a desired set of census data.</span>
-
+<span class="sd">    A class containing information on how to create a desired set of census data.   </span>
+<span class="sd">    </span>
 <span class="sd">    Inputs for initializing a DataPlan object from a get_census yaml document</span>
-<span class="sd">        :yaml_path: path to a yaml file. Structure defined in :doc:`census_yaml`</span>
-<span class="sd">        :geometry: which census geography this plan is for</span>
-<span class="sd">        :years: The list of years to query data from. The census_years() function can</span>
-<span class="sd">            calculate which years in your timeframe of interest can be queried for the decennial and</span>
-<span class="sd">            5 year acs data. Note that this may not apply for the ACS1 or other data. That function may be</span>
-<span class="sd">            updated in the future, but for now creating lists of years besides the defaults is left as an exercise</span>
-<span class="sd">            for the interested reader.</span>
-<span class="sd">        :state: 2 digit FIPS code of the state you want to limit the query to (i.e. &quot;06&quot; for CA)</span>
-<span class="sd">        :county: 3 digit FIPS code of the county you want to include. Requires state to be specified</span>
 
+<span class="sd">    :yaml_path: path to a yaml file. Structure defined in :doc:`census_yaml`  </span>
+<span class="sd">    :geometry: which census geography this plan is for  </span>
+<span class="sd">    :years: The list of years to query data from. The census_years() function can calculate which years in your timeframe of interest can be queried for the decennial and 5 year acs data. Note that this may not apply for the ACS1 or other data. That function may be updated in the future, but for now creating lists of years besides the defaults is left as an exercise for the interested reader.  </span>
+<span class="sd">    :state: 2 digit FIPS code of the state you want to limit the query to (i.e. &quot;06&quot; for CA)  </span>
+<span class="sd">    :county: 3 digit FIPS code of the county you want to include. Requires state to be specified    </span>
+<span class="sd">        </span>
 <span class="sd">    Members:</span>
 
 <span class="sd">    * ``geometry``: which census geography this plan is for</span>
 <span class="sd">    * ``years``: The ``list`` of years that the data should be queried for</span>
 <span class="sd">    * ``state``: 2 digit FIPS code of the state you want to limit the query to (i.e. &quot;06&quot; for CA)</span>
 <span class="sd">    * ``county``: 3 digit FIPS code of the county you want to include. Requires state to be specified</span>
-<span class="sd">    * ``plan``: A ``dict`` with keys of years, storing lists of ``VariableDef`` objects defining the variables to be</span>
-<span class="sd">      calculated for that year. Created from a yaml file. Structure defined in :doc:`census_yaml`</span>
-<span class="sd">    * ``data``: A pandas data frame created based on the defined data plan. only exists after the</span>
-<span class="sd">      ``DataPlan.assemble_data()`` method is called.</span>
-
-
+<span class="sd">    * ``plan``: A ``dict`` with keys of years, storing lists of ``VariableDef`` objects defining the variables to be calculated for that year. Created from a yaml file. Structure defined in :doc:`census_yaml`</span>
+<span class="sd">    * ``data``: A pandas data frame created based on the defined data plan. only exists after the ``DataPlan.assemble_data()`` method is called.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">supported_out_formats</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;csv&quot;</span><span class="p">]</span>
@@ -201,6 +214,7 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yaml_path</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">years</span><span class="o">=</span><span class="n">census_years</span><span class="p">(),</span> <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">county</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        initialize a DataPlan object from a get_census yaml document</span>
+<span class="sd">        </span>
 <span class="sd">        :param yaml_path: path to a yaml file. Structure defined in :doc:`census_yaml`</span>
 <span class="sd">        :param geometry: which census geography this plan is for</span>
 <span class="sd">        :param years: The list of years to query data from. The census_years() function can</span>
@@ -250,7 +264,7 @@
                 <span class="k">if</span> <span class="n">yaml_dict</span><span class="p">[</span><span class="n">varname</span><span class="p">][</span><span class="n">plan_year</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;skip&quot;</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">plan</span><span class="p">[</span><span class="n">year</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">VariableDef</span><span class="p">(</span><span class="n">varname</span><span class="p">,</span> <span class="n">yaml_dict</span><span class="p">[</span><span class="n">varname</span><span class="p">][</span><span class="n">plan_year</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">__logger</span><span class="p">))</span>
 
-<div class="viewcode-block" id="DataPlan.assemble_data"><a class="viewcode-back" href="../../assemble_data.html#get_census.assemble_data.DataPlan.assemble_data">[docs]</a>    <span class="k">def</span> <span class="nf">assemble_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="DataPlan.assemble_data"><a class="viewcode-back" href="../../modules.html#get_census.assemble_data.DataPlan.assemble_data">[docs]</a>    <span class="k">def</span> <span class="nf">assemble_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a data frame for each geoid , for each year, with each variable as defined in the data plan</span>
 
@@ -280,7 +294,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">year_data</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DataPlan.get_var_names"><a class="viewcode-back" href="../../assemble_data.html#get_census.assemble_data.DataPlan.get_var_names">[docs]</a>    <span class="k">def</span> <span class="nf">get_var_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="DataPlan.get_var_names"><a class="viewcode-back" href="../../modules.html#get_census.assemble_data.DataPlan.get_var_names">[docs]</a>    <span class="k">def</span> <span class="nf">get_var_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a list containing all the variable names that are created in the data plan</span>
 
@@ -296,7 +310,7 @@
         <span class="n">out</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">()</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="s2">&quot;_density&quot;</span> <span class="ow">in</span> <span class="n">s</span><span class="p">]))</span>
         <span class="k">return</span> <span class="n">out</span></div>
 
-<div class="viewcode-block" id="DataPlan.add_geoid"><a class="viewcode-back" href="../../assemble_data.html#get_census.assemble_data.DataPlan.add_geoid">[docs]</a>    <span class="k">def</span> <span class="nf">add_geoid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="DataPlan.add_geoid"><a class="viewcode-back" href="../../modules.html#get_census.assemble_data.DataPlan.add_geoid">[docs]</a>    <span class="k">def</span> <span class="nf">add_geoid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        add a single column named &#39;geoid&#39; to self.data combining all portions of a data sets geographical identifiers</span>
 
@@ -322,7 +336,7 @@
             <span class="k">for</span> <span class="n">geo_var</span> <span class="ow">in</span> <span class="n">geo_vars</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;geoid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;geoid&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">geo_var</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="DataPlan.create_missingness"><a class="viewcode-back" href="../../assemble_data.html#get_census.assemble_data.DataPlan.create_missingness">[docs]</a>    <span class="k">def</span> <span class="nf">create_missingness</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_year</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="DataPlan.create_missingness"><a class="viewcode-back" href="../../modules.html#get_census.assemble_data.DataPlan.create_missingness">[docs]</a>    <span class="k">def</span> <span class="nf">create_missingness</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_year</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a row for all combinations of geospatial ID and year</span>
 <span class="sd">        :return:</span>
@@ -345,7 +359,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">all_vals</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;geoid&#39;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__has_missing</span> <span class="o">=</span> <span class="kc">True</span></div>
 
-<div class="viewcode-block" id="DataPlan.write_data"><a class="viewcode-back" href="../../assemble_data.html#get_census.assemble_data.DataPlan.write_data">[docs]</a>    <span class="k">def</span> <span class="nf">write_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">file_type</span><span class="o">=</span><span class="s2">&quot;csv&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="DataPlan.write_data"><a class="viewcode-back" href="../../modules.html#get_census.assemble_data.DataPlan.write_data">[docs]</a>    <span class="k">def</span> <span class="nf">write_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">file_type</span><span class="o">=</span><span class="s2">&quot;csv&quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Write data  out to a file. Default method is to write out to csv. new methods can be implemented in the future.</span>
 
@@ -362,7 +376,7 @@
             <span class="k">return</span> <span class="kc">False</span></div>
 
     <span class="c1"># noinspection PyDefaultArgument</span>
-<div class="viewcode-block" id="DataPlan.calculate_densities"><a class="viewcode-back" href="../../assemble_data.html#get_census.assemble_data.DataPlan.calculate_densities">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_densities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;population&quot;</span><span class="p">],</span> <span class="n">sq_mi</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="DataPlan.calculate_densities"><a class="viewcode-back" href="../../modules.html#get_census.assemble_data.DataPlan.calculate_densities">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_densities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;population&quot;</span><span class="p">],</span> <span class="n">sq_mi</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Divide specified variables by area</span>
 <span class="sd">        :param variables: List of variables to calculate densities for</span>
@@ -385,7 +399,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="s1">&#39;arealand&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DataPlan.interpolate"><a class="viewcode-back" href="../../assemble_data.html#get_census.assemble_data.DataPlan.interpolate">[docs]</a>    <span class="k">def</span> <span class="nf">interpolate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;ma&quot;</span><span class="p">,</span> <span class="n">min_year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_year</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="DataPlan.interpolate"><a class="viewcode-back" href="../../modules.html#get_census.assemble_data.DataPlan.interpolate">[docs]</a>    <span class="k">def</span> <span class="nf">interpolate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;ma&quot;</span><span class="p">,</span> <span class="n">min_year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_year</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Fill in values</span>
 <span class="sd">        :param method: Interpolation method to use</span>
@@ -408,7 +422,7 @@
 
         <span class="n">nsaph_utils</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_var_names</span><span class="p">(),</span> <span class="n">method</span><span class="p">,</span> <span class="s2">&quot;year&quot;</span><span class="p">,</span> <span class="s2">&quot;geoid&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DataPlan.quality_check"><a class="viewcode-back" href="../../assemble_data.html#get_census.assemble_data.DataPlan.quality_check">[docs]</a>    <span class="k">def</span> <span class="nf">quality_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">test_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<div class="viewcode-block" id="DataPlan.quality_check"><a class="viewcode-back" href="../../modules.html#get_census.assemble_data.DataPlan.quality_check">[docs]</a>    <span class="k">def</span> <span class="nf">quality_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">test_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Test self.data for the checks defined in the test file</span>
 <span class="sd">        :param test_file: path to a yaml file defining tests per the quality check paradigm in nsaph_utils.qc</span>
@@ -442,7 +456,7 @@
 
         <span class="k">return</span> <span class="n">out</span>
 
-<div class="viewcode-block" id="DataPlan.write_schema"><a class="viewcode-back" href="../../assemble_data.html#get_census.assemble_data.DataPlan.write_schema">[docs]</a>    <span class="k">def</span> <span class="nf">write_schema</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">table_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="DataPlan.write_schema"><a class="viewcode-back" href="../../modules.html#get_census.assemble_data.DataPlan.write_schema">[docs]</a>    <span class="k">def</span> <span class="nf">write_schema</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">table_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Write out a yaml file describing the data schema</span>
 <span class="sd">        :param filename: path to write to</span>
@@ -459,7 +473,7 @@
             <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_schema_dict</span><span class="p">(</span><span class="n">table_name</span><span class="p">),</span> <span class="n">ff</span><span class="p">)</span></div></div>
 
 
-<div class="viewcode-block" id="VariableDef"><a class="viewcode-back" href="../../assemble_data.html#get_census.assemble_data.VariableDef">[docs]</a><span class="k">class</span> <span class="nc">VariableDef</span><span class="p">:</span>
+<div class="viewcode-block" id="VariableDef"><a class="viewcode-back" href="../../modules.html#get_census.assemble_data.VariableDef">[docs]</a><span class="k">class</span> <span class="nc">VariableDef</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Structured way of representing what we need to know for a variable.</span>
 <span class="sd">    Members:</span>
@@ -502,7 +516,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_den</span><span class="p">:</span>
             <span class="n">_clean_acs_vars</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">den</span><span class="p">)</span>
 
-<div class="viewcode-block" id="VariableDef.get_vars"><a class="viewcode-back" href="../../assemble_data.html#get_census.assemble_data.VariableDef.get_vars">[docs]</a>    <span class="k">def</span> <span class="nf">get_vars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="VariableDef.get_vars"><a class="viewcode-back" href="../../modules.html#get_census.assemble_data.VariableDef.get_vars">[docs]</a>    <span class="k">def</span> <span class="nf">get_vars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :return: a union of all census variables needed for this variable</span>
 
@@ -510,7 +524,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">()</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">den</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="VariableDef.do_query"><a class="viewcode-back" href="../../assemble_data.html#get_census.assemble_data.VariableDef.do_query">[docs]</a>    <span class="k">def</span> <span class="nf">do_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">year</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">county</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="VariableDef.do_query"><a class="viewcode-back" href="../../modules.html#get_census.assemble_data.VariableDef.do_query">[docs]</a>    <span class="k">def</span> <span class="nf">do_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">year</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">county</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Run the query defined by the contained variables</span>
 <span class="sd">        :param geometry: census geometry to query</span>
@@ -572,7 +586,7 @@
                 <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">county_data</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">out</span>
 
-<div class="viewcode-block" id="VariableDef.calculate_var"><a class="viewcode-back" href="../../assemble_data.html#get_census.assemble_data.VariableDef.calculate_var">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">year</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">county</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="VariableDef.calculate_var"><a class="viewcode-back" href="../../modules.html#get_census.assemble_data.VariableDef.calculate_var">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">year</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">county</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Query the required data from the census, then calculate the variable defined</span>
 <span class="sd">        :param year: year of data to query</span>

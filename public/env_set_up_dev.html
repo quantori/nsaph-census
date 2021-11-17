@@ -9,7 +9,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>&lt;no title&gt; &mdash; Census 0.0.1 documentation</title>
+  <title>Setting Up Environment (Developers) &mdash; Census 0.0.1 documentation</title>
   
 
   
@@ -39,7 +39,9 @@
   <link rel="stylesheet" href="_static/sphinx_paramlinks.css" type="text/css" />
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Modules" href="modules.html" />
+    <link rel="prev" title="Quick Start" href="quick_start.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -87,19 +89,35 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="about.html">About</a></li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Researchers</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="env_set_up.html">Setting Up Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quick Start</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developers</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Setting Up Environment (Developers)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#setting-up-a-new-environment">Setting up a new environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#updating-an-existing-environment">Updating an existing environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installing-census">Installing census</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installing-nsaph-utils">Installing nsaph_utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#setting-up-census-api-key">Setting up Census API Key</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#registering-the-conda-kernal">Registering the Conda Kernal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#updating-the-environment-recipe">Updating the Environment Recipe</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">Community</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="contact.html">Contant</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Changelog</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<p class="caption" role="heading"><span class="caption-text">Old Doc</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="start_guide.html">Working with the <code class="docutils literal notranslate"><span class="pre">get_census</span></code> Package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="census_yaml.html"><code class="docutils literal notranslate"><span class="pre">get_census</span></code> Census Variable File Structure</a></li>
-<li class="toctree-l1"><a class="reference internal" href="assemble_data.html">DataPlan: Main Class For Assembling a Census Plan</a></li>
-<li class="toctree-l1"><a class="reference internal" href="census_info.html">Census Metadata Functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="query.html">Functions for Requesting Data from the Census API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cached_data.html">Stored Data Files</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tigerweb.html">Query Area and Download Shapefiles</a></li>
 </ul>
 
             
@@ -145,7 +163,7 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>&lt;no title&gt;</li>
+      <li>Setting Up Environment (Developers)</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -164,12 +182,81 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  
+  <section id="setting-up-environment-developers">
+<h1>Setting Up Environment (Developers)<a class="headerlink" href="#setting-up-environment-developers" title="Permalink to this headline">¶</a></h1>
+<p>Developers environment requires extra packages and libraries to surpport generating documentation. Here are the steps for setting up the environment. Please make sure that you have <a class="reference external" href="https://docs.anaconda.com/anaconda/install/index.html">anaconda</a> installed on your system. You can also install <a class="reference external" href="https://docs.conda.io/en/latest/miniconda.html">miniconda</a>, which is the lightweight version of anaconda. On HPC systmes you may need to load the modules.</p>
+<section id="setting-up-a-new-environment">
+<h2>Setting up a new environment<a class="headerlink" href="#setting-up-a-new-environment" title="Permalink to this headline">¶</a></h2>
+<p>If you have not set up any environment for the project, you need to create a new environment. The following command will generate a new environment using the <cite>environment_dev.yml</cite> file.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>conda env create --name your_env_name --file environment_dev.yml
+</pre></div>
+</div>
+</section>
+<section id="updating-an-existing-environment">
+<h2>Updating an existing environment<a class="headerlink" href="#updating-an-existing-environment" title="Permalink to this headline">¶</a></h2>
+<p>If you have set up the environment and you want to make sure that it is the latest version, you can use the following command.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>conda env update --name your_env_name --file environment_dev.yml
+</pre></div>
+</div>
+<p>After setting up the environment, you need to install the <cite>census</cite> package.</p>
+</section>
+<section id="installing-census">
+<h2>Installing census<a class="headerlink" href="#installing-census" title="Permalink to this headline">¶</a></h2>
+<p>Navigate to the package folder and use the following code to install the package.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pip3 install -e .
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">-e</span></code> flag installs the package in the development mode. As a result, you do not need to reintall the package by chaning the code.</p>
+</section>
+<section id="installing-nsaph-utils">
+<h2>Installing nsaph_utils<a class="headerlink" href="#installing-nsaph-utils" title="Permalink to this headline">¶</a></h2>
+<p>The package is dependent on the <cite>nsaph_utils</cite> package. This package is not available on CRAN or PyPI. You need to get the source code from the <a class="reference external" href="https://gitlab-int.rc.fas.harvard.edu/rse/francesca_dominici/tools/nsaph_utils">Gitlab repository</a> and install it similar to the <cite>census</cite> package.
+You can skip <cite>-e</cite> flag. While inside the package folder, you can run:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pip3 install -e .
+</pre></div>
+</div>
+</section>
+<section id="setting-up-census-api-key">
+<h2>Setting up Census API Key<a class="headerlink" href="#setting-up-census-api-key" title="Permalink to this headline">¶</a></h2>
+<p>In order to interact with the US Census API at scale, you’ll a Census API
+key. You can get one <a class="reference external" href="https://api.census.gov/data/key_signup.html">here</a>. Once
+you have your key, you’ll need to add it to your environment. You can either do that
+through <code class="docutils literal notranslate"><span class="pre">conda</span></code> (<code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">env</span> <span class="pre">config</span> <span class="pre">vars</span> <span class="pre">set</span> <span class="pre">GET_CENSUS_API_KEY=&lt;your</span> <span class="pre">key&gt;</span></code>), setting
+the key directly in your <code class="docutils literal notranslate"><span class="pre">.rc</span></code> file, or by using the <code class="docutils literal notranslate"><span class="pre">get_census.set_api_key</span></code> function
+(this only affects your current session, and isn’t permanent).</p>
+</section>
+<section id="registering-the-conda-kernal">
+<h2>Registering the Conda Kernal<a class="headerlink" href="#registering-the-conda-kernal" title="Permalink to this headline">¶</a></h2>
+<p>If you plan onn testing the package using Jupyter Notebook, you need to register the package using the following command:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>conda activate your_env_name
+<span class="gp">$ </span>python3 -m ipykernel install --user --name your_env_name
+</pre></div>
+</div>
+</section>
+<section id="updating-the-environment-recipe">
+<h2>Updating the Environment Recipe<a class="headerlink" href="#updating-the-environment-recipe" title="Permalink to this headline">¶</a></h2>
+<p>If you added new features to the package which is dependent on a library that is not available in the current environment, you need to update the environment recipe. While the conda environment is activated, use the following command:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>conda env <span class="nb">export</span> &gt; environment_dev.yml
+</pre></div>
+</div>
+<p>Make sure to manually remove <cite>name</cite> and <cite>prefix</cite> sections as well as <cite>census</cite> and <cite>nsaph_utils</cite> from the dependencies section in the <cite>.yml</cite> file.</p>
+</section>
+</section>
+
 
            </div>
            
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="modules.html" class="btn btn-neutral float-right" title="Modules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="quick_start.html" class="btn btn-neutral float-left" title="Quick Start" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>

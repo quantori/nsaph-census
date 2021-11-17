@@ -41,7 +41,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Contant" href="contact.html" />
-    <link rel="prev" title="&lt;no title&gt;" href="env_set_up_dev.html" /> 
+    <link rel="prev" title="Setting Up Environment (Developers)" href="env_set_up_dev.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -89,10 +89,19 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="about.html">About</a></li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Researchers</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="env_set_up.html">Setting Up Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quick Start</a></li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">Developers</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="env_set_up_dev.html">Setting Up Environment (Developers)</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Modules</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#query-py">query.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#assemble-data-py">assemble_data.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#census-info-py">census_info.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tigerweb-py">tigerweb.py</a></li>
 </ul>
 </li>
 </ul>
@@ -101,15 +110,11 @@
 <li class="toctree-l1"><a class="reference internal" href="contact.html">Contant</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Changelog</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<p class="caption" role="heading"><span class="caption-text">Old Doc</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="start_guide.html">Working with the <code class="docutils literal notranslate"><span class="pre">get_census</span></code> Package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="census_yaml.html"><code class="docutils literal notranslate"><span class="pre">get_census</span></code> Census Variable File Structure</a></li>
-<li class="toctree-l1"><a class="reference internal" href="assemble_data.html">DataPlan: Main Class For Assembling a Census Plan</a></li>
-<li class="toctree-l1"><a class="reference internal" href="census_info.html">Census Metadata Functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="query.html">Functions for Requesting Data from the Census API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cached_data.html">Stored Data Files</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tigerweb.html">Query Area and Download Shapefiles</a></li>
 </ul>
 
             
@@ -218,6 +223,311 @@ the “GET_CENSUS_API_KEY” environmental variable or using the <cite>set_api_k
 </dd></dl>
 
 </section>
+<span class="target" id="module-get_census.assemble_data"></span><section id="assemble-data-py">
+<h2>assemble_data.py<a class="headerlink" href="#assemble-data-py" title="Permalink to this headline">¶</a></h2>
+<p>Core module for assembling a census plan</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="get_census.assemble_data.DataPlan">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">DataPlan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">yaml_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">years</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[2000,</span> <span class="pre">2009,</span> <span class="pre">2010,</span> <span class="pre">2011,</span> <span class="pre">2012,</span> <span class="pre">2013,</span> <span class="pre">2014,</span> <span class="pre">2015,</span> <span class="pre">2016,</span> <span class="pre">2017,</span> <span class="pre">2018,</span> <span class="pre">2019]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">county</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/assemble_data.html#DataPlan"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.assemble_data.DataPlan" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class containing information on how to create a desired set of census data.</p>
+<p>Inputs for initializing a DataPlan object from a get_census yaml document</p>
+<dl class="field-list simple">
+<dt class="field-odd">Yaml_path</dt>
+<dd class="field-odd"><p>path to a yaml file. Structure defined in <a class="reference internal" href="census_yaml.html"><span class="doc">get_census Census Variable File Structure</span></a></p>
+</dd>
+<dt class="field-even">Geometry</dt>
+<dd class="field-even"><p>which census geography this plan is for</p>
+</dd>
+<dt class="field-odd">Years</dt>
+<dd class="field-odd"><p>The list of years to query data from. The census_years() function can calculate which years in your timeframe of interest can be queried for the decennial and 5 year acs data. Note that this may not apply for the ACS1 or other data. That function may be updated in the future, but for now creating lists of years besides the defaults is left as an exercise for the interested reader.</p>
+</dd>
+<dt class="field-even">State</dt>
+<dd class="field-even"><p>2 digit FIPS code of the state you want to limit the query to (i.e. “06” for CA)</p>
+</dd>
+<dt class="field-odd">County</dt>
+<dd class="field-odd"><p>3 digit FIPS code of the county you want to include. Requires state to be specified</p>
+</dd>
+</dl>
+<p>Members:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">geometry</span></code>: which census geography this plan is for</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">years</span></code>: The <code class="docutils literal notranslate"><span class="pre">list</span></code> of years that the data should be queried for</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">state</span></code>: 2 digit FIPS code of the state you want to limit the query to (i.e. “06” for CA)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">county</span></code>: 3 digit FIPS code of the county you want to include. Requires state to be specified</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">plan</span></code>: A <code class="docutils literal notranslate"><span class="pre">dict</span></code> with keys of years, storing lists of <code class="docutils literal notranslate"><span class="pre">VariableDef</span></code> objects defining the variables to be calculated for that year. Created from a yaml file. Structure defined in <a class="reference internal" href="census_yaml.html"><span class="doc">get_census Census Variable File Structure</span></a></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">data</span></code>: A pandas data frame created based on the defined data plan. only exists after the <code class="docutils literal notranslate"><span class="pre">DataPlan.assemble_data()</span></code> method is called.</p></li>
+</ul>
+<p>initialize a DataPlan object from a get_census yaml document</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="get_census.assemble_data.DataPlan.params.yaml_path"></span><strong>yaml_path</strong><a class="paramlink headerlink reference internal" href="#get_census.assemble_data.DataPlan.params.yaml_path">¶</a> – path to a yaml file. Structure defined in <a class="reference internal" href="census_yaml.html"><span class="doc">get_census Census Variable File Structure</span></a></p></li>
+<li><p><span class="target" id="get_census.assemble_data.DataPlan.params.geometry"></span><strong>geometry</strong><a class="paramlink headerlink reference internal" href="#get_census.assemble_data.DataPlan.params.geometry">¶</a> – which census geography this plan is for</p></li>
+<li><p><span class="target" id="get_census.assemble_data.DataPlan.params.years"></span><strong>years</strong><a class="paramlink headerlink reference internal" href="#get_census.assemble_data.DataPlan.params.years">¶</a> – The list of years to query data from. The census_years() function can
+calculate which years in your timeframe of interest can be queried for the decennial and
+5 year acs data. Note that this may not apply for the ACS1 or other data. That function may be
+updated in the future, but for now creating lists of years besides the defaults is left as an exercise
+for the interested reader.</p></li>
+<li><p><span class="target" id="get_census.assemble_data.DataPlan.params.state"></span><strong>state</strong><a class="paramlink headerlink reference internal" href="#get_census.assemble_data.DataPlan.params.state">¶</a> – 2 digit FIPS code of the state you want to limit the query to (i.e. “06” for CA)</p></li>
+<li><p><span class="target" id="get_census.assemble_data.DataPlan.params.county"></span><strong>county</strong><a class="paramlink headerlink reference internal" href="#get_census.assemble_data.DataPlan.params.county">¶</a> – 3 digit FIPS code of the county you want to include. Requires state to be specified</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="get_census.assemble_data.DataPlan.assemble_data">
+<span class="sig-name descname"><span class="pre">assemble_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/assemble_data.html#DataPlan.assemble_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.assemble_data.DataPlan.assemble_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a data frame for each geoid , for each year, with each variable as defined in the data plan</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Assembled data frame stored in self.data</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="get_census.assemble_data.DataPlan.get_var_names">
+<span class="sig-name descname"><span class="pre">get_var_names</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/assemble_data.html#DataPlan.get_var_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.assemble_data.DataPlan.get_var_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list containing all the variable names that are created in the data plan</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of strings</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="get_census.assemble_data.DataPlan.add_geoid">
+<span class="sig-name descname"><span class="pre">add_geoid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/assemble_data.html#DataPlan.add_geoid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.assemble_data.DataPlan.add_geoid" title="Permalink to this definition">¶</a></dt>
+<dd><p>add a single column named ‘geoid’ to self.data combining all portions of a data sets geographical identifiers</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="get_census.assemble_data.DataPlan.create_missingness">
+<span class="sig-name descname"><span class="pre">create_missingness</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_year</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_year</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/assemble_data.html#DataPlan.create_missingness"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.assemble_data.DataPlan.create_missingness" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a row for all combinations of geospatial ID and year
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="get_census.assemble_data.DataPlan.write_data">
+<span class="sig-name descname"><span class="pre">write_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'csv'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/assemble_data.html#DataPlan.write_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.assemble_data.DataPlan.write_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write data  out to a file. Default method is to write out to csv. new methods can be implemented in the future.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="get_census.assemble_data.DataPlan.write_data.params.path"></span><strong>path</strong><a class="paramlink headerlink reference internal" href="#get_census.assemble_data.DataPlan.write_data.params.path">¶</a> – Path to write the data to</p></li>
+<li><p><span class="target" id="get_census.assemble_data.DataPlan.write_data.params.file_type"></span><strong>file_type</strong><a class="paramlink headerlink reference internal" href="#get_census.assemble_data.DataPlan.write_data.params.file_type">¶</a> – Method to output data, currently only implemented for csv files</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None, writes data to disk.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="get_census.assemble_data.DataPlan.calculate_densities">
+<span class="sig-name descname"><span class="pre">calculate_densities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['population']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sq_mi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/assemble_data.html#DataPlan.calculate_densities"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.assemble_data.DataPlan.calculate_densities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Divide specified variables by area
+:param _sphinx_paramlinks_get_census.assemble_data.DataPlan.calculate_densities.variables: List of variables to calculate densities for
+:param _sphinx_paramlinks_get_census.assemble_data.DataPlan.calculate_densities.sq_mi: Should denisties be calculated per square mile? If false, calculated per square meter
+:return: None</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="get_census.assemble_data.DataPlan.interpolate">
+<span class="sig-name descname"><span class="pre">interpolate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ma'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_year</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_year</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/assemble_data.html#DataPlan.interpolate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.assemble_data.DataPlan.interpolate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fill in values
+:param _sphinx_paramlinks_get_census.assemble_data.DataPlan.interpolate.method: Interpolation method to use
+:param _sphinx_paramlinks_get_census.assemble_data.DataPlan.interpolate.min_year: Minimum year to interpolate
+:param _sphinx_paramlinks_get_census.assemble_data.DataPlan.interpolate.max_year: Maximum year to interpolate
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="get_census.assemble_data.DataPlan.quality_check">
+<span class="sig-name descname"><span class="pre">quality_check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test_file</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/assemble_data.html#DataPlan.quality_check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.assemble_data.DataPlan.quality_check" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test self.data for the checks defined in the test file
+:param _sphinx_paramlinks_get_census.assemble_data.DataPlan.quality_check.test_file: path to a yaml file defining tests per the quality check paradigm in nsaph_utils.qc
+:return: None</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="get_census.assemble_data.DataPlan.write_schema">
+<span class="sig-name descname"><span class="pre">write_schema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/assemble_data.html#DataPlan.write_schema"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.assemble_data.DataPlan.write_schema" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write out a yaml file describing the data schema
+:param _sphinx_paramlinks_get_census.assemble_data.DataPlan.write_schema.filename: path to write to
+:param _sphinx_paramlinks_get_census.assemble_data.DataPlan.write_schema.table_name: Name of the table for the schema
+:return: True</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="get_census.assemble_data.VariableDef">
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">VariableDef</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var_dict</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">logging.Logger</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/assemble_data.html#VariableDef"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.assemble_data.VariableDef" title="Permalink to this definition">¶</a></dt>
+<dd><p>Structured way of representing what we need to know for a variable.
+Members:
+* <code class="docutils literal notranslate"><span class="pre">dataset</span></code>: a string. The data set used to calculate a variable, should be dec, acs1, acs5, or pums
+* <code class="docutils literal notranslate"><span class="pre">num</span></code>: a list, the names of variables that make up the numerator
+* <code class="docutils literal notranslate"><span class="pre">den</span></code>: a list, the names of the variables that make up the denominator. Can be missing
+* <code class="docutils literal notranslate"><span class="pre">has_den</span></code>: a boolean, indicates whether or not there is a denominator.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="get_census.assemble_data.VariableDef.get_vars">
+<span class="sig-name descname"><span class="pre">get_vars</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/assemble_data.html#VariableDef.get_vars"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.assemble_data.VariableDef.get_vars" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a union of all census variables needed for this variable</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="get_census.assemble_data.VariableDef.do_query">
+<span class="sig-name descname"><span class="pre">do_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">year</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">county</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/assemble_data.html#VariableDef.do_query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.assemble_data.VariableDef.do_query" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the query defined by the contained variables
+:param _sphinx_paramlinks_get_census.assemble_data.VariableDef.do_query.geometry: census geometry to query
+:param _sphinx_paramlinks_get_census.assemble_data.VariableDef.do_query.year: year of data to query
+:param _sphinx_paramlinks_get_census.assemble_data.VariableDef.do_query.state: 2 Digit Fips code of state to limit the query to
+:param _sphinx_paramlinks_get_census.assemble_data.VariableDef.do_query.county: 3 Digit county code to limit the query to, must be used with state
+:return: data frame of all census variables specified by the query</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="get_census.assemble_data.VariableDef.calculate_var">
+<span class="sig-name descname"><span class="pre">calculate_var</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">year</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">county</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/assemble_data.html#VariableDef.calculate_var"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.assemble_data.VariableDef.calculate_var" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query the required data from the census, then calculate the variable defined
+:param _sphinx_paramlinks_get_census.assemble_data.VariableDef.calculate_var.year: year of data to query
+:param _sphinx_paramlinks_get_census.assemble_data.VariableDef.calculate_var.geometry: census geometry to query
+:param _sphinx_paramlinks_get_census.assemble_data.VariableDef.calculate_var.state: 2 Digit Fips code of state to limit the query to
+:param _sphinx_paramlinks_get_census.assemble_data.VariableDef.calculate_var.county: 3 Digit county code to limit the query to, must be used with state
+:return: a data frame with one column of the calcualted variable and the census geography columns</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<span class="target" id="module-get_census.census_info"></span><section id="census-info-py">
+<h2>census_info.py<a class="headerlink" href="#census-info-py" title="Permalink to this headline">¶</a></h2>
+<p>Core module for handling census metadata</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="get_census.census_info.get_endpoint">
+<span class="sig-name descname"><span class="pre">get_endpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">year</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sum_file</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/census_info.html#get_endpoint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.census_info.get_endpoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a string containing the URL to the census API endpoint</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="get_census.census_info.get_endpoint.params.year"></span><strong>year</strong><a class="paramlink headerlink reference internal" href="#get_census.census_info.get_endpoint.params.year">¶</a> – The year for which you want data</p></li>
+<li><p><span class="target" id="get_census.census_info.get_endpoint.params.dataset"></span><strong>dataset</strong><a class="paramlink headerlink reference internal" href="#get_census.census_info.get_endpoint.params.dataset">¶</a> – The census data set you want (dec, acs1, acs5, pums)</p></li>
+<li><p><span class="target" id="get_census.census_info.get_endpoint.params.sum_file"></span><strong>sum_file</strong><a class="paramlink headerlink reference internal" href="#get_census.census_info.get_endpoint.params.sum_file">¶</a> – For the 2000 census, sf1 or sf3</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="get_census.census_info.get_varlist">
+<span class="sig-name descname"><span class="pre">get_varlist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">year</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sum_file</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/census_info.html#get_varlist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.census_info.get_varlist" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="get_census.census_info.get_varlist.params.year"></span><strong>year</strong><a class="paramlink headerlink reference internal" href="#get_census.census_info.get_varlist.params.year">¶</a> – Year of data</p></li>
+<li><p><span class="target" id="get_census.census_info.get_varlist.params.dataset"></span><strong>dataset</strong><a class="paramlink headerlink reference internal" href="#get_census.census_info.get_varlist.params.dataset">¶</a> – The census data set you want (dec, acs1, acs5, pums)</p></li>
+<li><p><span class="target" id="get_census.census_info.get_varlist.params.sum_file"></span><strong>sum_file</strong><a class="paramlink headerlink reference internal" href="#get_census.census_info.get_varlist.params.sum_file">¶</a> – For the 2000 census, sf1 or sf3</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Dataframe of available variables in a given data set</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="get_census.census_info.set_api_key">
+<span class="sig-name descname"><span class="pre">set_api_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/census_info.html#set_api_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.census_info.set_api_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets an environment variable to contain your census API key. To avoid needing to run this
+every session you can also permanently set GET_CENSUS_API_KEY to your key in your environment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><span class="target" id="get_census.census_info.set_api_key.params.key"></span><strong>key</strong><a class="paramlink headerlink reference internal" href="#get_census.census_info.set_api_key.params.key">¶</a> – Your Census API key as a string</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>nothing</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="get_census.census_info.census_years">
+<span class="sig-name descname"><span class="pre">census_years</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_year</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">2000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_year</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">2019</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/census_info.html#census_years"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.census_info.census_years" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructs a list of years for which census data is available in the range provided. At this point assumes
+we want the decennial census and acs5. Future functionality might expand to allow this to vary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="get_census.census_info.census_years.params.min_year"></span><strong>min_year</strong><a class="paramlink headerlink reference internal" href="#get_census.census_info.census_years.params.min_year">¶</a> – minimum year we want data for</p></li>
+<li><p><span class="target" id="get_census.census_info.census_years.params.max_year"></span><strong>max_year</strong><a class="paramlink headerlink reference internal" href="#get_census.census_info.census_years.params.max_year">¶</a> – max year we want data for (inclusive)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>list of all years in specified range for which data is available</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<span class="target" id="module-get_census.tigerweb"></span><section id="tigerweb-py">
+<h2>tigerweb.py<a class="headerlink" href="#tigerweb-py" title="Permalink to this headline">¶</a></h2>
+<dl class="simple">
+<dt>Code for interacting with the Census TIGERWEb API, query area and download shape</dt><dd><p>files.</p>
+</dd>
+</dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="get_census.tigerweb.get_area">
+<span class="sig-name descname"><span class="pre">get_area</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geometry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sq_mi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/tigerweb.html#get_area"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.tigerweb.get_area" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a data frame of Census GEOIDs and Area. Due to the Tigerweb API’s limiting of
+the number of features per query to 100,000, block groups aren’t currently supported through this wrapper.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="get_census.tigerweb.get_area.params.geometry"></span><strong>geometry</strong><a class="paramlink headerlink reference internal" href="#get_census.tigerweb.get_area.params.geometry">¶</a> – type of census geometry to use</p></li>
+<li><p><span class="target" id="get_census.tigerweb.get_area.params.sq_mi"></span><strong>sq_mi</strong><a class="paramlink headerlink reference internal" href="#get_census.tigerweb.get_area.params.sq_mi">¶</a> – Should areas be converted to square miles?</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>pandas data frame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="get_census.tigerweb.download_geometry">
+<span class="sig-name descname"><span class="pre">download_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geometry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2019</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/tigerweb.html#download_geometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.tigerweb.download_geometry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get spatial information for a census geometry in geojson format and save it to disk</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="get_census.tigerweb.download_geometry.params.geometry"></span><strong>geometry</strong><a class="paramlink headerlink reference internal" href="#get_census.tigerweb.download_geometry.params.geometry">¶</a> – type of census geometry to use</p></li>
+<li><p><span class="target" id="get_census.tigerweb.download_geometry.params.year"></span><strong>year</strong><a class="paramlink headerlink reference internal" href="#get_census.tigerweb.download_geometry.params.year">¶</a> – Year to get geometry for</p></li>
+<li><p><span class="target" id="get_census.tigerweb.download_geometry.params.out_dir"></span><strong>out_dir</strong><a class="paramlink headerlink reference internal" href="#get_census.tigerweb.download_geometry.params.out_dir">¶</a> – Directory to save downloaded files in. Note that due to requiring multiple
+downloads, tract and block group downloads will create a directory if no out_dir is defined.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None, downloads files only</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 </section>
 
 
@@ -231,7 +541,7 @@ the “GET_CENSUS_API_KEY” environmental variable or using the <cite>set_api_k
         <a href="contact.html" class="btn btn-neutral float-right" title="Contant" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="env_set_up_dev.html" class="btn btn-neutral float-left" title="&lt;no title&gt;" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="env_set_up_dev.html" class="btn btn-neutral float-left" title="Setting Up Environment (Developers)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
