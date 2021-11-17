@@ -9,7 +9,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>get_census Census Variable File Structure &mdash; Census 0.0.1 documentation</title>
+  <title>Census Variable File Structure &mdash; Census 0.0.1 documentation</title>
   
 
   
@@ -41,7 +41,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Stored Data Files" href="cached_data.html" />
-    <link rel="prev" title="Working with the get_census Package" href="start_guide.html" /> 
+    <link rel="prev" title="Quick Start" href="quick_start.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -90,13 +90,21 @@
 <li class="toctree-l1"><a class="reference internal" href="about.html">About</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Researchers</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="env_set_up.html">Setting Up Environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quick Start</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Census Variable File Structure</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#field-definitions">Field Definitions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#skipping-years-for-a-variable">Skipping years for a Variable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#census-variable-documentation">Census Variable Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cached_data.html">Stored Data Files</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developers</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="env_set_up_dev.html">Setting Up Environment (Developers)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing_checklist.html">Contributing Checklist</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Community</span></p>
@@ -105,16 +113,8 @@
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Changelog</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Old Doc</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="start_guide.html">Working with the <code class="docutils literal notranslate"><span class="pre">get_census</span></code> Package</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">get_census</span></code> Census Variable File Structure</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#field-definitions">Field Definitions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#skipping-years-for-a-variable">Skipping years for a Variable</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#census-variable-documentation">Census Variable Documentation</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="cached_data.html">Stored Data Files</a></li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="start_guide.html">Working with the <code class="docutils literal notranslate"><span class="pre">census</span></code> Package</a></li>
 </ul>
 
             
@@ -160,7 +160,7 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li><code class="docutils literal notranslate"><span class="pre">get_census</span></code> Census Variable File Structure</li>
+      <li>Census Variable File Structure</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -179,10 +179,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="get-census-census-variable-file-structure">
-<h1><code class="docutils literal notranslate"><span class="pre">get_census</span></code> Census Variable File Structure<a class="headerlink" href="#get-census-census-variable-file-structure" title="Permalink to this headline">¶</a></h1>
+  <section id="census-variable-file-structure">
+<h1>Census Variable File Structure<a class="headerlink" href="#census-variable-file-structure" title="Permalink to this headline">¶</a></h1>
 <p>The variables used to create the census data using the <code class="docutils literal notranslate"><span class="pre">get_census</span></code>
-package must be formally described ina yaml file. Each variable is defined by a top
+package must be formally described in a yaml file. Each variable is defined by a top
 level entry in this file. The format for a variable is as follows:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">var_name</span><span class="o">&gt;</span><span class="p">:</span>
     <span class="o">&lt;</span><span class="n">year</span><span class="o">&gt;</span><span class="p">:</span>
@@ -355,7 +355,7 @@ complex estimates. Links to this documentation can be found here:</p>
         <a href="cached_data.html" class="btn btn-neutral float-right" title="Stored Data Files" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="start_guide.html" class="btn btn-neutral float-left" title="Working with the get_census Package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="quick_start.html" class="btn btn-neutral float-left" title="Quick Start" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

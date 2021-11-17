@@ -1,5 +1,5 @@
 import unittest
-import get_census
+import census
 import os
 import pickle
 

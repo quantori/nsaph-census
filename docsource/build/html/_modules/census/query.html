@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>get_census.query &mdash; Census 0.0.1 documentation</title>
+  <title>census.query &mdash; Census 0.0.1 documentation</title>
   
 
   
@@ -90,10 +90,12 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../env_set_up.html">Setting Up Environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../quick_start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../census_yaml.html">Census Variable File Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cached_data.html">Stored Data Files</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developers</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../env_set_up_dev.html">Setting Up Environment (Developers)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing_checklist.html">Contributing Checklist</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules.html">Modules</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Community</span></p>
@@ -103,9 +105,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Old Doc</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../start_guide.html">Working with the <code class="docutils literal notranslate"><span class="pre">get_census</span></code> Package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../census_yaml.html"><code class="docutils literal notranslate"><span class="pre">get_census</span></code> Census Variable File Structure</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../cached_data.html">Stored Data Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../start_guide.html">Working with the <code class="docutils literal notranslate"><span class="pre">census</span></code> Package</a></li>
 </ul>
 
             
@@ -153,7 +153,7 @@
         
           <li><a href="../index.html">Module code</a> &raquo;</li>
         
-      <li>get_census.query</li>
+      <li>census.query</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -168,7 +168,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for get_census.query</h1><div class="highlight"><pre>
+  <h1>Source code for census.query</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">query.py</span>
 <span class="sd">=================================================</span>
@@ -192,7 +192,7 @@
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="get_census_data"><a class="viewcode-back" href="../../modules.html#get_census.query.get_census_data">[docs]</a><span class="k">def</span> <span class="nf">get_census_data</span><span class="p">(</span><span class="n">year</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">variables</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">geography</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">sum_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="get_census_data"><a class="viewcode-back" href="../../modules.html#census.query.get_census_data">[docs]</a><span class="k">def</span> <span class="nf">get_census_data</span><span class="p">(</span><span class="n">year</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">variables</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">geography</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">sum_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                     <span class="n">state</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">county</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
@@ -302,7 +302,7 @@
     <span class="k">return</span> <span class="n">out</span>
 
 
-<div class="viewcode-block" id="api_geography"><a class="viewcode-back" href="../../modules.html#get_census.query.api_geography">[docs]</a><span class="k">def</span> <span class="nf">api_geography</span><span class="p">(</span><span class="n">geo</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<div class="viewcode-block" id="api_geography"><a class="viewcode-back" href="../../modules.html#census.query.api_geography">[docs]</a><span class="k">def</span> <span class="nf">api_geography</span><span class="p">(</span><span class="n">geo</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    go from function shorthand to the input the census api needs</span>
 

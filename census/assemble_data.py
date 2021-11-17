@@ -13,7 +13,7 @@ import nsaph_utils.qc
 import nsaph_utils.interpolation
 
 from .data import *
-from .exceptions import *
+from .exceptions import CensusException
 from .tigerweb import get_area
 from .census_info import census_years
 from .query import get_census_data, _clean_acs_vars
@@ -22,7 +22,7 @@ class DataPlan:
     """
     A class containing information on how to create a desired set of census data.   
     
-    Inputs for initializing a DataPlan object from a get_census yaml document
+    Inputs for initializing a DataPlan object from a census yaml document
 
     :yaml_path: path to a yaml file. Structure defined in :doc:`census_yaml`  
     :geometry: which census geography this plan is for  
@@ -44,7 +44,7 @@ class DataPlan:
 
     def __init__(self, yaml_path, geometry, years=census_years(), state=None, county=None):
         """
-        initialize a DataPlan object from a get_census yaml document
+        initialize a DataPlan object from a census yaml document
         
         :param yaml_path: path to a yaml file. Structure defined in :doc:`census_yaml`
         :param geometry: which census geography this plan is for
@@ -240,7 +240,7 @@ class DataPlan:
         """
         if method not in nsaph_utils.interpolation.IMPLEMENTED_METHODS:
             self.__logger.exception("Can't interpolate, Invalid Interpretation Method")
-            raise GetCensusException("Invalid Interpretation Method")
+            raise CensusException("Invalid Interpretation Method")
 
         if not min_year:
             min_year = min(self.years)
@@ -503,6 +503,6 @@ def _get_sql_type(col):
         max_len = max(map(len, col))
         return "VARCHAR(" + str(max_len) + ")"
     else:
-        raise GetCensusException("unexpected column type in data")
+        raise CensusException("unexpected column type in data")
 
 

@@ -1,8 +1,0 @@
-name: get_census
-channels:
-  - defaults
-dependencies:
-  - pandas
-  - requests
-  - pyyaml
-prefix: /opt/anaconda3/envs/get_census

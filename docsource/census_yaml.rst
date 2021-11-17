@@ -1,8 +1,8 @@
-``get_census`` Census Variable File Structure
-=============================================
+Census Variable File Structure
+==============================
 
 The variables used to create the census data using the ``get_census``
-package must be formally described ina yaml file. Each variable is defined by a top
+package must be formally described in a yaml file. Each variable is defined by a top
 level entry in this file. The format for a variable is as follows: ::
 
     <var_name>:

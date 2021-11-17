@@ -40,7 +40,7 @@
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Working with the get_census Package" href="start_guide.html" />
+    <link rel="next" title="Working with the census Package" href="start_guide.html" />
     <link rel="prev" title="Contant" href="contact.html" /> 
 </head>
 
@@ -93,6 +93,8 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="env_set_up.html">Setting Up Environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="census_yaml.html">Census Variable File Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cached_data.html">Stored Data Files</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developers</span></p>
 <ul>
@@ -115,9 +117,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Old Doc</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="start_guide.html">Working with the <code class="docutils literal notranslate"><span class="pre">get_census</span></code> Package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="census_yaml.html"><code class="docutils literal notranslate"><span class="pre">get_census</span></code> Census Variable File Structure</a></li>
-<li class="toctree-l1"><a class="reference internal" href="cached_data.html">Stored Data Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="start_guide.html">Working with the <code class="docutils literal notranslate"><span class="pre">census</span></code> Package</a></li>
 </ul>
 
             
@@ -191,11 +191,13 @@
 <ul class="simple">
 <li><p>public folder to hold webpage documents for gitlab.</p></li>
 <li><p>docs folder to hold webpage documents for github.</p></li>
+<li><p>Set up environment page.</p></li>
 </ul>
 </section>
 <section id="changed">
 <h3>Changed<a class="headerlink" href="#changed" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
+<li><p>Reorganized the imports</p></li>
 <li><p>docs/source –&gt; docsource</p></li>
 <li><p>Moved Makefiles into docsource folder.</p></li>
 <li><p>Makefile: added github and gitlab actions (use <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">gitlab</span></code>, and <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">github</span></code>)</p></li>
@@ -218,7 +220,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="start_guide.html" class="btn btn-neutral float-right" title="Working with the get_census Package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="start_guide.html" class="btn btn-neutral float-right" title="Working with the census Package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="contact.html" class="btn btn-neutral float-left" title="Contant" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

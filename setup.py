@@ -1,5 +1,4 @@
-from setuptools import setup
-import setuptools
+from setuptools import setup, find_packages
 from census import __version__
 
 setup(
@@ -7,7 +6,7 @@ setup(
     version=__version__,
     url='',
     license='',
-    packages=setuptools.find_packages(exclude=['docs*', 'tests*']),
+    packages=find_packages(exclude=['docs*', 'tests*']),
     author='Ben Sabath',
     author_email='sabath@fas.harvard.edu',
     description='',

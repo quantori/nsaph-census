@@ -13,7 +13,7 @@ import pandas as pd
 
 from .query import _prep_vars
 from .data import load_state_codes
-from .exceptions import GetCensusException
+from .exceptions import CensusException
 
 
 GEOMETRY_CODES = {"zcta": 2,
@@ -158,7 +158,7 @@ def get_area(geometry, sq_mi=True):
             out = pd.merge(out, result, how="outer", on=["GEOID", "AREALAND"])
         elif len(result.index) == 100000:
             LOG.error("Max rows hit, increase split factor, ending")
-            raise GetCensusException("Max rows hit, increase split factor, ending")
+            raise CensusException("Max rows hit, increase split factor, ending")
 
     if sq_mi:
         out['AREALAND'] = out['AREALAND']/2589988  # 2589988 square meters to a square mile
@@ -243,7 +243,7 @@ def _tiger_line_url(geometry, year):
                 out.append(base + state + "_tract.zip")
     else:
         LOG.error("invalid geography: " + geometry + "provided" )
-        raise GetCensusException("invalid geography: " + geometry + "provided")
+        raise CensusException("invalid geography: " + geometry + "provided")
 
     return out
 

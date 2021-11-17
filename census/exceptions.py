@@ -1,6 +1,8 @@
 """
-get_census exceptions
+exceptions.py
+=================
+census exceptions
 """
 
-class GetCensusException(Exception):
+class CensusException(Exception):
     pass

@@ -1,1 +1,1 @@
-include get_census/data/*.csv
+include census/data/*.csv

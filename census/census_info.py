@@ -8,7 +8,7 @@ import os
 import logging
 import requests as r
 
-from .exceptions import *
+from .exceptions import CensusException
 
 # Code for handling census metadata
 
@@ -28,23 +28,23 @@ def get_endpoint(year: int, dataset: str, sum_file: str = None):
     # Do we throw an error here (or elsewhere while prepping the query
 
     if dataset not in ['dec', 'acs1', 'acs5']:
-        raise GetCensusException("Input dataset not currently supported")
+        raise CensusException("Input dataset not currently supported")
 
     out = "https://api.census.gov/data/" + str(year) + "/"
 
     if dataset == 'dec':
         if year not in [2000, 2010]:
-            raise GetCensusException("Invalid year for decennial census")
+            raise CensusException("Invalid year for decennial census")
         out += "dec/"
         if year == 2000:
             if sum_file not in ["sf1", "sf3"]:
-                raise GetCensusException("Invalid summary file input")
+                raise CensusException("Invalid summary file input")
             out += sum_file
         else:
             out += "sf1"
     elif dataset in ['acs1', 'acs5']:
         if year <= 2008:
-            raise GetCensusException("Invalid year for ACS5")
+            raise CensusException("Invalid year for ACS5")
         out += "acs/" + dataset
     #elif dataset == 'pums':
     #    assert year > 2008
@@ -79,7 +79,7 @@ def get_varlist(year: int, dataset: str, sum_file: str = None):
             num_tries += 1
     if num_tries >= 5:
         LOG.critical("Unable to complete query after " + str(num_tries) + " tries")
-        raise GetCensusException("Unable to complete varlist query after " + str(num_tries) + " tries")
+        raise CensusException("Unable to complete varlist query after " + str(num_tries) + " tries")
 
     out = out.json()
     varnames = list(out['variables'].keys())[3:]

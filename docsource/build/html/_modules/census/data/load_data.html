@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>get_census.data.load_data &mdash; Census 0.0.1 documentation</title>
+  <title>census.data.load_data &mdash; Census 0.0.1 documentation</title>
   
 
   
@@ -90,10 +90,12 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../env_set_up.html">Setting Up Environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../quick_start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../census_yaml.html">Census Variable File Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cached_data.html">Stored Data Files</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developers</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../env_set_up_dev.html">Setting Up Environment (Developers)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing_checklist.html">Contributing Checklist</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../modules.html">Modules</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Community</span></p>
@@ -103,9 +105,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Old Doc</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../start_guide.html">Working with the <code class="docutils literal notranslate"><span class="pre">get_census</span></code> Package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../census_yaml.html"><code class="docutils literal notranslate"><span class="pre">get_census</span></code> Census Variable File Structure</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../cached_data.html">Stored Data Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../start_guide.html">Working with the <code class="docutils literal notranslate"><span class="pre">census</span></code> Package</a></li>
 </ul>
 
             
@@ -153,7 +153,7 @@
         
           <li><a href="../../index.html">Module code</a> &raquo;</li>
         
-      <li>get_census.data.load_data</li>
+      <li>census.data.load_data</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -168,14 +168,15 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for get_census.data.load_data</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+  <h1>Source code for census.data.load_data</h1><div class="highlight"><pre>
+<span></span>
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 <span class="n">DATA_DIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="load_county_codes"><a class="viewcode-back" href="../../../cached_data.html#get_census.data.load_data.load_county_codes">[docs]</a><span class="k">def</span> <span class="nf">load_county_codes</span><span class="p">():</span>
+<div class="viewcode-block" id="load_county_codes"><a class="viewcode-back" href="../../../modules.html#census.data.load_data.load_county_codes">[docs]</a><span class="k">def</span> <span class="nf">load_county_codes</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Read in data file listing all counties in the US, with their state and county FIPS codes</span>
 
@@ -186,7 +187,7 @@
     <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="load_state_codes"><a class="viewcode-back" href="../../../cached_data.html#get_census.data.load_data.load_state_codes">[docs]</a><span class="k">def</span> <span class="nf">load_state_codes</span><span class="p">():</span>
+<div class="viewcode-block" id="load_state_codes"><a class="viewcode-back" href="../../../modules.html#census.data.load_data.load_state_codes">[docs]</a><span class="k">def</span> <span class="nf">load_state_codes</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Read in data file listing all states in the US, with their FIPS codes</span>
 

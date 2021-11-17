@@ -1,5 +1,6 @@
-import pandas as pd
+
 import os
+import pandas as pd
 
 DATA_DIR = os.path.dirname(__file__)
 

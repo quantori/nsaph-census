@@ -40,7 +40,8 @@
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="get_census Census Variable File Structure" href="census_yaml.html" /> 
+    <link rel="next" title="Contributing Checklist" href="contributing_checklist.html" />
+    <link rel="prev" title="Census Variable File Structure" href="census_yaml.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -89,13 +90,15 @@
 <li class="toctree-l1"><a class="reference internal" href="about.html">About</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Researchers</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="env_set_up.html">Setting Up Environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="census_yaml.html">Census Variable File Structure</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Stored Data Files</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developers</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="env_set_up_dev.html">Setting Up Environment (Developers)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing_checklist.html">Contributing Checklist</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Community</span></p>
@@ -104,10 +107,8 @@
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Changelog</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Old Doc</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="start_guide.html">Working with the <code class="docutils literal notranslate"><span class="pre">get_census</span></code> Package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="census_yaml.html"><code class="docutils literal notranslate"><span class="pre">get_census</span></code> Census Variable File Structure</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Stored Data Files</a></li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="start_guide.html">Working with the <code class="docutils literal notranslate"><span class="pre">census</span></code> Package</a></li>
 </ul>
 
             
@@ -174,31 +175,8 @@
             
   <section id="stored-data-files">
 <h1>Stored Data Files<a class="headerlink" href="#stored-data-files" title="Permalink to this headline">¶</a></h1>
-<p>The <code class="docutils literal notranslate"><span class="pre">get_census</span></code> package contains stored data frames listing all state and county
-FIPS codes, primarily for internal use. To access these data frames you can use
-the following functions</p>
-<span class="target" id="module-get_census.data.load_data"></span><dl class="py function">
-<dt class="sig sig-object py" id="get_census.data.load_data.load_county_codes">
-<span class="sig-name descname"><span class="pre">load_county_codes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/data/load_data.html#load_county_codes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.data.load_data.load_county_codes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read in data file listing all counties in the US, with their state and county FIPS codes</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>pandas data frame</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="get_census.data.load_data.load_state_codes">
-<span class="sig-name descname"><span class="pre">load_state_codes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/get_census/data/load_data.html#load_state_codes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#get_census.data.load_data.load_state_codes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read in data file listing all states in the US, with their FIPS codes</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>pandas data frame</p>
-</dd>
-</dl>
-</dd></dl>
-
+<p>The <code class="docutils literal notranslate"><span class="pre">census</span></code> package contains stored data frames listing all state and county
+FIPS codes, primarily for internal use.</p>
 </section>
 
 
@@ -209,8 +187,10 @@ the following functions</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
+        <a href="contributing_checklist.html" class="btn btn-neutral float-right" title="Contributing Checklist" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
-        <a href="census_yaml.html" class="btn btn-neutral float-left" title="get_census Census Variable File Structure" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+        <a href="census_yaml.html" class="btn btn-neutral float-left" title="Census Variable File Structure" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

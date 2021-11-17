@@ -4,14 +4,23 @@ Modules
 Modules that are used in this project are listed in this section.
 
 
-.. automodule:: get_census.query
+.. automodule:: census.query
   :members:
 
-.. automodule:: get_census.assemble_data
+.. automodule:: census.assemble_data
   :members:
 
-.. automodule:: get_census.census_info
+.. automodule:: census.census_info
   :members:
 
-.. automodule:: get_census.tigerweb
+.. automodule:: census.tigerweb
+  :members:
+
+.. automodule:: census.cli
+  :members:
+
+.. automodule:: census.exceptions
+  :members:
+
+.. automodule:: census.data.load_data
   :members:

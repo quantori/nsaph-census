@@ -1,5 +1,7 @@
 """
-Command Line Interface for the get_census python package
+cli.py
+====================================================
+Command Line Interface for the census python package
 """
 
 import logging
@@ -73,8 +75,8 @@ class CensusContext(Context):
                       the following list: 
                       [1992,1993,1994,1995,1998,1999,2011,2015,2016,2017]
                       
-                      Note that in the get_census module CLI, only the minimum and maximum year passed are used
-                      and are passed to get_census.census_years() to ensure that only years that are available are used.
+                      Note that in the census module CLI, only the minimum and maximum year passed are used
+                      and are passed to census.census_years() to ensure that only years that are available are used.
                       Additional variable level year control is determined by the variable specification yaml file. 
                       """,
                       cardinality=Cardinality.multiple,
@@ -94,7 +96,7 @@ class CensusContext(Context):
                     Path to output log file. If you want logging info to print on the screen, enter "screen".
                     """,
                     cardinality=Cardinality.single,
-                    default="get_census.log")
+                    default="census.log")
     _debug = Argument("debug",
                       help = """
                       Boolean. If included, debug level messages will be logged. Otherwise defaults to "info" level.
