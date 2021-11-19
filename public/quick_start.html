@@ -245,6 +245,48 @@
 <p class="admonition-title">Note</p>
 <p>Please note that the best way to download data is using <code class="docutils literal notranslate"><span class="pre">DataPlan</span></code> class. These are some internal examples to become familiar with the package.</p>
 </div>
+<p>Now, let’s say we want to download the same data with <code class="docutils literal notranslate"><span class="pre">DataPlan</span></code> class. DataPlan has numerous methods to conduct different analyses and filters on data.</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">census</span>
+
+<span class="n">plan</span> <span class="o">=</span> <span class="n">census</span><span class="o">.</span><span class="n">DataPlan</span><span class="p">(</span><span class="s2">&quot;census_myvar_test.yml&quot;</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;state&quot;</span><span class="p">,</span> <span class="n">years</span><span class="o">=</span><span class="n">census</span><span class="o">.</span><span class="n">census_years</span><span class="p">(</span><span class="mi">2000</span><span class="p">,</span><span class="mi">2000</span><span class="p">))</span>
+<span class="n">plan</span><span class="o">.</span><span class="n">assemble_data</span><span class="p">()</span>
+<span class="n">plan</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>If you take a look at the results, you will see that the column names are according to your request rather than the original table on Census API.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">state  year  hispanic_count</span>
+<span class="go">01     2000  75830</span>
+<span class="go">02     2000  25852</span>
+<span class="go">04     2000  1295617</span>
+<span class="go">05     2000  86866</span>
+<span class="go">06     2000  10966556</span>
+</pre></div>
+</div>
+<p>Now, if we want to compute the percentage of Hispanic population we can change the yaml file according to the following:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">hispanic_pct:</span>
+<span class="go">2000:</span>
+<span class="go">    census:</span>
+<span class="go">        num: P004002</span>
+<span class="go">        den: P001001</span>
+</pre></div>
+</div>
+<p>And rerun the plan:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">census</span>
+
+<span class="n">plan</span> <span class="o">=</span> <span class="n">census</span><span class="o">.</span><span class="n">DataPlan</span><span class="p">(</span><span class="s2">&quot;census_myvar_test.yml&quot;</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;state&quot;</span><span class="p">,</span> <span class="n">years</span><span class="o">=</span><span class="n">census</span><span class="o">.</span><span class="n">census_years</span><span class="p">(</span><span class="mi">2000</span><span class="p">,</span><span class="mi">2000</span><span class="p">))</span>
+<span class="n">plan</span><span class="o">.</span><span class="n">assemble_data</span><span class="p">()</span>
+<span class="n">plan</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This time we get the following results:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">state  year  hispanic_count</span>
+<span class="go">01     2000  0.017052</span>
+<span class="go">02     2000  0.041236</span>
+<span class="go">04     2000  0.252526</span>
+<span class="go">05     2000  0.032493</span>
+<span class="go">06     2000  0.323768</span>
+</pre></div>
+</div>
 </section>
 
 

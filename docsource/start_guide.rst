@@ -1,5 +1,10 @@
 Working with the ``census`` Package
-=======================================
+===================================
+
+.. warning::
+    
+    This is the old documentation that prepared by Ben, we need to find the right place and merge it into the new documentation.
+
 
 Running the Command Line Interface
 ----------------------------------

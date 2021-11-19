@@ -79,4 +79,56 @@ Let's say we want to download and review hispanic_count in 2000, for each state.
 
     Please note that the best way to download data is using ``DataPlan`` class. These are some internal examples to become familiar with the package. 
 
+Now, let's say we want to download the same data with ``DataPlan`` class. DataPlan has numerous methods to conduct different analyses and filters on data. 
+
+
+.. code-block:: python3
+
+    import census
+
+    plan = census.DataPlan("census_myvar_test.yml", geometry="state", years=census.census_years(2000,2000))
+    plan.assemble_data()
+    plan.data.head()
+
+If you take a look at the results, you will see that the column names are according to your request rather than the original table on Census API.
+
+.. code-block:: console
+
+    state  year  hispanic_count
+    01     2000  75830
+    02     2000  25852
+    04     2000  1295617
+    05     2000  86866
+    06     2000  10966556
+
+Now, if we want to compute the percentage of Hispanic population we can change the yaml file according to the following:
+
+.. code-block:: console
+
+    hispanic_pct:
+    2000:
+        census:
+            num: P004002
+            den: P001001
+
+And rerun the plan:
+
+.. code-block:: python3
+
+    import census
+
+    plan = census.DataPlan("census_myvar_test.yml", geometry="state", years=census.census_years(2000,2000))
+    plan.assemble_data()
+    plan.data.head()
+
+This time we get the following results:
+
+.. code-block:: console
+
+    state  year  hispanic_count
+    01     2000  0.017052
+    02     2000  0.041236
+    04     2000  0.252526
+    05     2000  0.032493
+    06     2000  0.323768
 
