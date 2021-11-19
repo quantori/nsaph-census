@@ -92,6 +92,8 @@ class DataPlan:
             self.plan[year] = list()
             for varname in yaml_dict.keys():
                 plan_year = _find_year(year, list(yaml_dict[varname].keys()))
+                if plan_year is None:
+                    continue
                 if yaml_dict[varname][plan_year] != "skip":
                     self.plan[year].append(VariableDef(varname,
                      yaml_dict[varname][plan_year], self.__logger))

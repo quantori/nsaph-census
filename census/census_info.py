@@ -29,7 +29,7 @@ def get_endpoint(year: int, dataset: str, sum_file: str = None):
     # Do we throw an error here (or elsewhere while prepping the query
 
     if dataset not in ['dec', 'acs1', 'acs5']:
-        raise CensusException("Input dataset not currently supported")
+        raise CensusException(f"Input dataset ({dataset}) is not currently supported. Supported datasets: dec, acs1, acs5.")
 
     out = "https://api.census.gov/data/" + str(year) + "/"
 
@@ -39,14 +39,14 @@ def get_endpoint(year: int, dataset: str, sum_file: str = None):
         out += "dec/"
         if year == 2000:
             if sum_file not in ["sf1", "sf3"]:
-                raise CensusException("Invalid summary file input")
+                raise CensusException(f"Summary file input ({sum_file}) is not valid. Valid options: sf1, sf3")
             out += sum_file
         else:
             out += "sf1"
     elif dataset in ['acs1', 'acs5']:
         if year <= 2008:
             #TODO: Either the condition or error message is not correct. What if dataset is acs1?
-            raise CensusException("Invalid year for ACS5")
+            raise CensusException(f"ACS5 dataset cannot be <= 2008. Curren input: {year}")
         out += "acs/" + dataset
     #elif dataset == 'pums':
     #    assert year > 2008

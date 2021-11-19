@@ -98,6 +98,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../contributing_checklist.html">Contributing Checklist</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules.html">Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq.html">Frequently Asked Questions</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Community</span></p>
 <ul>
@@ -201,24 +202,24 @@
     <span class="c1"># Do we throw an error here (or elsewhere while prepping the query</span>
 
     <span class="k">if</span> <span class="n">dataset</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;dec&#39;</span><span class="p">,</span> <span class="s1">&#39;acs1&#39;</span><span class="p">,</span> <span class="s1">&#39;acs5&#39;</span><span class="p">]:</span>
-        <span class="k">raise</span> <span class="n">CensusException</span><span class="p">(</span><span class="s2">&quot;Input dataset not currently supported&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">CensusException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Input dataset (</span><span class="si">{</span><span class="n">dataset</span><span class="si">}</span><span class="s2">) is not currently supported. Supported datasets: dec, acs1, acs5.&quot;</span><span class="p">)</span>
 
     <span class="n">out</span> <span class="o">=</span> <span class="s2">&quot;https://api.census.gov/data/&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">year</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span>
 
     <span class="k">if</span> <span class="n">dataset</span> <span class="o">==</span> <span class="s1">&#39;dec&#39;</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">year</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">2000</span><span class="p">,</span> <span class="mi">2010</span><span class="p">]:</span>
-            <span class="k">raise</span> <span class="n">CensusException</span><span class="p">(</span><span class="s2">&quot;Invalid year for decennial census&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">CensusException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">year</span><span class="si">}</span><span class="s2"> is not valid for decennial census. Valid options: 2000, 2010.&quot;</span><span class="p">)</span>
         <span class="n">out</span> <span class="o">+=</span> <span class="s2">&quot;dec/&quot;</span>
         <span class="k">if</span> <span class="n">year</span> <span class="o">==</span> <span class="mi">2000</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">sum_file</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;sf1&quot;</span><span class="p">,</span> <span class="s2">&quot;sf3&quot;</span><span class="p">]:</span>
-                <span class="k">raise</span> <span class="n">CensusException</span><span class="p">(</span><span class="s2">&quot;Invalid summary file input&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">CensusException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Summary file input (</span><span class="si">{</span><span class="n">sum_file</span><span class="si">}</span><span class="s2">) is not valid. Valid options: sf1, sf3&quot;</span><span class="p">)</span>
             <span class="n">out</span> <span class="o">+=</span> <span class="n">sum_file</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">out</span> <span class="o">+=</span> <span class="s2">&quot;sf1&quot;</span>
     <span class="k">elif</span> <span class="n">dataset</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;acs1&#39;</span><span class="p">,</span> <span class="s1">&#39;acs5&#39;</span><span class="p">]:</span>
         <span class="k">if</span> <span class="n">year</span> <span class="o">&lt;=</span> <span class="mi">2008</span><span class="p">:</span>
             <span class="c1">#TODO: Either the condition or error message is not correct. What if dataset is acs1?</span>
-            <span class="k">raise</span> <span class="n">CensusException</span><span class="p">(</span><span class="s2">&quot;Invalid year for ACS5&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">CensusException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ACS5 dataset cannot be &lt;= 2008. Curren input: </span><span class="si">{</span><span class="n">year</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">out</span> <span class="o">+=</span> <span class="s2">&quot;acs/&quot;</span> <span class="o">+</span> <span class="n">dataset</span>
     <span class="c1">#elif dataset == &#39;pums&#39;:</span>
     <span class="c1">#    assert year &gt; 2008</span>
@@ -235,7 +236,12 @@
 <span class="sd">    :return: Dataframe of available variables in a given data set</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">endpoint</span> <span class="o">=</span> <span class="n">get_endpoint</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">sum_file</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+       <span class="n">endpoint</span> <span class="o">=</span> <span class="n">get_endpoint</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">sum_file</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">CensusException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+       <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+       <span class="k">return</span> <span class="kc">None</span>
+       
 
     <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
 

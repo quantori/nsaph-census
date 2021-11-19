@@ -29,6 +29,7 @@ and the FTP site for Tiger Shapefile Downloads. This package also includes a com
    contributing_checklist
    modules
    glossary
+   faq
 
 .. toctree::
    :glob:

@@ -98,6 +98,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../contributing_checklist.html">Contributing Checklist</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules.html">Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq.html">Frequently Asked Questions</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Community</span></p>
 <ul>
@@ -264,6 +265,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">plan</span><span class="p">[</span><span class="n">year</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
             <span class="k">for</span> <span class="n">varname</span> <span class="ow">in</span> <span class="n">yaml_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                 <span class="n">plan_year</span> <span class="o">=</span> <span class="n">_find_year</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">yaml_dict</span><span class="p">[</span><span class="n">varname</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+                <span class="k">if</span> <span class="n">plan_year</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">continue</span>
                 <span class="k">if</span> <span class="n">yaml_dict</span><span class="p">[</span><span class="n">varname</span><span class="p">][</span><span class="n">plan_year</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;skip&quot;</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">plan</span><span class="p">[</span><span class="n">year</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">VariableDef</span><span class="p">(</span><span class="n">varname</span><span class="p">,</span>
                      <span class="n">yaml_dict</span><span class="p">[</span><span class="n">varname</span><span class="p">][</span><span class="n">plan_year</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">__logger</span><span class="p">))</span>
