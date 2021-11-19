@@ -97,6 +97,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing_checklist.html">Contributing Checklist</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules.html">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../glossary.html">Glossary</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Community</span></p>
 <ul>
@@ -177,9 +178,9 @@
 
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">requests</span> <span class="k">as</span> <span class="nn">r</span>
 
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">requests</span> <span class="k">as</span> <span class="nn">r</span>
 
 <span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">.census_info</span> <span class="kn">import</span> <span class="o">*</span>
@@ -192,8 +193,9 @@
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="get_census_data"><a class="viewcode-back" href="../../modules.html#census.query.get_census_data">[docs]</a><span class="k">def</span> <span class="nf">get_census_data</span><span class="p">(</span><span class="n">year</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">variables</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">geography</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">sum_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                    <span class="n">state</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">county</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="get_census_data"><a class="viewcode-back" href="../../modules.html#census.query.get_census_data">[docs]</a><span class="k">def</span> <span class="nf">get_census_data</span><span class="p">(</span><span class="n">year</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">variables</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">geography</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                    <span class="n">sum_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="n">county</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    :param year: Year of data that we are querying</span>
@@ -201,8 +203,7 @@
 <span class="sd">    :param geography: Geographic resolution we&#39;re querying at (zcta, county, state)</span>
 <span class="sd">    :param dataset: The census data set you want (dec, acs1, acs5, pums)</span>
 <span class="sd">    :param sum_file: For the 2000 census, sf1 or sf3</span>
-<span class="sd">    :param key: Your census API key. We recommend not passing it here and instead either setting</span>
-<span class="sd">           the &quot;GET_CENSUS_API_KEY&quot; environmental variable or using the `set_api_key` function.</span>
+<span class="sd">    :param key: Your census API key. We recommend not passing it here and instead either setting the &quot;CENSUS_API_KEY&quot; environmental variable or using the `set_api_key` function.</span>
 <span class="sd">    :param state: 2 digit FIPS code of the state you want to limit the query to (i.e. &quot;06&quot; for CA)</span>
 <span class="sd">    :param county: 3 digit FIPS code of the county you want to include. Requires state to be specified</span>
 <span class="sd">    :return: a pandas DataFrame</span>
@@ -221,8 +222,8 @@
     <span class="n">geography</span> <span class="o">=</span> <span class="n">api_geography</span><span class="p">(</span><span class="n">geography</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="s2">&quot;GET_CENSUS_API_KEY&quot;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="n">key</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;GET_CENSUS_API_KEY&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s2">&quot;CENSUS_API_KEY&quot;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;CENSUS_API_KEY&quot;</span><span class="p">]</span>
 
     <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
         <span class="n">variables</span> <span class="o">=</span> <span class="p">[</span><span class="n">variables</span><span class="p">]</span>
@@ -238,7 +239,7 @@
         <span class="k">if</span> <span class="n">county</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">options</span><span class="p">[</span><span class="s1">&#39;in&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="s1">&#39;+county:&#39;</span> <span class="o">+</span> <span class="n">county</span>
     <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">options</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;GET_CENSUS_API_KEY&#39;</span><span class="p">]</span>
+        <span class="n">options</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;CENSUS_API_KEY&#39;</span><span class="p">]</span>
 
     <span class="n">num_tries</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">while</span> <span class="n">num_tries</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">:</span>
@@ -251,7 +252,7 @@
             <span class="n">num_tries</span> <span class="o">+=</span> <span class="mi">1</span>
     <span class="k">if</span> <span class="n">num_tries</span> <span class="o">&gt;=</span> <span class="mi">5</span><span class="p">:</span>
         <span class="n">LOG</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s2">&quot;Unable to complete query after &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">num_tries</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; tries&quot;</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="n">GetCensusException</span><span class="p">(</span><span class="s2">&quot;Unable to complete query after &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">num_tries</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; tries&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">CensusException</span><span class="p">(</span><span class="s2">&quot;Unable to complete query after &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">num_tries</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; tries&quot;</span><span class="p">)</span>
 
     <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="n">out</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">columns</span><span class="o">=</span><span class="n">out</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -272,7 +273,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Ensure that the estimate value is specified for a list of ACS variables</span>
 
-<span class="sd">    :param variables: list of strings ccontaining the variable names to request</span>
+<span class="sd">    :param variables: list of strings containing the variable names to request</span>
 <span class="sd">    :return: list of strings containing ACS vars, postpended with an &quot;E&quot;</span>
 <span class="sd">         (where not previously postended)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -312,7 +313,7 @@
     <span class="n">geo</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="n">geo</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">SUPPORTED_GEOMETRIES</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">GetCensusException</span><span class="p">(</span><span class="s2">&quot;Input Geometry not supported&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">CensusException</span><span class="p">(</span><span class="s2">&quot;Input Geometry not supported&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">geo</span> <span class="o">==</span> <span class="s2">&quot;zcta&quot;</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;zip code tabulation area&quot;</span>
@@ -338,6 +339,7 @@
         <span class="k">return</span> <span class="s2">&quot;sf1&quot;</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;sf3&quot;</span>
+
 </pre></div>
 
            </div>

@@ -35,7 +35,7 @@ def get_endpoint(year: int, dataset: str, sum_file: str = None):
 
     if dataset == 'dec':
         if year not in [2000, 2010]:
-            raise CensusException("Invalid year for decennial census")
+            raise CensusException(f"{year} is not valid for decennial census. Valid options: 2000, 2010.")
         out += "dec/"
         if year == 2000:
             if sum_file not in ["sf1", "sf3"]:
@@ -63,7 +63,12 @@ def get_varlist(year: int, dataset: str, sum_file: str = None):
     :return: Dataframe of available variables in a given data set
     """
 
-    endpoint = get_endpoint(year, dataset, sum_file)
+    try:
+       endpoint = get_endpoint(year, dataset, sum_file)
+    except CensusException as e:
+       print(f"{e}")
+       return None
+       
 
     params = {}
 
@@ -97,15 +102,12 @@ def set_api_key(key: str):
     :param key: Your Census API key as a string
     :return: nothing
     """
-    # TODO: Why not set the API key directly in python script?
-    # Also I suggest to change the name to set_census_api_key.
     os.environ['CENSUS_API_KEY'] = key
 
 
 def census_years(min_year: int = 2000, max_year: int = 2019):
     """
-    Constructs a list of years for which census data is available in the range provided. At this point assumes
-    we want the decennial census and acs5. Future functionality might expand to allow this to vary.
+    Constructs a list of years for which census data is available in the range provided. At this point assumes we want the decennial census and acs5. Future functionality might expand to allow this to vary.
 
     :param min_year: minimum year we want data for
     :param max_year: max year we want data for (inclusive)

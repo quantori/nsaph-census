@@ -1,8 +1,8 @@
-import unittest
-import census
 import os
-import pickle
+import pickle5 as pickle
+import unittest
 
+# import census
 
 # class SchemaTestCase(unittest.TestCase):
 #     def test_schema_dict(self):

@@ -40,7 +40,7 @@
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Contant" href="contact.html" />
+    <link rel="next" title="Glossary" href="glossary.html" />
     <link rel="prev" title="Contributing Checklist" href="contributing_checklist.html" /> 
 </head>
 
@@ -109,6 +109,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#utils-py">utils.py</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Community</span></p>
 <ul>
@@ -199,8 +200,7 @@
 <li><p><span class="target" id="census.query.get_census_data.params.geography"></span><strong>geography</strong><a class="paramlink headerlink reference internal" href="#census.query.get_census_data.params.geography">¶</a> – Geographic resolution we’re querying at (zcta, county, state)</p></li>
 <li><p><span class="target" id="census.query.get_census_data.params.dataset"></span><strong>dataset</strong><a class="paramlink headerlink reference internal" href="#census.query.get_census_data.params.dataset">¶</a> – The census data set you want (dec, acs1, acs5, pums)</p></li>
 <li><p><span class="target" id="census.query.get_census_data.params.sum_file"></span><strong>sum_file</strong><a class="paramlink headerlink reference internal" href="#census.query.get_census_data.params.sum_file">¶</a> – For the 2000 census, sf1 or sf3</p></li>
-<li><p><span class="target" id="census.query.get_census_data.params.key"></span><strong>key</strong><a class="paramlink headerlink reference internal" href="#census.query.get_census_data.params.key">¶</a> – Your census API key. We recommend not passing it here and instead either setting
-the “GET_CENSUS_API_KEY” environmental variable or using the <cite>set_api_key</cite> function.</p></li>
+<li><p><span class="target" id="census.query.get_census_data.params.key"></span><strong>key</strong><a class="paramlink headerlink reference internal" href="#census.query.get_census_data.params.key">¶</a> – Your census API key. We recommend not passing it here and instead either setting the “CENSUS_API_KEY” environmental variable or using the <cite>set_api_key</cite> function.</p></li>
 <li><p><span class="target" id="census.query.get_census_data.params.state"></span><strong>state</strong><a class="paramlink headerlink reference internal" href="#census.query.get_census_data.params.state">¶</a> – 2 digit FIPS code of the state you want to limit the query to (i.e. “06” for CA)</p></li>
 <li><p><span class="target" id="census.query.get_census_data.params.county"></span><strong>county</strong><a class="paramlink headerlink reference internal" href="#census.query.get_census_data.params.county">¶</a> – 3 digit FIPS code of the county you want to include. Requires state to be specified</p></li>
 </ul>
@@ -471,8 +471,7 @@ every session you can also permanently set CENSUS_API_KEY to your key in your en
 <dl class="py function">
 <dt class="sig sig-object py" id="census.census_info.census_years">
 <span class="sig-name descname"><span class="pre">census_years</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_year</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">2000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_year</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">2019</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/census/census_info.html#census_years"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#census.census_info.census_years" title="Permalink to this definition">¶</a></dt>
-<dd><p>Constructs a list of years for which census data is available in the range provided. At this point assumes
-we want the decennial census and acs5. Future functionality might expand to allow this to vary.</p>
+<dd><p>Constructs a list of years for which census data is available in the range provided. At this point assumes we want the decennial census and acs5. Future functionality might expand to allow this to vary.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -623,7 +622,7 @@ of command line arguments</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="contact.html" class="btn btn-neutral float-right" title="Contant" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="glossary.html" class="btn btn-neutral float-right" title="Glossary" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="contributing_checklist.html" class="btn btn-neutral float-left" title="Contributing Checklist" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

@@ -1,4 +1,8 @@
 Quick Start 
 -----------
 
-Set up your environment (or activate it) using :ref:`Setting Up Environment` section. ...
+Set up your environment (or activate it) using :ref:`Setting Up Environment` section. Census data comes from different resources, and they may have a different formats in different years. The current supported source of data includes:
+    
+    - ``acs``  American Community Survey
+    - ``dec``  Data collected by the decennial census
+    - ``pums`` Public use microdata sample

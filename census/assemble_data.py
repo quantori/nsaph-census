@@ -72,14 +72,14 @@ class DataPlan:
 
     def _yaml_to_dict(self, yaml_path):
         """
-        Convert a yaml file detailing how to get census variables in to a dictionary. Handles
-        the issue of forward counting years to make future code readable.
+        Convert a yaml file detailing how to get census variables in to a 
+        dictionary. Handles the issue of forward counting years to make future 
+        code readable.
 
         Yaml structure defined in :doc:`census_yaml`
 
         :param yaml_path:
         :return: dictionary
-
 
         """
 
@@ -93,7 +93,8 @@ class DataPlan:
             for varname in yaml_dict.keys():
                 plan_year = _find_year(year, list(yaml_dict[varname].keys()))
                 if yaml_dict[varname][plan_year] != "skip":
-                    self.plan[year].append(VariableDef(varname, yaml_dict[varname][plan_year], self.__logger))
+                    self.plan[year].append(VariableDef(varname,
+                     yaml_dict[varname][plan_year], self.__logger))
 
     def assemble_data(self):
         """

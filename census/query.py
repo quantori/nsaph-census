@@ -31,8 +31,7 @@ def get_census_data(year: int, variables: list, geography: str, dataset: str,
     :param geography: Geographic resolution we're querying at (zcta, county, state)
     :param dataset: The census data set you want (dec, acs1, acs5, pums)
     :param sum_file: For the 2000 census, sf1 or sf3
-    :param key: Your census API key. We recommend not passing it here and instead either setting
-           the "GET_CENSUS_API_KEY" environmental variable or using the `set_api_key` function.
+    :param key: Your census API key. We recommend not passing it here and instead either setting the "CENSUS_API_KEY" environmental variable or using the `set_api_key` function.
     :param state: 2 digit FIPS code of the state you want to limit the query to (i.e. "06" for CA)
     :param county: 3 digit FIPS code of the county you want to include. Requires state to be specified
     :return: a pandas DataFrame
@@ -168,3 +167,4 @@ def _choose_sum_file(variables: list):
         return "sf1"
     else:
         return "sf3"
+
