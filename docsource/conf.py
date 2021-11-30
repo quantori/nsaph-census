@@ -12,6 +12,7 @@
 #
 import os
 import sys
+
 from nsaph_utils.docutils.codeurl import URLDomain
 
 sys.path.insert(0, os.path.abspath('src/python'))

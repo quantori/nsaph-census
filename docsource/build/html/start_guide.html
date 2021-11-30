@@ -9,7 +9,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Working with the get_census Package &mdash; Census 0.0.1 documentation</title>
+  <title>Working with the census Package &mdash; Census 0.0.1 documentation</title>
   
 
   
@@ -40,7 +40,6 @@
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="get_census Census Variable File Structure" href="census_yaml.html" />
     <link rel="prev" title="Changelog" href="CHANGELOG.html" /> 
 </head>
 
@@ -93,11 +92,15 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="env_set_up.html">Setting Up Environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="census_yaml.html">Census Variable File Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cached_data.html">Stored Data Files</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developers</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="env_set_up_dev.html">Setting Up Environment (Developers)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing_checklist.html">Contributing Checklist</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Community</span></p>
 <ul>
@@ -106,14 +109,12 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Old Doc</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Working with the <code class="docutils literal notranslate"><span class="pre">get_census</span></code> Package</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Working with the <code class="docutils literal notranslate"><span class="pre">census</span></code> Package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#running-the-command-line-interface">Running the Command Line Interface</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#main-python-workflow">Main Python Workflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#shapefile-downloads">Shapefile Downloads</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="census_yaml.html"><code class="docutils literal notranslate"><span class="pre">get_census</span></code> Census Variable File Structure</a></li>
-<li class="toctree-l1"><a class="reference internal" href="cached_data.html">Stored Data Files</a></li>
 </ul>
 
             
@@ -159,7 +160,7 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>Working with the <code class="docutils literal notranslate"><span class="pre">get_census</span></code> Package</li>
+      <li>Working with the <code class="docutils literal notranslate"><span class="pre">census</span></code> Package</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -178,18 +179,22 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="working-with-the-get-census-package">
-<h1>Working with the <code class="docutils literal notranslate"><span class="pre">get_census</span></code> Package<a class="headerlink" href="#working-with-the-get-census-package" title="Permalink to this headline">¶</a></h1>
+  <section id="working-with-the-census-package">
+<h1>Working with the <code class="docutils literal notranslate"><span class="pre">census</span></code> Package<a class="headerlink" href="#working-with-the-census-package" title="Permalink to this headline">¶</a></h1>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This is the old documentation that prepared by Ben, we need to find the right place and merge it into the new documentation.</p>
+</div>
 <section id="running-the-command-line-interface">
 <h2>Running the Command Line Interface<a class="headerlink" href="#running-the-command-line-interface" title="Permalink to this headline">¶</a></h2>
-<p>When <code class="docutils literal notranslate"><span class="pre">get_census</span></code> is installed, a command line utility (also named <code class="docutils literal notranslate"><span class="pre">get_census</span></code>)
+<p>When <code class="docutils literal notranslate"><span class="pre">census</span></code> is installed, a command line utility (also named <code class="docutils literal notranslate"><span class="pre">census</span></code>)
 is automatically made available in your environment. Documentation on the CLI can be
 accessed by running:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">get_census</span> <span class="o">--</span><span class="n">help</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">census</span> <span class="o">--</span><span class="n">help</span>
 </pre></div>
 </div>
 <p>An example run would look like this:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">get_census</span> <span class="o">--</span><span class="n">var_file</span> <span class="n">census_vars</span><span class="o">.</span><span class="n">yml</span> <span class="o">-</span><span class="n">y</span> <span class="mi">2009</span><span class="p">:</span><span class="mi">2019</span> <span class="o">--</span><span class="n">geom</span> <span class="n">tract</span> <span class="o">-</span><span class="n">d</span> <span class="n">population</span> <span class="o">-</span><span class="n">i</span> <span class="n">x</span> <span class="o">--</span><span class="n">out</span> <span class="o">../</span><span class="n">data</span><span class="o">/</span><span class="n">census_tract_2009_2019</span><span class="o">.</span><span class="n">csv</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">census</span> <span class="o">--</span><span class="n">var_file</span> <span class="n">census_vars</span><span class="o">.</span><span class="n">yml</span> <span class="o">-</span><span class="n">y</span> <span class="mi">2009</span><span class="p">:</span><span class="mi">2019</span> <span class="o">--</span><span class="n">geom</span> <span class="n">tract</span> <span class="o">-</span><span class="n">d</span> <span class="n">population</span> <span class="o">-</span><span class="n">i</span> <span class="n">x</span> <span class="o">--</span><span class="n">out</span> <span class="o">../</span><span class="n">data</span><span class="o">/</span><span class="n">census_tract_2009_2019</span><span class="o">.</span><span class="n">csv</span>
 </pre></div>
 </div>
 <p>This would take the variable definitions in <code class="docutils literal notranslate"><span class="pre">census_vars.yml</span></code> (<code class="docutils literal notranslate"><span class="pre">--var_file</span> <span class="pre">census_vars.yml</span></code>)
@@ -205,14 +210,14 @@ For detailed documentation on its methods, please see <span class="xref std std-
 <p>The general workflow is as follows:</p>
 <ul>
 <li><p>Create your DataPlan Object (this one is for county data for 2000-2019):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">plan</span> <span class="o">=</span> <span class="n">get_census</span><span class="o">.</span><span class="n">DataPlan</span><span class="p">(</span><span class="s2">&quot;census_vars.yml&quot;</span><span class="p">,</span> <span class="s2">&quot;county&quot;</span><span class="p">,</span> <span class="n">years</span> <span class="o">=</span> <span class="n">get_census</span><span class="o">.</span><span class="n">census_years</span><span class="p">(</span><span class="mi">2000</span><span class="p">,</span> <span class="mi">2019</span><span class="p">))</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">plan</span> <span class="o">=</span> <span class="n">census</span><span class="o">.</span><span class="n">DataPlan</span><span class="p">(</span><span class="s2">&quot;census_vars.yml&quot;</span><span class="p">,</span> <span class="s2">&quot;county&quot;</span><span class="p">,</span> <span class="n">years</span> <span class="o">=</span> <span class="n">census</span><span class="o">.</span><span class="n">census_years</span><span class="p">(</span><span class="mi">2000</span><span class="p">,</span> <span class="mi">2019</span><span class="p">))</span>
 </pre></div>
 </div>
 </li>
 </ul>
 <p>On creation, the object creates a plan for a series of API queries to calculate the desired
 variables based on the passed in yaml file. Details on how to structure that yaml file can be found in
-<a class="reference internal" href="census_yaml.html"><span class="doc">get_census Census Variable File Structure</span></a>.</p>
+<a class="reference internal" href="census_yaml.html"><span class="doc">Census Variable File Structure</span></a>.</p>
 <ul>
 <li><p>Make the API calls:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">plan</span><span class="o">.</span><span class="n">assemble_data</span><span class="p">()</span>
@@ -276,8 +281,6 @@ for documentation on the functions interacting with the Census geographic resour
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="census_yaml.html" class="btn btn-neutral float-right" title="get_census Census Variable File Structure" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="CHANGELOG.html" class="btn btn-neutral float-left" title="Changelog" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

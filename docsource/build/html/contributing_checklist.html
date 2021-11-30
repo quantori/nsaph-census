@@ -41,7 +41,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Modules" href="modules.html" />
-    <link rel="prev" title="Quick Start" href="quick_start.html" /> 
+    <link rel="prev" title="Stored Data Files" href="cached_data.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -91,13 +91,17 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Researchers</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="env_set_up.html">Setting Up Environment (Developers)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="env_set_up.html">Setting Up Environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="census_yaml.html">Census Variable File Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cached_data.html">Stored Data Files</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developers</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Contributing Checklist</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Community</span></p>
 <ul>
@@ -106,9 +110,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Old Doc</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="start_guide.html">Working with the <code class="docutils literal notranslate"><span class="pre">get_census</span></code> Package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="census_yaml.html"><code class="docutils literal notranslate"><span class="pre">get_census</span></code> Census Variable File Structure</a></li>
-<li class="toctree-l1"><a class="reference internal" href="cached_data.html">Stored Data Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="start_guide.html">Working with the <code class="docutils literal notranslate"><span class="pre">census</span></code> Package</a></li>
 </ul>
 
             
@@ -175,7 +177,31 @@
             
   <section id="contributing-checklist">
 <h1>Contributing Checklist<a class="headerlink" href="#contributing-checklist" title="Permalink to this headline">¶</a></h1>
-<p>TBD</p>
+<p>Any kind of contribution is welcome. You can test the package, improve the documentation, add new features, fix bugs, and many more. For the current list of feature requests and bugs, please refer to the <a class="reference external" href="https://gitlab-int.rc.fas.harvard.edu/rse/francesca_dominici/tools/getcensus/-/issues">issues page</a> .</p>
+<p>Here are the general steps to consider in contribution.</p>
+<p><strong>Step 1</strong>: Get a copy of the project or update your local repo and start a new branch</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git clone https://gitlab-int.rc.fas.harvard.edu/rse/francesca_dominici/tools/getcensus.git</span>
+</pre></div>
+</div>
+<p>or if you already have the code, update your directory. It is very important to keep your local directory updated by the <code class="docutils literal notranslate"><span class="pre">dev</span></code> branch.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git fetch --all</span>
+<span class="go">git checkout origin/dev</span>
+<span class="go">git pull</span>
+<span class="go">git checkout -b new_branch</span>
+</pre></div>
+</div>
+<p><strong>Step 2</strong>: Make modifications</p>
+<p>In this step, you can choose a topic to contribute to and work on it. However, please make sure that you are working on one specific topic. For example, if you are working on polishing documentation, we do not expect to see any changes to the codebase. Mixing features make the review process extremely time-consuming.  It is acceptable to add or modify documents when you are adding new functionality to the code. However, those changes should be related only to that feature.</p>
+<p><strong>Step 3</strong>: Run unit tests (and doc test)</p>
+<p>Make sure that your package passes all tests. [TODO: needs more details.]</p>
+<p><strong>Step 4</strong>: Update CHANGELOG.md</p>
+<p>You need to update CHANGELOG.md file and add any required information to understand what has happened.</p>
+<p><strong>Step 5</strong>: Submit a merge request</p>
+<p>Please submit all merge requests to <code class="docutils literal notranslate"><span class="pre">dev</span></code> branch. The <code class="docutils literal notranslate"><span class="pre">dev</span></code> branch has the most recent implemented code. Please keep an eye on the <code class="docutils literal notranslate"><span class="pre">dev</span></code> branch and update your local branch accordingly.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can submit Merge Request earlier before completely finishing the implementation. This helps you get feedback from the group and run your code through CI to ensure that you are on the right path.</p>
+</div>
 </section>
 
 
@@ -189,7 +215,7 @@
         <a href="modules.html" class="btn btn-neutral float-right" title="Modules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="quick_start.html" class="btn btn-neutral float-left" title="Quick Start" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="cached_data.html" class="btn btn-neutral float-left" title="Stored Data Files" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

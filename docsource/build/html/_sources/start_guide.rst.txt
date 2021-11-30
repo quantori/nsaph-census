@@ -1,21 +1,24 @@
-Working with the ``get_census`` Package
-=======================================
+Working with the ``census`` Package
+===================================
 
+.. warning::
+    
+    This is the old documentation that prepared by Ben, we need to find the right place and merge it into the new documentation.
 
 
 Running the Command Line Interface
 ----------------------------------
 
-When ``get_census`` is installed, a command line utility (also named ``get_census``)
+When ``census`` is installed, a command line utility (also named ``census``)
 is automatically made available in your environment. Documentation on the CLI can be
 accessed by running: ::
 
-    get_census --help
+    census --help
 
 
 An example run would look like this: ::
 
-    get_census --var_file census_vars.yml -y 2009:2019 --geom tract -d population -i x --out ../data/census_tract_2009_2019.csv
+    census --var_file census_vars.yml -y 2009:2019 --geom tract -d population -i x --out ../data/census_tract_2009_2019.csv
 
 This would take the variable definitions in ``census_vars.yml`` (``--var_file census_vars.yml``)
 , process them from the API for census tracts (``--geom tract``) for 2009 - 2019 (``-y 2009:2019``),
@@ -33,7 +36,7 @@ The general workflow is as follows:
 
 - Create your DataPlan Object (this one is for county data for 2000-2019): ::
 
-    plan = get_census.DataPlan("census_vars.yml", "county", years = get_census.census_years(2000, 2019))
+    plan = census.DataPlan("census_vars.yml", "county", years = census.census_years(2000, 2019))
 
 On creation, the object creates a plan for a series of API queries to calculate the desired
 variables based on the passed in yaml file. Details on how to structure that yaml file can be found in

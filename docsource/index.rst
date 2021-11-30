@@ -19,6 +19,8 @@ and the FTP site for Tiger Shapefile Downloads. This package also includes a com
 
    env_set_up
    quick_start
+   census_yaml
+   cached_data
 
 .. toctree::
    :glob:
@@ -26,6 +28,8 @@ and the FTP site for Tiger Shapefile Downloads. This package also includes a com
 
    contributing_checklist
    modules
+   glossary
+   faq
 
 .. toctree::
    :glob:
@@ -41,8 +45,6 @@ and the FTP site for Tiger Shapefile Downloads. This package also includes a com
    :caption: Old Doc
 
    start_guide
-   census_yaml
-   cached_data
 
 
 
