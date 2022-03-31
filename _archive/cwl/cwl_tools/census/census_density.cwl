@@ -1,0 +1,52 @@
+#! cwl-runner
+
+cwlVersion: v1.1
+class: CommandLineTool
+baseCommand: [python, -m, census.calculate_density]
+requirements:
+  EnvVarRequirement:
+    envDef:
+      PYTHONPATH: $(inputs.PYTHONPATH)
+      HTTPS_PROXY: $(inputs.http_proxy)
+      HTTP_PROXY: $(inputs.http_proxy)
+  NetworkAccess:
+    networkAccess: true
+
+
+inputs:
+  PYTHONPATH:
+    type: string
+    default: "/Users/mbs641/Documents/rse_work/learning/cwl/src"
+  http_proxy:
+    type: string
+    default: ""
+  densities:
+    type: string[]
+    default: ["population"]
+    inputBinding:
+      prefix: -d
+  log:
+    type: File
+    default:
+      class: File
+      location: census.log
+    inputBinding:
+      prefix: --log
+  in_pkl:
+    type: File
+    default:
+      class: File
+      location: census.pkl
+    inputBinding:
+      prefix: --in_pkl
+  out_pkl:
+    type: string
+    default: "census_densities.pkl"
+    inputBinding:
+      prefix: --out_pkl
+
+outputs:
+  pkl:
+    type: File
+    outputBinding:
+      glob: $(inputs.out_pkl)

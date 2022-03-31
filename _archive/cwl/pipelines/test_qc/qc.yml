@@ -1,0 +1,20 @@
+-
+  variable: x
+  severity: warning
+  condition: greater_than
+  val: 0
+-
+  variable: x
+  severity: warning
+  condition: less_than
+  val: 1
+-
+  variable: y
+  severity: warning
+  condition: greater_than
+  val: 0
+-
+  variable: y
+  severity: warning
+  condition: less_than
+  val: 1

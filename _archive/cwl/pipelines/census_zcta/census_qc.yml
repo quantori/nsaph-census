@@ -1,0 +1,241 @@
+-
+  variable: hispanic_pct
+  severity: warning
+  condition: no_missing
+-
+  variable: hispanic_pct
+  condition: greater_than
+  val: 0
+  severity: error
+-
+  variable: hispanic_pct
+  condition: less_than
+  val: 1
+  severity: error
+-
+  variable: poverty
+  severity: warning
+  condition: no_missing
+-
+  variable: poverty
+  condition: greater_than
+  val: 0
+  severity: error
+-
+  variable: poverty
+  condition: less_than
+  val: 1
+  severity: error
+-
+  variable: poverty_mcare
+  severity: warning
+  condition: no_missing
+-
+  variable: poverty_mcare
+  condition: greater_than
+  val: 0
+  severity: error
+-
+  variable: poverty_mcare
+  condition: less_than
+  val: 1
+  severity: error
+-
+  variable: population
+  severity: warning
+  condition: no_missing
+-
+  variable: population
+  condition: greater_than
+  val: 0
+  severity: error
+-
+  variable: population_density
+  severity: warning
+  condition: no_missing
+-
+  variable: population_density
+  condition: greater_than
+  val: 0
+  severity: error
+-
+  variable: median_house_value
+  severity: warning
+  condition: no_missing
+-
+  variable: median_house_value
+  condition: greater_than
+  val: 0
+  severity: error
+-
+  variable: blk_pct
+  severity: warning
+  condition: no_missing
+-
+  variable: blk_pct
+  condition: greater_than
+  val: 0
+  severity: error
+-
+  variable: blk_pct
+  condition: less_than
+  val: 1
+  severity: error
+-
+  variable: white_pct
+  severity: warning
+  condition: no_missing
+-
+  variable: white_pct
+  condition: greater_than
+  val: 0
+  severity: error
+-
+  variable: white_pct
+  condition: less_than
+  val: 1
+  severity: error
+-
+  variable: native_pct
+  severity: warning
+  condition: no_missing
+-
+  variable: native_pct
+  condition: greater_than
+  val: 0
+  severity: error
+-
+  variable: native_pct
+  condition: less_than
+  val: 1
+  severity: error
+-
+  variable: asian_pct
+  severity: warning
+  condition: no_missing
+-
+  variable: asian_pct
+  condition: greater_than
+  val: 0
+  severity: error
+-
+  variable: asian_pct
+  condition: less_than
+  val: 1
+  severity: error
+-
+  variable: no_grad
+  severity: warning
+  condition: no_missing
+-
+  variable: no_grad
+  condition: greater_than
+  val: 0
+  severity: error
+-
+  variable: no_grad
+  condition: less_than
+  val: 1
+  severity: error
+-
+  variable: no_grad_mcare
+  severity: warning
+  condition: no_missing
+-
+  variable: no_grad_mcare
+  condition: greater_than
+  val: 0
+  severity: error
+-
+  variable: no_grad_mcare
+  condition: less_than
+  val: 1
+  severity: error
+-
+  variable: median_household_income
+  severity: warning
+  condition: no_missing
+-
+  variable: median_household_income
+  condition: greater_than
+  val: 0
+  severity: error
+-
+  variable: owner_occupied
+  severity: warning
+  condition: no_missing
+-
+  variable: owner_occupied
+  condition: greater_than
+  val: 0
+  severity: error
+-
+  variable: owner_occupied
+  condition: less_than
+  val: 1
+  severity: error
+-
+  variable: median_age
+  severity: warning
+  condition: no_missing
+-
+  variable: median_age
+  condition: greater_than
+  val: 0
+  severity: error
+-
+  variable: age_pct_0_14
+  severity: warning
+  condition: no_missing
+-
+  variable: age_pct_0_14
+  condition: greater_than
+  val: 0
+  severity: error
+-
+  variable: age_pct_0_14
+  condition: less_than
+  val: 1
+  severity: error
+-
+  variable: age_pct_15_44
+  severity: warning
+  condition: no_missing
+-
+  variable: age_pct_15_44
+  condition: greater_than
+  val: 0
+  severity: error
+-
+  variable: age_pct_15_44
+  condition: less_than
+  val: 1
+  severity: error
+-
+  variable: age_pct_45_65
+  severity: warning
+  condition: no_missing
+-
+  variable: age_pct_45_65
+  condition: greater_than
+  val: 0
+  severity: error
+-
+  variable: age_pct_45_65
+  condition: less_than
+  val: 1
+  severity: error
+-
+  variable: age_pct_65_plus
+  severity: warning
+  condition: no_missing
+-
+  variable: age_pct_65_plus
+  condition: greater_than
+  val: 0
+  severity: error
+-
+  variable: age_pct_65_plus
+  condition: less_than
+  val: 1
+  severity: error

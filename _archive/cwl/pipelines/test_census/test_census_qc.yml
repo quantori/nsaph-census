@@ -1,0 +1,42 @@
+-
+  variable: hispanic_pct
+  severity: warning
+  condition: no_missing
+-
+  variable: hispanic_pct
+  condition: greater_than
+  val: 0
+  severity: error
+-
+  variable: hispanic_pct
+  condition: less_than
+  val: 1
+  severity: error
+-
+  variable: poverty
+  severity: warning
+  condition: no_missing
+-
+  variable: poverty
+  condition: greater_than
+  val: 0
+  severity: error
+-
+  variable: poverty
+  condition: less_than
+  val: 1
+  severity: error
+-
+  variable: poverty_mcare
+  severity: warning
+  condition: no_missing
+-
+  variable: poverty_mcare
+  condition: greater_than
+  val: 0
+  severity: error
+-
+  variable: poverty_mcare
+  condition: less_than
+  val: 1
+  severity: error

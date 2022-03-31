@@ -1,0 +1,7 @@
+csv_file:
+  class: File
+  location: test_qc.csv
+qc_file:
+  class: File
+  location: qc.yml
+name: qc_cwl_test

@@ -1,0 +1,25 @@
+PYTHONPATH:  "../../src" # Directory holding python files
+api_key: f1113674f0c1c0be12506fbdfc8bd59567a7a1f3  # API Key for the Census API
+var_file:  # YML File specifying the census variables
+  class: File
+  location: zcta_vars.yml
+geometry: zcta # Census geometry to use
+years: 2000:2019 # Years to download census for, written <min_year>:<max_year>
+interpolate_years: 1999:2019  # Years to interpolate census over, written <min_year>:<max_year>
+log: zcta_census.log # name of the main log file
+density_vars: [population] # List of variables to calculate area density for
+assemble_pkl: zcta_download.pkl # pkl file to store results of initial download
+interpolate_pkl: zcta_interp.pkl # pkl file to store object with interpolated data
+density_interp_pkl: zcta_interp_dens.pkl # pkl file to store object with interpolated data and calculated densities
+density_no_interp_pkl: zcta_no_interp_dens.pkl # pkl file to store object with uninterpolated data and calculated densities
+interp_out: zcta_interp.csv # csv file to store output with interpolated data
+interp_tablename: zcta_interp # table name for interpolated data
+interp_schema: zcta_interp_schema.yml # File name for interpolated data schema (.yml)
+no_interp_out: zcta_no_interp.csv #csv file to store uninterpolated data in
+no_interp_tablename: zcta_no_interp # table name for uninterpolated data
+no_interp_schema: zcta_no_interp_schema.yml # File name for uninterpolated data schema (.yml)
+qc_file:
+  class: File # YAML File specifying QC
+  location: census_qc.yml
+interp_qc_log: interp_qc.log # Place to log QC for interpolated data
+no_interp_qc_log: no_interp_qc.log # Place to log QC for uninterpolated data
