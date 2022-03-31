@@ -2,7 +2,7 @@
  
 A Python Module for easy specification of custom census data sets.
 
-For instructions on running code see the notebook [here](notebooks/workflow_example.ipynb)
+For instructions on running code see the notebook [here](_archive/notebooks/workflow_example.ipynb)
 
 ## Change Log
 
