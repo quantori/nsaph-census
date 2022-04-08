@@ -25,7 +25,7 @@ Command Line Interface for the census python package
 #
 
 import logging
-
+import pickle
 from nsaph_utils.utils.context import Context, Argument, Cardinality
 
 from .assemble_data import DataPlan
@@ -122,6 +122,10 @@ class CensusContext(Context):
                       Boolean. If included, debug level messages will be logged. Otherwise defaults to "info" level.
                       """,
                       type=bool)
+    _pkl_file = Argument("pkl_file",
+                         help="Path to temporary pkl file",
+                         cardinality=Cardinality.single,
+                         default="census.pkl")
 
     def __init__(self, doc=None):
         self.var_file = None
@@ -135,6 +139,7 @@ class CensusContext(Context):
         self.quality_check = None
         self.log = None
         self.debug = None
+        self.pkl_file = None
         super().__init__(CensusContext, doc)
 
     def validate(self, attr, value):
@@ -184,3 +189,10 @@ def census_cli():
 
     if context.quality_check:
         census.quality_check(context.quality_check)
+
+    with open(context.pkl_file, 'wb') as f:
+        pickle.dump(census, f)
+
+
+if __name__ == "__main__":
+    census_cli()
