@@ -2,7 +2,7 @@
 
 cwlVersion: v1.2
 class: CommandLineTool
-baseCommand: [python, -m, census.assemble_data]
+baseCommand: [python, -m, census.cli]
 requirements:
   EnvVarRequirement:
     envDef:
@@ -29,7 +29,7 @@ inputs:
   geometry:
     type: string
     inputBinding:
-      prefix: --geom
+      prefix: --geometry
   years:
     type: string
     default: "1999:2019"
@@ -56,10 +56,12 @@ inputs:
     inputBinding:
       prefix: --county
 
+arguments:
+  - prefix: --out
+    valueFrom: "out.csv"
 
 outputs:
   pkl:
     type: File
     outputBinding:
       glob: $(inputs.pkl_file)
-

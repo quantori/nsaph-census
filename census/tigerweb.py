@@ -39,8 +39,8 @@ from .exceptions import CensusException
 GEOMETRY_CODES = {"zcta": 2,
                   "tract": 8,
                   "block group": 10,
-                  "state": 84,
-                  "county": 86}
+                  "state": 82,
+                  "county": 84}
 
 TIGER_NAMES = {
     "zcta": "ZCTA5",
@@ -169,6 +169,11 @@ def get_area(geometry, sq_mi=True):
         queries += 1
         LOG.debug("Area query " + str(queries) + " of " + str(len(param_list)))
         result = r.get(url, params)
+
+        print("RESULT", url, params, result.status_code)
+        if len(result.text) < 1000:
+            print(result.text)
+
         result = list(map(lambda x: x['attributes'], result.json()['features']))
         result = pd.DataFrame(result)
 
