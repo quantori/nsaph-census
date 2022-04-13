@@ -23,3 +23,6 @@ qc_file:
   location: census_qc.yml
 interp_qc_log: interp_qc.log # Place to log QC for interpolated data
 no_interp_qc_log: no_interp_qc.log # Place to log QC for uninterpolated data
+database: /opt/airflow/dags/census/database.ini
+connection_name: nsaph2
+table: "county_interp"

@@ -41,7 +41,7 @@ inputs:
 
 outputs:
   data:
-    type: File
+    type: File[]
     outputBinding:
       glob: $(inputs.out_file)
   schema:
