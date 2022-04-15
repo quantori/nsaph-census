@@ -155,14 +155,13 @@ class DataPlan:
         :return: List of strings
         """
 
-        out = []
+        var_names = set()
         for year in self.plan.keys():
-            for var_def in self.plan[year]:
-                out = list(set().union(out, [var_def.name]))
+            var_names.update([var_def.name for var_def in self.plan[year]])
 
         # Add in density columns
-        out = list(set().union(out, [s for s in self.data.columns if "_density" in s]))
-        return out
+        var_names.update([column for column in self.data.columns if "_density" in column])
+        return list(var_names)
 
     def add_geoid(self):
         """
@@ -174,14 +173,14 @@ class DataPlan:
 
         if self.geometry == "county":
             self.data['geoid'] = self.data['state'] + self.data['county']
-            return
+
         elif self.geometry == "tract":
             self.data['geoid'] = self.data['state'] + self.data['county'] + self.data['tract']
-            return
+
         elif self.geometry == "block group":
             self.data['geoid'] = self.data['state'] + self.data['county'] + \
                                  self.data['tract'] + self.data['block group']
-            return
+
         else:
             geo_vars = list(set(self.data.columns).difference(self.get_var_names() + ['year']))
 
@@ -252,6 +251,7 @@ class DataPlan:
             self.data[new_varname] = self.data[variable] / self.data['arealand']
 
         self.data.drop(columns='arealand', inplace=True)
+        self.data['geoid'] = pd.to_numeric(self.data['geoid'])
 
     def interpolate(self, method="ma", min_year=None, max_year=None):
         """
@@ -301,7 +301,7 @@ class DataPlan:
         out_cols = ["geoid", "year"] + self.get_var_names()
         col_dicts = dict()
         for col in out_cols:
-            col_dicts[col] = {"type" : _get_sql_type(self.data[col])}
+            col_dicts[col] = {"type": _get_sql_type(self.data[col])}
 
         out = dict()
         out[table_name] = dict()
