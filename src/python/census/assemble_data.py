@@ -29,7 +29,7 @@ import logging
 import yaml
 import numpy as np
 import pandas as pd
-import nsaph_utils.qc   
+import nsaph_utils.qc
 import nsaph_utils.interpolation
 
 from .data import *
@@ -40,16 +40,16 @@ from .query import get_census_data, _clean_acs_vars
 
 class DataPlan:
     """
-    A class containing information on how to create a desired set of census data.   
-    
+    A class containing information on how to create a desired set of census data.
+
     Inputs for initializing a DataPlan object from a census yaml document
 
-    :yaml_path: path to a yaml file. Structure defined in :doc:`census_yaml`  
-    :geometry: which census geography this plan is for  
-    :years: The list of years to query data from. The census_years() function can calculate which years in your timeframe of interest can be queried for the decennial and 5 year acs data. Note that this may not apply for the ACS1 or other data. That function may be updated in the future, but for now creating lists of years besides the defaults is left as an exercise for the interested reader.  
-    :state: 2 digit FIPS code of the state you want to limit the query to (i.e. "06" for CA)  
-    :county: 3 digit FIPS code of the county you want to include. Requires state to be specified    
-        
+    :yaml_path: path to a yaml file. Structure defined in :doc:`census_yaml`
+    :geometry: which census geography this plan is for
+    :years: The list of years to query data from. The census_years() function can calculate which years in your timeframe of interest can be queried for the decennial and 5 year acs data. Note that this may not apply for the ACS1 or other data. That function may be updated in the future, but for now creating lists of years besides the defaults is left as an exercise for the interested reader.
+    :state: 2 digit FIPS code of the state you want to limit the query to (i.e. "06" for CA)
+    :county: 3 digit FIPS code of the county you want to include. Requires state to be specified
+
     Members:
 
     * ``geometry``: which census geography this plan is for
@@ -65,7 +65,7 @@ class DataPlan:
     def __init__(self, yaml_path, geometry, years=census_years(), state=None, county=None):
         """
         initialize a DataPlan object from a census yaml document
-        
+
         :param yaml_path: path to a yaml file. Structure defined in :doc:`census_yaml`
         :param geometry: which census geography this plan is for
         :param years: The list of years to query data from. The census_years() function can
@@ -92,8 +92,8 @@ class DataPlan:
 
     def _yaml_to_dict(self, yaml_path):
         """
-        Convert a yaml file detailing how to get census variables in to a 
-        dictionary. Handles the issue of forward counting years to make future 
+        Convert a yaml file detailing how to get census variables in to a
+        dictionary. Handles the issue of forward counting years to make future
         code readable.
 
         Yaml structure defined in :doc:`census_yaml`
@@ -155,14 +155,13 @@ class DataPlan:
         :return: List of strings
         """
 
-        out = []
+        var_names = set()
         for year in self.plan.keys():
-            for var_def in self.plan[year]:
-                out = list(set().union(out, [var_def.name]))
+            var_names.update([var_def.name for var_def in self.plan[year]])
 
         # Add in density columns
-        out = list(set().union(out, [s for s in self.data.columns if "_density" in s]))
-        return out
+        var_names.update([column for column in self.data.columns if "_density" in column])
+        return list(var_names)
 
     def add_geoid(self):
         """
@@ -174,14 +173,14 @@ class DataPlan:
 
         if self.geometry == "county":
             self.data['geoid'] = self.data['state'] + self.data['county']
-            return
+
         elif self.geometry == "tract":
             self.data['geoid'] = self.data['state'] + self.data['county'] + self.data['tract']
-            return
+
         elif self.geometry == "block group":
             self.data['geoid'] = self.data['state'] + self.data['county'] + \
                                  self.data['tract'] + self.data['block group']
-            return
+
         else:
             geo_vars = list(set(self.data.columns).difference(self.get_var_names() + ['year']))
 
@@ -252,6 +251,7 @@ class DataPlan:
             self.data[new_varname] = self.data[variable] / self.data['arealand']
 
         self.data.drop(columns='arealand', inplace=True)
+        self.data['geoid'] = pd.to_numeric(self.data['geoid'])
 
     def interpolate(self, method="ma", min_year=None, max_year=None):
         """
@@ -286,7 +286,7 @@ class DataPlan:
         census_tester = nsaph_utils.qc.Tester(name, yaml_file=test_file)
         census_tester.check(self.data)
 
-    def _schema_dict(self, table_name: str = None):
+    def _schema_dict_old(self, table_name: str = None):
         """
         return a dictionary containing the names and data types of variables that would be loaded in to a database.
         Structured as a dictionary to enable writing to either yaml of json
@@ -301,7 +301,7 @@ class DataPlan:
         out_cols = ["geoid", "year"] + self.get_var_names()
         col_dicts = dict()
         for col in out_cols:
-            col_dicts[col] = {"type" : _get_sql_type(self.data[col])}
+            col_dicts[col] = {"type": _get_sql_type(self.data[col])}
 
         out = dict()
         out[table_name] = dict()
@@ -309,6 +309,40 @@ class DataPlan:
         out[table_name]["primary_key"] = ["geoid", "year"]
 
         return out
+
+    def _schema_dict(self, table_name: str = None):
+        if "geoid" not in self.data.columns:
+            self.add_geoid()
+
+        if not table_name:
+            table_name = self.geometry
+
+        name = "census"
+        out_cols = ["geoid", "year"] + self.get_var_names()
+        domain = {
+            name: {
+                "schema": name,
+                "index": "all",
+                "description": "NSAPH data model for Census",
+                "header": True,
+                "quoting": 3,
+                "tables": {
+                    table_name: {
+                        "columns": [
+                            {
+                                col: {
+                                    "type": _get_sql_type(self.data[col])
+                                }
+                            }
+                            for col in out_cols
+                        ],
+                        "primary_key": ["geoid", "year"],
+                    }
+                }
+            }
+        }
+
+        return domain
 
     def write_schema(self, filename: str = None, table_name: str = None):
         """
@@ -527,5 +561,3 @@ def _get_sql_type(col):
         return "VARCHAR(" + str(max_len) + ")"
     else:
         raise CensusException("unexpected column type in data")
-
-

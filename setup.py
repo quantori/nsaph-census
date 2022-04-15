@@ -19,20 +19,42 @@
 #
 
 from setuptools import setup, find_packages
-from census import __version__
 
 setup(
     name='census',
-    version=__version__,
-    url='',
+    version="0.3",
+    url='https://github.com/NSAPH-Data-Platform/nsaph-census',
     license='',
-    packages=find_packages(exclude=['docs*', 'tests*']),
+    package_dir={
+        "census": "./src/python/census"
+    },
+    packages=["census"],
     author='Ben Sabath',
     author_email='sabath@fas.harvard.edu',
+    classifiers=[
+        "Programming Language :: Python :: 3",
+        "License :: Harvard University :: Development",
+        "Operating System :: OS Independent",
+    ],
     description='',
     entry_points="""
     [console_scripts]
     census=census:cli.census_cli
     """,
-    include_package_data=True
+    include_package_data=True,
+    install_requires=[
+        'certifi==2020.12.5',
+        'chardet==4.0.0',
+        'idna==2.10',
+        'numpy==1.19.4',
+        'pandas==1.1.5',
+        'python-dateutil==2.8.1',
+        'pytz==2020.5',
+        'requests==2.25.1',
+        'six==1.15.0',
+        'urllib3==1.26.2',
+    ],
+    package_data={
+        '': ["**/*.yaml"]
+    },
 )

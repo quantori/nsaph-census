@@ -36,6 +36,14 @@ inputs:
   qc_file: File # YAML File specifying QC
   interp_qc_log: string # Place to log QC for interpolated data
   no_interp_qc_log: string # Place to log QC for uninterpolated data
+  database:
+    type: string
+    doc: Path to database connection file, usually database.ini
+  connection_name:
+    type: string
+    doc: The name of the section in the database.ini file
+  table:
+    type: string
 
 outputs:
   assemble_pkl:
@@ -60,18 +68,35 @@ outputs:
     type: File
     outputSource: no_interp_qc/qc_log
   interp_data:
-    type: File
+    type: File[]
     outputSource: write_interp/data
   interp_schema:
     type: File
     outputSource: write_interp/schema
   no_interp_data:
-    type: File
+    type: File[]
     outputSource: write_no_interp/data
   no_interp_schema:
     type: File
     outputSource: write_no_interp/schema
-
+  ingest_log:
+    type: File
+    outputSource: ingest/log
+  index_log:
+    type: File
+    outputSource: index/log
+  vacuum_log:
+    type: File
+    outputSource: vacuum/log
+  ingest_errors:
+    type: File
+    outputSource: ingest/errors
+  index_errors:
+    type: File
+    outputSource: index/errors
+  vacuum_errors:
+    type: File
+    outputSource: vacuum/errors
 
 steps:
   make_log:
@@ -175,8 +200,35 @@ steps:
       schema_name: no_interp_schema
       table_name: no_interp_tablename
     out: [data, schema]
-
-
-
-
-
+  ingest:
+    run: ingest.cwl
+    doc: Uploads data into the database
+    in:
+      registry: write_interp/schema
+      table: table
+      input: write_interp/data
+      database: database
+      connection_name: connection_name
+    out: [log, errors]
+  index:
+    run: index.cwl
+    in:
+      depends_on: ingest/log
+      registry: write_interp/schema
+      domain:
+        valueFrom: "census"
+      table: table
+      database: database
+      connection_name: connection_name
+    out: [log, errors]
+  vacuum:
+    run: vacuum.cwl
+    in:
+      depends_on: index/log
+      domain:
+        valueFrom: "census"
+      registry: write_interp/schema
+      table: table
+      database: database
+      connection_name: connection_name
+    out: [log, errors]

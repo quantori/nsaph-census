@@ -46,8 +46,6 @@ def initialize_logging(log: str):
     logger.addHandler(handler)
     logger.setLevel(logging.INFO)
 
-    return True
-
 
 if __name__ == "__main__":
 
