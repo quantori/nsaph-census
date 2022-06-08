@@ -26,3 +26,5 @@ no_interp_qc_log: no_interp_qc.log # Place to log QC for uninterpolated data
 database: /opt/airflow/dags/census/database.ini
 connection_name: nsaph2
 table: "county_interp"
+http_proxy: http://rcproxy.rc.fas.harvard.edu:3128
+
