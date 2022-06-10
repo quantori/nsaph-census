@@ -1,7 +1,7 @@
 """
 census_info.py
 ========================================
-Core module for handling census metadata 
+Core module for handling census metadata
 """
 
 #  Copyright (c) 2022. Harvard University
@@ -23,15 +23,14 @@ Core module for handling census metadata
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #
+# Code for handling census metadata
 
-import os
 import logging
+import os
 
 import requests as r
 
 from .exceptions import CensusException
-
-# Code for handling census metadata
 
 LOG = logging.getLogger(__name__)
 
@@ -84,11 +83,10 @@ def get_varlist(year: int, dataset: str, sum_file: str = None):
     """
 
     try:
-       endpoint = get_endpoint(year, dataset, sum_file)
+        endpoint = get_endpoint(year, dataset, sum_file)
     except CensusException as e:
-       print(f"{e}")
-       return None
-       
+        print(f"{e}")
+        return
 
     params = {}
 

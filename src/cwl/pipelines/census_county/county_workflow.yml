@@ -1,13 +1,15 @@
-PYTHONPATH:  "../../src" # Directory holding python files
-api_key: f1113674f0c1c0be12506fbdfc8bd59567a7a1f3  # API Key for the Census API
-var_file:  # YML File specifying the census variables
-  class: File
-  location: census_vars.yml
+api_key: XXX  # API Key for the Census API
 geometry: county # Census geometry to use
-years: 2000:2019 # Years to download census for, written <min_year>:<max_year>
-interpolate_years: 1999:2019  # Years to interpolate census over, written <min_year>:<max_year>
-log: county_census.log # name of the main log file
+years: 2019:2019 # Years to download census for, written <min_year>:<max_year>
+interpolate_years: 2020:2020  # Years to interpolate census over, written <min_year>:<max_year>
 density_vars: [population] # List of variables to calculate area density for
+database: /opt/airflow/dags/census/database.ini
+connection_name: nsaph
+table: "county_interp"
+http_proxy: http://10.240.64.17:3128
+#
+# Don't change anything below this line
+#
 assemble_pkl: county_download.pkl # pkl file to store results of initial download
 interpolate_pkl: county_interp.pkl # pkl file to store object with interpolated data
 density_interp_pkl: county_interp_dens.pkl # pkl file to store object with interpolated data and calculated densities
@@ -23,6 +25,7 @@ qc_file:
   location: census_qc.yml
 interp_qc_log: interp_qc.log # Place to log QC for interpolated data
 no_interp_qc_log: no_interp_qc.log # Place to log QC for uninterpolated data
-database: /opt/airflow/dags/census/database.ini
-connection_name: nsaph2
-table: "county_interp"
+log: county_census.log # name of the main log file
+var_file:  # YML File specifying the census variables
+  class: File
+  location: census_vars.yml

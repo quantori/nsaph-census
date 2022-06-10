@@ -24,15 +24,13 @@ Functions for Requesting Data from the Census API
 #  limitations under the License.
 #
 
-import os
 import logging
+import os
 
 import pandas as pd
-import requests as r
 
-from .exceptions import *
-from .census_info import *
-
+from .census_info import get_endpoint, get_varlist
+from .exceptions import CensusException
 
 # Code for downloading the census data
 
@@ -187,4 +185,3 @@ def _choose_sum_file(variables: list):
         return "sf1"
     else:
         return "sf3"
-

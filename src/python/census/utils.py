@@ -26,6 +26,7 @@ Census utility functions
 
 import os
 
+
 def show_api_keys():
     """
     Prints out api keys.
@@ -37,5 +38,3 @@ def show_api_keys():
             print(f"Key: {item}, is not defined.")
         else:
             print(f"Key: {item}, Value: {os.environ[item]}")
-
-        
