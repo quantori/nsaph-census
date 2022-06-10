@@ -28,7 +28,7 @@ setup(
     package_dir={
         "census": "./src/python/census"
     },
-    packages=["census"],
+    packages=["census", "census.data"],
     author='Ben Sabath',
     author_email='sabath@fas.harvard.edu',
     classifiers=[

@@ -251,7 +251,7 @@ class DataPlan:
             self.data[new_varname] = self.data[variable] / self.data['arealand']
 
         self.data.drop(columns='arealand', inplace=True)
-        self.data['geoid'] = pd.to_numeric(self.data['geoid'])
+        self.data['geoid'] = pd.to_numeric(self.data['geoid'], errors='coerce')
 
     def interpolate(self, method="ma", min_year=None, max_year=None):
         """
