@@ -25,16 +25,14 @@ Code for interacting with the Census TIGERWEb API, query area and download shape
 #  limitations under the License.
 #
 
-import os
 import logging
-import requests as r
+import os
 
 import pandas as pd
 
-from .query import _prep_vars
 from .data import load_state_codes
 from .exceptions import CensusException
-
+from .query import _prep_vars
 
 GEOMETRY_CODES = {"zcta": 2,
                   "tract": 8,
@@ -173,6 +171,9 @@ def get_area(geometry, sq_mi=True):
         print("RESULT", url, params, result.status_code)
         if len(result.text) < 1000:
             print(result.text)
+
+        if "error" in result.json() and result.json()["error"]["code"] == 404:
+            raise CensusException(f"Url { url } not found")
 
         result = list(map(lambda x: x['attributes'], result.json()['features']))
         result = pd.DataFrame(result)
