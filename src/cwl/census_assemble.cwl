@@ -6,7 +6,6 @@ baseCommand: [python, -m, census.cli]
 requirements:
   EnvVarRequirement:
     envDef:
-      PYTHONPATH: $(inputs.PYTHONPATH)
       GET_CENSUS_API_KEY: $(inputs.api_key)
       HTTPS_PROXY: $(inputs.http_proxy)
       HTTP_PROXY: $(inputs.http_proxy)
@@ -14,9 +13,6 @@ requirements:
     networkAccess: true
 
 inputs:
-  PYTHONPATH:
-    type: string
-    default: "/Users/mbs641/Documents/rse_work/learning/cwl/src"
   http_proxy:
     type: string
     default: ""

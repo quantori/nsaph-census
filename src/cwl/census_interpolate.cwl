@@ -3,15 +3,8 @@
 cwlVersion: v1.1
 class: CommandLineTool
 baseCommand: [python, -m, census.interpolate_data]
-requirements:
-  EnvVarRequirement:
-    envDef:
-      PYTHONPATH: $(inputs.PYTHONPATH)
 
 inputs:
-  PYTHONPATH:
-    type: string
-    default: "/Users/mbs641/Documents/rse_work/learning/cwl/src"
   interpolate:
     type: string
     default: "1999:2019"

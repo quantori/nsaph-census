@@ -1,15 +1,8 @@
 cwlVersion: v1.1
 class: CommandLineTool
 baseCommand: [python, -m, census.do_qc]
-requirements:
-  EnvVarRequirement:
-    envDef:
-      PYTHONPATH: $(inputs.PYTHONPATH)
 
 inputs:
-  PYTHONPATH:
-    type: string
-    default: "/Users/mbs641/Documents/rse_work/learning/cwl/src"
   log:
     type: File
     default:
@@ -42,4 +35,3 @@ outputs:
     type: File
     outputBinding:
       glob: $(inputs.qc_log)
-

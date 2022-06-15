@@ -9,7 +9,6 @@ requirements:
 
 
 inputs:
-  PYTHONPATH: string # Directory holding python files
   api_key: string # API Key for the Census API
   http_proxy:
     type: string
@@ -120,7 +119,6 @@ steps:
   assemble: # Download and calculate census variables
     run: census_assemble.cwl
     in:
-      PYTHONPATH: PYTHONPATH
       api_key: api_key
       http_proxy: http_proxy
       var_file: var_file
@@ -134,7 +132,6 @@ steps:
   interpolate: # Interpolate data for missing years
     run: census_interpolate.cwl
     in:
-      PYTHONPATH: PYTHONPATH
       interpolate: interpolate_years
       log:
         source: make_log/log
@@ -145,7 +142,6 @@ steps:
   no_interp_density: # Calculate densities for uninterpolated data
     run: census_density.cwl
     in:
-      PYTHONPATH: PYTHONPATH
       http_proxy: http_proxy
       densities: density_vars
       log: make_log/log
@@ -155,7 +151,6 @@ steps:
   interp_density:  # Calculate densities for interpolated data
     run: census_density.cwl
     in:
-      PYTHONPATH: PYTHONPATH
       http_proxy: http_proxy
       densities: density_vars
       log: make_log/log
@@ -165,7 +160,6 @@ steps:
   no_interp_qc:
     run: census_qc.cwl
     in:
-      PYTHONPATH: PYTHONPATH
       log: make_log/log
       in_pkl: no_interp_density/pkl
       qc_file: qc_file
@@ -174,7 +168,6 @@ steps:
   interp_qc:
     run: census_qc.cwl
     in:
-      PYTHONPATH: PYTHONPATH
       log: make_log/log
       in_pkl: interp_density/pkl
       qc_file: qc_file
@@ -183,7 +176,6 @@ steps:
   write_interp:
     run: census_write.cwl
     in:
-      PYTHONPATH: PYTHONPATH
       log: make_log/log
       in_pkl: interp_density/pkl
       out_file: interp_out
@@ -193,7 +185,6 @@ steps:
   write_no_interp:
     run: census_write.cwl
     in:
-      PYTHONPATH: PYTHONPATH
       log: make_log/log
       in_pkl: no_interp_density/pkl
       out_file: no_interp_out
