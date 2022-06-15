@@ -3,13 +3,8 @@
 cwlVersion: v1.1
 class: CommandLineTool
 baseCommand: [python, -m, census.write_data]
-requirements:
-  EnvVarRequirement:
-    envDef:
-      PYTHONPATH: $(inputs.PYTHONPATH)
 
 inputs:
-  PYTHONPATH: string
   log:
     type: File
     default:

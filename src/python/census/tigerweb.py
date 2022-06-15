@@ -29,6 +29,7 @@ import logging
 import os
 
 import pandas as pd
+import requests
 
 from .data import load_state_codes
 from .exceptions import CensusException
@@ -166,11 +167,7 @@ def get_area(geometry, sq_mi=True):
     for params in param_list:
         queries += 1
         LOG.debug("Area query " + str(queries) + " of " + str(len(param_list)))
-        result = r.get(url, params)
-
-        print("RESULT", url, params, result.status_code)
-        if len(result.text) < 1000:
-            print(result.text)
+        result = requests.get(url, params)
 
         if "error" in result.json() and result.json()["error"]["code"] == 404:
             raise CensusException(f"Url { url } not found")

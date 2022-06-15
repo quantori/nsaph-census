@@ -6,7 +6,6 @@ baseCommand: [python, -m, census.calculate_density]
 requirements:
   EnvVarRequirement:
     envDef:
-      PYTHONPATH: $(inputs.PYTHONPATH)
       HTTPS_PROXY: $(inputs.http_proxy)
       HTTP_PROXY: $(inputs.http_proxy)
   NetworkAccess:
@@ -14,9 +13,6 @@ requirements:
 
 
 inputs:
-  PYTHONPATH:
-    type: string
-    default: "/Users/mbs641/Documents/rse_work/learning/cwl/src"
   http_proxy:
     type: string
     default: ""

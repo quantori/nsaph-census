@@ -28,6 +28,7 @@ import logging
 import os
 
 import pandas as pd
+import requests
 
 from .census_info import get_endpoint, get_varlist
 from .exceptions import CensusException
@@ -90,17 +91,17 @@ def get_census_data(year: int, variables: list, geography: str, dataset: str,
     num_tries = 0
     while num_tries < 5:
         try:
-            out = r.get(endpoint, params=options)
-            out.raise_for_status()
+            response = requests.get(endpoint, params=options)
+            response.raise_for_status()
             break
         except:
             LOG.warning("Query Failed, re-trying")
             num_tries += 1
     if num_tries >= 5:
-        LOG.critical("Unable to complete query after " + str(num_tries) + " tries")
-        raise CensusException("Unable to complete query after " + str(num_tries) + " tries")
+        LOG.critical("Unable to complete query %s after %s tries", endpoint, num_tries)
+        raise CensusException("Unable to complete query " + endpoint + " after " + str(num_tries) + " tries")
 
-    out = out.json()
+    out = response.json()
     out = pd.DataFrame(out[1:], columns=out[0])
 
     # handle conversion of variables to numeric
