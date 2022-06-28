@@ -174,6 +174,9 @@ class DataPlan:
         if self.geometry == "county":
             self.data['geoid'] = self.data['state'] + self.data['county']
 
+        elif self.geometry == "zcta":
+            self.data['geoid'] = self.data['zip code tabulation area']
+
         elif self.geometry == "tract":
             self.data['geoid'] = self.data['state'] + self.data['county'] + self.data['tract']
 
