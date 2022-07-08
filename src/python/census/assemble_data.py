@@ -189,6 +189,15 @@ class DataPlan:
             for geo_var in geo_vars:
                 self.data['geoid'] = self.data['geoid'] + self.data[geo_var]
 
+    def adjust_geo_fields(self):
+        """
+        Adds geo columns to standardize it's set
+
+        :return: None
+        """
+        if self.geometry == "zcta":
+            self.data['zcta'] = self.data['zip code tabulation area']
+
     def create_missingness(self, min_year=None, max_year=None):
         """
         Create a row for all combinations of geospatial ID and year
@@ -206,6 +215,8 @@ class DataPlan:
 
         if "geoid" not in self.data.columns:
             self.add_geoid()
+
+        self.adjust_geo_fields()
 
         all_vals = pd.DataFrame([[x, y] for x in range(min_year, max_year + 1)
                                  for y in self.data.geoid.unique()], columns=['year', 'geoid'])
@@ -242,6 +253,8 @@ class DataPlan:
 
         if "geoid" not in self.data.columns:
             self.add_geoid()
+
+        self.adjust_geo_fields()
 
         areas = get_area(self.geometry, sq_mi)
         self.data = pd.merge(self.data, areas, how="left", on="geoid")
@@ -295,6 +308,8 @@ class DataPlan:
         if "geoid" not in self.data.columns:
             self.add_geoid()
 
+        self.adjust_geo_fields()
+
         if not table_name:
             table_name = self.geometry
 
@@ -313,6 +328,8 @@ class DataPlan:
     def _schema_dict(self, table_name: str = None):
         if "geoid" not in self.data.columns:
             self.add_geoid()
+
+        self.adjust_geo_fields()
 
         if not table_name:
             table_name = self.geometry
