@@ -19,6 +19,6 @@ cwl-runner census_workflow.cwl pipelines/census_zcta/zcta_workflow.yml
 
 ## Change Log
 
-#### Version 0.3 June 2021:
+### Version 0.3 June 2021:
 Logging in place instead of print statements, successful complete runs with CWL.
 Some user + code documentation, support for commonly used geographies.
