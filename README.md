@@ -7,8 +7,8 @@ To run pipelines use [cwl-tool](https://github.com/common-workflow-language/cwlt
 How to run pipelines with sample parameters:
 1. Request for API key [here](https://api.census.gov/data/key_signup.html)
 2. Write API key in parameter `api_key` into
-   [county_workflow.yml](src/cwl/pipelines/census_county/county_workflow.yml)
-    and [zcta_workflow.yml](src/cwl/pipelines/census_zcta/zcta_workflow.yml)
+   [county_workflow.yml](/common/census/src/cwl/pipelines/census_county/county_workflow.yml)
+    and [zcta_workflow.yml](/common/census/src/cwl/pipelines/census_zcta/zcta_workflow.yml)
 3. Adjust other options in those config files
 4. Run command
 ```
