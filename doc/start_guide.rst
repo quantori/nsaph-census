@@ -30,7 +30,7 @@ Main Python Workflow
 --------------------
 
 All main functionality for this package is contained within the `DataPlan` object.
-For detailed documentation on its methods, please see :ref:`assemble-data-py`.
+For detailed documentation on its methods, please see :ref:`assemble_data.py`.
 
 The general workflow is as follows:
 
@@ -87,6 +87,6 @@ Shapefile Downloads
 -------------------
 
 In addition to the general processing workflow, the package also includes
-a function for downloading Census geography shape files. Please see :doc:`tigerweb`
+a function for downloading Census geography shape files. Please see :ref:`tigerweb.py`
 for documentation on the functions interacting with the Census geographic resources.
 
