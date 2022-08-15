@@ -51,7 +51,7 @@ and the FTP site for Tiger Shapefile Downloads. This package also includes a com
 
 
 Indices and tables
-==================
+^^^^^^^^^^^^^^^^^^
 
 * :ref:`genindex`
 * :ref:`modindex`
