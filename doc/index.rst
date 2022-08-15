@@ -1,4 +1,4 @@
-Census
+NSAPH Census Pipelines
 ======
 
 The `census` package provides an interface with US Census Data, including the main API, some functionality for working with the TigerWeb API,
