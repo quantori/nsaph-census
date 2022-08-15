@@ -30,7 +30,7 @@ Main Python Workflow
 --------------------
 
 All main functionality for this package is contained within the `DataPlan` object.
-For detailed documentation on its methods, please see :doc:`assemble_data`.
+For detailed documentation on its methods, please see :doc:`modules#assemble-data-py`.
 
 The general workflow is as follows:
 
