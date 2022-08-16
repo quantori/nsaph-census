@@ -1,4 +1,4 @@
-Census
+NSAPH Census Pipelines
 ======
 
 The `census` package provides an interface with US Census Data, including the main API, some functionality for working with the TigerWeb API,
@@ -51,8 +51,7 @@ and the FTP site for Tiger Shapefile Downloads. This package also includes a com
 
 
 Indices and tables
-==================
+^^^^^^^^^^^^^^^^^^
 
 * :ref:`genindex`
 * :ref:`modindex`
-* :ref:`search`

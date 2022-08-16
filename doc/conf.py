@@ -1,3 +1,23 @@
+#  Copyright (c) 2022. Harvard University
+#
+#  Developed by Harvard T.H. Chan School of Public Health
+#  (HSPH) and Research Software Engineering,
+#  Faculty of Arts and Sciences, Research Computing (FAS RC)
+#  Author: Ben Sabath (https://github.com/mbsabath)
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+#
+
 # Configuration file for the Sphinx documentation builder.
 #
 # This file only contains a selection of the most common options. For a full
@@ -12,17 +32,15 @@
 #
 import os
 import sys
-from nsaph_utils.docutils.codeurl import URLDomain
-import sphinx
 
-sys.path.insert(0, os.path.abspath('src/python'))
+sys.path.insert(0, os.path.abspath('../src/python'))
 add_module_names = False
 autoclass_content = 'both'
 autodoc_member_order = 'bysource'
 
 # -- Project information -----------------------------------------------------
 
-project = 'NSAPH EPA Pipelines'
+project = 'Census'
 copyright = '2021, Harvard University'
 author = 'Michael A Bouzinier'
 
@@ -44,9 +62,7 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx_paramlinks',
     'sphinx.ext.autosectionlabel',
-    'nsaph_utils.docutils.recommonmark',
-    'sphinx_markdown_tables',
-    'nsaph_utils.docutils.cwl_parser',
+    'myst_parser'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -65,19 +81,3 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '.nsaph', 'notes']
 #
 #html_theme = 'alabaster'
 html_theme = "sphinx_rtd_theme"
-
-# Add any paths that contain custom static files (such as style sheets) here,
-# relative to this directory. They are copied after the builtin static files,
-# so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
-
-
-source_suffix = {
-    '.rst': 'restructuredtext',
-    '.txt': 'restructuredtext',
-    '.cwl': 'cwl',
-}
-
-
-def setup(app):
-    app.add_domain(URLDomain)
