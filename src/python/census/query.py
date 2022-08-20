@@ -9,7 +9,7 @@ Functions for Requesting Data from the Census API
 #  Developed by Harvard T.H. Chan School of Public Health
 #  (HSPH) and Research Software Engineering,
 #  Faculty of Arts and Sciences, Research Computing (FAS RC)
-#  Author: Ben Sabath (https://github.com/mbsabath)
+#  Author: Ben Sabath (https://github.com/mbsabath)                                                                                                                                          medicaid.rst
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
