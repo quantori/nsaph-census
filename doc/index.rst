@@ -37,7 +37,7 @@ and the FTP site for Tiger Shapefile Downloads. This package also includes a com
    :caption: Community
 
    contact
-   CHANGELOG    
+   CHANGELOG
 
 
 .. toctree::
@@ -46,7 +46,11 @@ and the FTP site for Tiger Shapefile Downloads. This package also includes a com
 
    start_guide
 
+.. toctree::
+   :glob:
+   :hidden:
 
+   pipeline/*
 
 
 
